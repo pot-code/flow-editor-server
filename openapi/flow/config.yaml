@@ -1,0 +1,5 @@
+package: flow
+generate:
+  echo-server: true
+  models: true
+output: api_gen.go

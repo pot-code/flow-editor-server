@@ -1,0 +1,13 @@
+# https://taskfile.dev
+
+version: "3"
+
+tasks:
+  http:
+    cmds:
+      - go run ./cmd/http
+    silent: true
+  gen:
+    cmds:
+      - go get ./...
+    silent: true
