@@ -2,4 +2,4 @@ package: flow
 generate:
   echo-server: true
   models: true
-output: api_gen.go
+output: ../../app/flow/api_gen.go

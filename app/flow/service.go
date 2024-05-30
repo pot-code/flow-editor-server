@@ -1,6 +1,21 @@
 package flow
 
-import "gorm.io/gorm"
+import (
+	validation "github.com/go-ozzo/ozzo-validation"
+	"gorm.io/gorm"
+)
+
+type CreateFlowData struct {
+	Title string  `json:"title"`
+	Nodes *string `json:"nodes"`
+	Edges *string `json:"edges"`
+}
+
+func (c *CreateFlowData) Validate() error {
+	return validation.ValidateStruct(c,
+		validation.Field(&c.Title, validation.Required, validation.Length(1, 32)),
+	)
+}
 
 type Service struct {
 	db *gorm.DB
@@ -10,8 +25,11 @@ func NewService(db *gorm.DB) *Service {
 	return &Service{db: db}
 }
 
-func (s *Service) CreateFlow(flow *CreateFlow) error {
-	return s.db.Create(flow).Error
+func (s *Service) CreateFlow(flow *CreateFlowData) error {
+	if err := flow.Validate(); err != nil {
+		return err
+	}
+	return s.db.Model(&FlowModel{}).Create(flow).Error
 }
 
 func (s *Service) GetFlow(id string) (*FlowDetail, error) {

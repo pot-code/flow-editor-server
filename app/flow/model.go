@@ -7,8 +7,8 @@ import (
 type FlowModel struct {
 	gorm.Model
 	Title string
-	Nodes *string
-	Edges *string
+	Nodes *string `gorm:"default:null"`
+	Edges *string `gorm:"default:null"`
 }
 
 func (g *FlowModel) TableName() string {

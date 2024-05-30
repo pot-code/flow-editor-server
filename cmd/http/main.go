@@ -4,6 +4,7 @@ import (
 	"openapi-go-demo/app/flow"
 	"os"
 
+	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -27,6 +28,22 @@ func main() {
 	}
 
 	server := echo.New()
+	server.HTTPErrorHandler = func(err error, c echo.Context) {
+		switch te := err.(type) {
+		case *echo.HTTPError:
+			c.JSON(te.Code, map[string]string{
+				"message": te.Error(),
+			})
+		case validation.Errors:
+			c.JSON(400, te)
+		default:
+			log.Error().Err(err).Msg("http internal error")
+			c.JSON(500, map[string]string{
+				"message": err.Error(),
+			})
+		}
+	}
+
 	flow.RegisterHandlers(server, flow.NewController(flow.NewService(db)))
 
 	log.Fatal().Err(server.Start(":3000")).Msg("")

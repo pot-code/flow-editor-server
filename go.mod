@@ -6,6 +6,7 @@ toolchain go1.22.3
 
 require (
 	github.com/deepmap/oapi-codegen/v2 v2.1.0
+	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/jmattheis/goverter v1.4.0
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/oapi-codegen/runtime v1.1.1
@@ -16,6 +17,7 @@ require (
 
 require (
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
+	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/dave/jennifer v1.6.0 // indirect
 	github.com/getkin/kin-openapi v0.123.0 // indirect
 	github.com/go-openapi/jsonpointer v0.20.2 // indirect

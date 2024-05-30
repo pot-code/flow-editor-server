@@ -25,11 +25,11 @@ paths:
                     type: string
                   id:
                     type: integer
-                type: object
                 required:
                   - title
                   - created_at
                   - id
+                $ref: '#/components/schemas/FlowListItemRes'
       responses:
         '200':
           description: 成功
@@ -51,15 +51,15 @@ paths:
           application/json:
             schema:
               properties:
-                nodes:
-                  type: string
-                edges:
-                  type: string
                 title:
                   type: string
+                nodes:
+                  type: string
+                  nullable: true
+                edges:
+                  type: string
+                  nullable: true
               required:
-                - nodes
-                - edges
                 - title
               type: object
       responses:
@@ -175,7 +175,20 @@ paths:
       security:
         - bearer: []
 components:
-  schemas: {}
+  schemas:
+    FlowListItemRes:
+      properties:
+        title:
+          type: string
+        created_at:
+          type: string
+        id:
+          type: integer
+      type: object
+      required:
+        - title
+        - created_at
+        - id
   securitySchemes:
     bearer:
       type: http

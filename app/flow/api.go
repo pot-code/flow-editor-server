@@ -1,3 +1,5 @@
+//go:build !goverter
+
 package flow
 
 import "github.com/labstack/echo/v4"
@@ -28,7 +30,7 @@ func (c *Controller) GetFlow(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return ctx.JSON(200, c.c.ConvertListFlow(flows))
+	return ctx.JSON(200, c.c.ConvertSliceFlowListItem(flows))
 }
 
 // GetFlowId implements ServerInterface.
@@ -42,7 +44,15 @@ func (c *Controller) GetFlowId(ctx echo.Context, id string) error {
 
 // PostFlow implements ServerInterface.
 func (c *Controller) PostFlow(ctx echo.Context) error {
-	panic("unimplemented")
+	var payload PostFlowJSONRequestBody
+	if err := ctx.Bind(&payload); err != nil {
+		return err
+	}
+	flow := c.c.ConvertPostFlowJSONRequestBody(payload)
+	if err := c.s.CreateFlow(&flow); err != nil {
+		return err
+	}
+	return ctx.JSON(201, flow)
 }
 
 // PutFlow implements ServerInterface.

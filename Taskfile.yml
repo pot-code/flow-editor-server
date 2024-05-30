@@ -9,5 +9,5 @@ tasks:
     silent: true
   gen:
     cmds:
-      - go get ./...
+      - go generate ./...
     silent: true
