@@ -32,21 +32,21 @@ type PostFlowJSONBody struct {
 	Title string  `json:"title"`
 }
 
-// PutFlowJSONBody defines parameters for PutFlow.
-type PutFlowJSONBody struct {
-	Edges string `json:"edges"`
-	Id    string `json:"id"`
-	Nodes string `json:"nodes"`
-	Title string `json:"title"`
-}
-
 // GetFlowIdJSONBody defines parameters for GetFlowId.
 type GetFlowIdJSONBody struct {
-	CreatedAt string `json:"created_at"`
-	Edges     string `json:"edges"`
-	Id        int    `json:"id"`
-	Nodes     string `json:"nodes"`
-	Title     string `json:"title"`
+	CreatedAt string  `json:"created_at"`
+	Edges     *string `json:"edges"`
+	Id        int     `json:"id"`
+	Nodes     *string `json:"nodes"`
+	Title     string  `json:"title"`
+}
+
+// PutFlowIdJSONBody defines parameters for PutFlowId.
+type PutFlowIdJSONBody struct {
+	Edges *string `json:"edges"`
+	Id    int     `json:"id"`
+	Nodes *string `json:"nodes"`
+	Title string  `json:"title"`
 }
 
 // GetFlowJSONRequestBody defines body for GetFlow for application/json ContentType.
@@ -55,11 +55,11 @@ type GetFlowJSONRequestBody = GetFlowJSONBody
 // PostFlowJSONRequestBody defines body for PostFlow for application/json ContentType.
 type PostFlowJSONRequestBody PostFlowJSONBody
 
-// PutFlowJSONRequestBody defines body for PutFlow for application/json ContentType.
-type PutFlowJSONRequestBody PutFlowJSONBody
-
 // GetFlowIdJSONRequestBody defines body for GetFlowId for application/json ContentType.
 type GetFlowIdJSONRequestBody GetFlowIdJSONBody
+
+// PutFlowIdJSONRequestBody defines body for PutFlowId for application/json ContentType.
+type PutFlowIdJSONRequestBody PutFlowIdJSONBody
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -69,15 +69,15 @@ type ServerInterface interface {
 	// 创建 flow
 	// (POST /flow)
 	PostFlow(ctx echo.Context) error
-	// 更新 flow
-	// (PUT /flow)
-	PutFlow(ctx echo.Context) error
 	// 删除 flow
 	// (DELETE /flow/{id})
 	DeleteFlowId(ctx echo.Context, id string) error
 	// 获取 flow
 	// (GET /flow/{id})
 	GetFlowId(ctx echo.Context, id string) error
+	// 更新 flow
+	// (PUT /flow/{id})
+	PutFlowId(ctx echo.Context, id int) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -104,17 +104,6 @@ func (w *ServerInterfaceWrapper) PostFlow(ctx echo.Context) error {
 
 	// Invoke the callback with all the unmarshaled arguments
 	err = w.Handler.PostFlow(ctx)
-	return err
-}
-
-// PutFlow converts echo context to params.
-func (w *ServerInterfaceWrapper) PutFlow(ctx echo.Context) error {
-	var err error
-
-	ctx.Set(BearerScopes, []string{})
-
-	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.PutFlow(ctx)
 	return err
 }
 
@@ -154,6 +143,24 @@ func (w *ServerInterfaceWrapper) GetFlowId(ctx echo.Context) error {
 	return err
 }
 
+// PutFlowId converts echo context to params.
+func (w *ServerInterfaceWrapper) PutFlowId(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "id" -------------
+	var id int
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
+	}
+
+	ctx.Set(BearerScopes, []string{})
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.PutFlowId(ctx, id)
+	return err
+}
+
 // This is a simple interface which specifies echo.Route addition functions which
 // are present on both echo.Echo and echo.Group, since we want to allow using
 // either of them for path registration
@@ -184,8 +191,8 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 
 	router.GET(baseURL+"/flow", wrapper.GetFlow)
 	router.POST(baseURL+"/flow", wrapper.PostFlow)
-	router.PUT(baseURL+"/flow", wrapper.PutFlow)
 	router.DELETE(baseURL+"/flow/:id", wrapper.DeleteFlowId)
 	router.GET(baseURL+"/flow/:id", wrapper.GetFlowId)
+	router.PUT(baseURL+"/flow/:id", wrapper.PutFlowId)
 
 }

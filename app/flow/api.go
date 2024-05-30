@@ -55,9 +55,17 @@ func (c *Controller) PostFlow(ctx echo.Context) error {
 	return ctx.JSON(201, flow)
 }
 
-// PutFlow implements ServerInterface.
-func (c *Controller) PutFlow(ctx echo.Context) error {
-	panic("unimplemented")
+// PutFlowId implements ServerInterface.
+func (c *Controller) PutFlowId(ctx echo.Context, id int) error {
+	var payload PutFlowIdJSONRequestBody
+	if err := ctx.Bind(&payload); err != nil {
+		return err
+	}
+	flow := c.c.ConvertPutFlowJSONRequestBody(payload)
+	if err := c.s.UpdateFlow(id, &flow); err != nil {
+		return err
+	}
+	return ctx.JSON(200, flow)
 }
 
 var _ ServerInterface = (*Controller)(nil)

@@ -12,6 +12,7 @@ type Converter interface {
 	ConvertPostFlowJSONRequestBody(s PostFlowJSONRequestBody) CreateFlowData
 	ConvertSliceFlowListItem(s []FlowListItem) GetFlowJSONBody
 	ConvertFlowDetail(s FlowDetail) GetFlowIdJSONBody
+	ConvertPutFlowJSONRequestBody(s PutFlowIdJSONRequestBody) UpdateFlowData
 }
 
 func TimeToString(t time.Time) string {

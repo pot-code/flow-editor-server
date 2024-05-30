@@ -8,9 +8,19 @@ type ConverterImpl struct{}
 func (c *ConverterImpl) ConvertFlowDetail(source FlowDetail) GetFlowIdJSONBody {
 	var flowGetFlowIdJSONBody GetFlowIdJSONBody
 	flowGetFlowIdJSONBody.CreatedAt = TimeToString(source.CreatedAt)
-	flowGetFlowIdJSONBody.Edges = source.Edges
+	var pString *string
+	if source.Edges != nil {
+		xstring := *source.Edges
+		pString = &xstring
+	}
+	flowGetFlowIdJSONBody.Edges = pString
 	flowGetFlowIdJSONBody.Id = source.Id
-	flowGetFlowIdJSONBody.Nodes = source.Nodes
+	var pString2 *string
+	if source.Nodes != nil {
+		xstring2 := *source.Nodes
+		pString2 = &xstring2
+	}
+	flowGetFlowIdJSONBody.Nodes = pString2
 	flowGetFlowIdJSONBody.Title = source.Title
 	return flowGetFlowIdJSONBody
 }
@@ -30,6 +40,24 @@ func (c *ConverterImpl) ConvertPostFlowJSONRequestBody(source PostFlowJSONReques
 	}
 	flowCreateFlowData.Edges = pString2
 	return flowCreateFlowData
+}
+func (c *ConverterImpl) ConvertPutFlowJSONRequestBody(source PutFlowIdJSONRequestBody) UpdateFlowData {
+	var flowUpdateFlowData UpdateFlowData
+	flowUpdateFlowData.Id = source.Id
+	flowUpdateFlowData.Title = source.Title
+	var pString *string
+	if source.Nodes != nil {
+		xstring := *source.Nodes
+		pString = &xstring
+	}
+	flowUpdateFlowData.Nodes = pString
+	var pString2 *string
+	if source.Edges != nil {
+		xstring2 := *source.Edges
+		pString2 = &xstring2
+	}
+	flowUpdateFlowData.Edges = pString2
+	return flowUpdateFlowData
 }
 func (c *ConverterImpl) ConvertSliceFlowListItem(source []FlowListItem) []FlowListItemRes {
 	var flowFlowListItemResList []FlowListItemRes

@@ -72,12 +72,19 @@ paths:
                 properties: {}
       security:
         - bearer: []
+  /flow/{id}:
     put:
       summary: 更新 flow
       deprecated: false
       description: ''
       tags: []
-      parameters: []
+      parameters:
+        - name: id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: integer
       requestBody:
         content:
           application/json:
@@ -85,15 +92,15 @@ paths:
               properties:
                 nodes:
                   type: string
+                  nullable: true
                 edges:
                   type: string
+                  nullable: true
                 title:
                   type: string
                 id:
-                  type: string
+                  type: integer
               required:
-                - nodes
-                - edges
                 - title
                 - id
               type: object
@@ -107,7 +114,6 @@ paths:
                 properties: {}
       security:
         - bearer: []
-  /flow/{id}:
     delete:
       summary: 删除 flow
       deprecated: false
@@ -154,16 +160,16 @@ paths:
                   type: string
                 nodes:
                   type: string
+                  nullable: true
                 edges:
                   type: string
+                  nullable: true
                 created_at:
                   type: string
               required:
-                - nodes
-                - edges
                 - title
-                - created_at
                 - id
+                - created_at
       responses:
         '200':
           description: 成功
