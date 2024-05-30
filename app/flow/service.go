@@ -29,7 +29,11 @@ func (s *Service) CreateFlow(flow *CreateFlowData) error {
 	if err := flow.Validate(); err != nil {
 		return err
 	}
-	return s.db.Model(&FlowModel{}).Create(flow).Error
+	return s.db.Create(&FlowModel{
+		Title: flow.Title,
+		Nodes: flow.Nodes,
+		Edges: flow.Edges,
+	}).Error
 }
 
 func (s *Service) GetFlow(id string) (*FlowDetail, error) {
