@@ -71,6 +71,7 @@ func main() {
 	server.Use(middleware.OauthInterceptor(zitadel))
 
 	flow.RegisterHandlers(server, flow.NewController(flow.NewService(db)))
+	account.RegisterHandlers(server, account.NewController(db))
 
 	log.Fatal().Err(server.Start(":3000")).Msg("")
 }

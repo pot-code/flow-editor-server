@@ -1,0 +1,5 @@
+package: account
+generate:
+  echo-server: true
+  models: true
+output: ../../app/account/api_gen.go

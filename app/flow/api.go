@@ -6,7 +6,7 @@ import "github.com/labstack/echo/v4"
 
 type Controller struct {
 	s *Service
-	c *ConverterImpl
+	c Converter
 }
 
 func NewController(s *Service) *Controller {
