@@ -15,15 +15,12 @@ const (
 	BearerScopes = "bearer.Scopes"
 )
 
-// FlowListItemRes defines model for FlowListItemRes.
-type FlowListItemRes struct {
+// FlowListObject defines model for FlowListObject.
+type FlowListObject struct {
 	CreatedAt string `json:"created_at"`
 	Id        int    `json:"id"`
 	Title     string `json:"title"`
 }
-
-// GetFlowJSONBody defines parameters for GetFlow.
-type GetFlowJSONBody = []FlowListItemRes
 
 // PostFlowJSONBody defines parameters for PostFlow.
 type PostFlowJSONBody struct {
@@ -48,9 +45,6 @@ type PutFlowIdJSONBody struct {
 	Nodes *string `json:"nodes"`
 	Title string  `json:"title"`
 }
-
-// GetFlowJSONRequestBody defines body for GetFlow for application/json ContentType.
-type GetFlowJSONRequestBody = GetFlowJSONBody
 
 // PostFlowJSONRequestBody defines body for PostFlow for application/json ContentType.
 type PostFlowJSONRequestBody PostFlowJSONBody

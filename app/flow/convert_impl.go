@@ -59,20 +59,20 @@ func (c *ConverterImpl) ConvertPutFlowJSONRequestBody(source PutFlowIdJSONReques
 	flowUpdateFlowData.Edges = pString2
 	return flowUpdateFlowData
 }
-func (c *ConverterImpl) ConvertSliceFlowListItem(source []FlowListItem) []FlowListItemRes {
-	var flowFlowListItemResList []FlowListItemRes
+func (c *ConverterImpl) ConvertSliceFlowListItem(source []FlowListItem) []FlowListObject {
+	var flowFlowListObjectList []FlowListObject
 	if source != nil {
-		flowFlowListItemResList = make([]FlowListItemRes, len(source))
+		flowFlowListObjectList = make([]FlowListObject, len(source))
 		for i := 0; i < len(source); i++ {
-			flowFlowListItemResList[i] = c.flowFlowListItemToFlowFlowListItemRes(source[i])
+			flowFlowListObjectList[i] = c.flowFlowListItemToFlowFlowListObject(source[i])
 		}
 	}
-	return flowFlowListItemResList
+	return flowFlowListObjectList
 }
-func (c *ConverterImpl) flowFlowListItemToFlowFlowListItemRes(source FlowListItem) FlowListItemRes {
-	var flowFlowListItemRes FlowListItemRes
-	flowFlowListItemRes.CreatedAt = TimeToString(source.CreatedAt)
-	flowFlowListItemRes.Id = source.Id
-	flowFlowListItemRes.Title = source.Title
-	return flowFlowListItemRes
+func (c *ConverterImpl) flowFlowListItemToFlowFlowListObject(source FlowListItem) FlowListObject {
+	var flowFlowListObject FlowListObject
+	flowFlowListObject.CreatedAt = TimeToString(source.CreatedAt)
+	flowFlowListObject.Id = source.Id
+	flowFlowListObject.Title = source.Title
+	return flowFlowListObject
 }

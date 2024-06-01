@@ -12,32 +12,15 @@ paths:
       description: ''
       tags: []
       parameters: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                properties:
-                  title:
-                    type: string
-                  created_at:
-                    type: string
-                  id:
-                    type: integer
-                required:
-                  - title
-                  - created_at
-                  - id
-                $ref: '#/components/schemas/FlowListItemRes'
       responses:
         '200':
           description: 成功
           content:
             application/json:
               schema:
-                type: object
-                properties: {}
+                type: array
+                items:
+                  $ref: '#/components/schemas/FlowListObject'
       security:
         - bearer: []
     post:
@@ -182,7 +165,7 @@ paths:
         - bearer: []
 components:
   schemas:
-    FlowListItemRes:
+    FlowListObject:
       properties:
         title:
           type: string

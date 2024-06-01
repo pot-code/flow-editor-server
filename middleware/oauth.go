@@ -1,0 +1,33 @@
+package middleware
+
+import (
+	"errors"
+	"net/http"
+
+	"github.com/labstack/echo/v4"
+	"github.com/rs/zerolog/log"
+	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
+)
+
+func OauthInterceptor[T authorization.Ctx](authorizer *authorization.Authorizer[T], options ...authorization.CheckOption) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			ctx, err := authorizer.CheckAuthorization(c.Request().Context(), c.Request().Header.Get(authorization.HeaderName), options...)
+			if err != nil {
+				if errors.Is(err, &authorization.UnauthorizedErr{}) {
+					return c.JSON(http.StatusUnauthorized, echo.Map{
+						"error": err.Error(),
+					})
+				}
+				return c.JSON(http.StatusForbidden, echo.Map{
+					"error": err.Error(),
+				})
+			}
+			log.Debug().
+				Str("user_id", ctx.UserID()).
+				Msg("authenticated")
+			c.SetRequest(c.Request().WithContext(authorization.WithAuthContext(c.Request().Context(), ctx)))
+			return next(c)
+		}
+	}
+}

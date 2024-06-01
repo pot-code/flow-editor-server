@@ -10,7 +10,7 @@ import "time"
 // goverter:extend TimeToString
 type Converter interface {
 	ConvertPostFlowJSONRequestBody(s PostFlowJSONRequestBody) CreateFlowData
-	ConvertSliceFlowListItem(s []FlowListItem) GetFlowJSONBody
+	ConvertSliceFlowListItem(s []FlowListItem) []FlowListObject
 	ConvertFlowDetail(s FlowDetail) GetFlowIdJSONBody
 	ConvertPutFlowJSONRequestBody(s PutFlowIdJSONRequestBody) UpdateFlowData
 }
