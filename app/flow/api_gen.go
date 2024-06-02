@@ -15,6 +15,15 @@ const (
 	BearerScopes = "bearer.Scopes"
 )
 
+// FlowDetailObject defines model for FlowDetailObject.
+type FlowDetailObject struct {
+	CreatedAt string  `json:"created_at"`
+	Edges     *string `json:"edges"`
+	Id        int     `json:"id"`
+	Nodes     *string `json:"nodes"`
+	Title     string  `json:"title"`
+}
+
 // FlowListObject defines model for FlowListObject.
 type FlowListObject struct {
 	CreatedAt string `json:"created_at"`
@@ -29,31 +38,14 @@ type PostFlowJSONBody struct {
 	Title string  `json:"title"`
 }
 
-// GetFlowIdJSONBody defines parameters for GetFlowId.
-type GetFlowIdJSONBody struct {
-	CreatedAt string  `json:"created_at"`
-	Edges     *string `json:"edges"`
-	Id        int     `json:"id"`
-	Nodes     *string `json:"nodes"`
-	Title     string  `json:"title"`
-}
-
-// PutFlowIdJSONBody defines parameters for PutFlowId.
-type PutFlowIdJSONBody struct {
-	Edges *string `json:"edges"`
-	Id    int     `json:"id"`
-	Nodes *string `json:"nodes"`
-	Title string  `json:"title"`
-}
-
 // PostFlowJSONRequestBody defines body for PostFlow for application/json ContentType.
 type PostFlowJSONRequestBody PostFlowJSONBody
 
 // GetFlowIdJSONRequestBody defines body for GetFlowId for application/json ContentType.
-type GetFlowIdJSONRequestBody GetFlowIdJSONBody
+type GetFlowIdJSONRequestBody = FlowDetailObject
 
 // PutFlowIdJSONRequestBody defines body for PutFlowId for application/json ContentType.
-type PutFlowIdJSONRequestBody PutFlowIdJSONBody
+type PutFlowIdJSONRequestBody = FlowDetailObject
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {

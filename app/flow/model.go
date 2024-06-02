@@ -9,6 +9,7 @@ type FlowModel struct {
 	Title string
 	Nodes *string `gorm:"default:null"`
 	Edges *string `gorm:"default:null"`
+	Owner string
 }
 
 func (g *FlowModel) TableName() string {

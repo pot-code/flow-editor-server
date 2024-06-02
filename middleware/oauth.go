@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/rs/zerolog/log"
 	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
 )
 
@@ -23,9 +22,6 @@ func OauthInterceptor[T authorization.Ctx](authorizer *authorization.Authorizer[
 					"error": err.Error(),
 				})
 			}
-			log.Debug().
-				Str("user_id", ctx.UserID()).
-				Msg("authenticated")
 			c.SetRequest(c.Request().WithContext(authorization.WithAuthContext(c.Request().Context(), ctx)))
 			return next(c)
 		}

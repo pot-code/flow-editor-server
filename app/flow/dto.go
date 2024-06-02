@@ -10,11 +10,13 @@ type CreateFlowData struct {
 	Title string  `json:"title"`
 	Nodes *string `json:"nodes"`
 	Edges *string `json:"edges"`
+	Owner string  `json:"owner"`
 }
 
 func (c *CreateFlowData) Validate() error {
 	return validation.ValidateStruct(c,
 		validation.Field(&c.Title, validation.Required, validation.Length(1, 32)),
+		validation.Field(&c.Owner, validation.Required),
 	)
 }
 
@@ -24,23 +26,17 @@ type FlowListItem struct {
 	CreatedAt time.Time
 }
 
-type FlowDetail struct {
-	Id        int
-	Title     string
-	Nodes     *string
-	Edges     *string
-	CreatedAt time.Time
-}
-
 type UpdateFlowData struct {
 	Id    int     `json:"id"`
 	Title string  `json:"title"`
 	Nodes *string `json:"nodes"`
 	Edges *string `json:"edges"`
+	Owner string  `json:"owner"`
 }
 
 func (c *UpdateFlowData) Validate() error {
 	return validation.ValidateStruct(c,
 		validation.Field(&c.Title, validation.Required, validation.Length(1, 32)),
+		validation.Field(&c.Owner, validation.Required),
 	)
 }

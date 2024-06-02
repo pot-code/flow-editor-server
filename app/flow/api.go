@@ -2,7 +2,10 @@
 
 package flow
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
+)
 
 type Controller struct {
 	s *Service
@@ -18,7 +21,8 @@ func NewController(s *Service) *Controller {
 
 // DeleteFlowId implements ServerInterface.
 func (c *Controller) DeleteFlowId(ctx echo.Context, id string) error {
-	if err := c.s.DeleteFlow(id); err != nil {
+	o := authorization.Context[authorization.Ctx](ctx.Request().Context())
+	if err := c.s.DeleteFlow(id, o.UserID()); err != nil {
 		return err
 	}
 	return ctx.NoContent(204)
@@ -26,7 +30,8 @@ func (c *Controller) DeleteFlowId(ctx echo.Context, id string) error {
 
 // GetFlow implements ServerInterface.
 func (c *Controller) GetFlow(ctx echo.Context) error {
-	flows, err := c.s.ListFlows()
+	o := authorization.Context[authorization.Ctx](ctx.Request().Context())
+	flows, err := c.s.ListFlows(o.UserID())
 	if err != nil {
 		return err
 	}
@@ -35,11 +40,13 @@ func (c *Controller) GetFlow(ctx echo.Context) error {
 
 // GetFlowId implements ServerInterface.
 func (c *Controller) GetFlowId(ctx echo.Context, id string) error {
-	flow, err := c.s.GetFlow(id)
+	o := authorization.Context[authorization.Ctx](ctx.Request().Context())
+
+	flow, err := c.s.GetFlow(id, o.UserID())
 	if err != nil {
 		return err
 	}
-	return ctx.JSON(200, c.c.ConvertFlowDetail(*flow))
+	return ctx.JSON(200, c.c.ConvertFlowModel(*flow))
 }
 
 // PostFlow implements ServerInterface.
@@ -48,11 +55,15 @@ func (c *Controller) PostFlow(ctx echo.Context) error {
 	if err := ctx.Bind(&payload); err != nil {
 		return err
 	}
-	flow := c.c.ConvertPostFlowJSONRequestBody(payload)
-	if err := c.s.CreateFlow(&flow); err != nil {
+
+	o := authorization.Context[authorization.Ctx](ctx.Request().Context())
+	data := c.c.ConvertPostFlowJSONRequestBody(payload)
+	data.Owner = o.UserID()
+	m, err := c.s.CreateFlow(&data)
+	if err != nil {
 		return err
 	}
-	return ctx.JSON(201, flow)
+	return ctx.JSON(201, c.c.ConvertFlowModel(*m))
 }
 
 // PutFlowId implements ServerInterface.
@@ -61,11 +72,15 @@ func (c *Controller) PutFlowId(ctx echo.Context, id int) error {
 	if err := ctx.Bind(&payload); err != nil {
 		return err
 	}
-	flow := c.c.ConvertPutFlowJSONRequestBody(payload)
-	if err := c.s.UpdateFlow(id, &flow); err != nil {
+
+	o := authorization.Context[authorization.Ctx](ctx.Request().Context())
+	data := c.c.ConvertPutFlowJSONRequestBody(payload)
+	data.Owner = o.UserID()
+	m, err := c.s.UpdateFlow(id, &data)
+	if err != nil {
 		return err
 	}
-	return ctx.JSON(200, flow)
+	return ctx.JSON(200, c.c.ConvertFlowModel(*m))
 }
 
 var _ ServerInterface = (*Controller)(nil)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"openapi-go-demo/app/account"
 	"openapi-go-demo/app/flow"
 	"openapi-go-demo/middleware"
@@ -54,6 +55,13 @@ func main() {
 
 	server := echo.New()
 	server.HTTPErrorHandler = func(err error, c echo.Context) {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(404, echo.Map{
+				"message": err.Error(),
+			})
+			return
+		}
+
 		switch te := err.(type) {
 		case *echo.HTTPError:
 			c.JSON(te.Code, echo.Map{

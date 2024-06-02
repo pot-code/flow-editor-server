@@ -5,24 +5,24 @@ package flow
 
 type ConverterImpl struct{}
 
-func (c *ConverterImpl) ConvertFlowDetail(source FlowDetail) GetFlowIdJSONBody {
-	var flowGetFlowIdJSONBody GetFlowIdJSONBody
-	flowGetFlowIdJSONBody.CreatedAt = TimeToString(source.CreatedAt)
+func (c *ConverterImpl) ConvertFlowModel(source FlowModel) FlowDetailObject {
+	var flowFlowDetailObject FlowDetailObject
+	flowFlowDetailObject.CreatedAt = TimeToString(source.Model.CreatedAt)
 	var pString *string
 	if source.Edges != nil {
 		xstring := *source.Edges
 		pString = &xstring
 	}
-	flowGetFlowIdJSONBody.Edges = pString
-	flowGetFlowIdJSONBody.Id = source.Id
+	flowFlowDetailObject.Edges = pString
+	flowFlowDetailObject.Id = UintToInt(source.Model.ID)
 	var pString2 *string
 	if source.Nodes != nil {
 		xstring2 := *source.Nodes
 		pString2 = &xstring2
 	}
-	flowGetFlowIdJSONBody.Nodes = pString2
-	flowGetFlowIdJSONBody.Title = source.Title
-	return flowGetFlowIdJSONBody
+	flowFlowDetailObject.Nodes = pString2
+	flowFlowDetailObject.Title = source.Title
+	return flowFlowDetailObject
 }
 func (c *ConverterImpl) ConvertPostFlowJSONRequestBody(source PostFlowJSONRequestBody) CreateFlowData {
 	var flowCreateFlowData CreateFlowData
@@ -41,7 +41,7 @@ func (c *ConverterImpl) ConvertPostFlowJSONRequestBody(source PostFlowJSONReques
 	flowCreateFlowData.Edges = pString2
 	return flowCreateFlowData
 }
-func (c *ConverterImpl) ConvertPutFlowJSONRequestBody(source PutFlowIdJSONRequestBody) UpdateFlowData {
+func (c *ConverterImpl) ConvertPutFlowJSONRequestBody(source FlowDetailObject) UpdateFlowData {
 	var flowUpdateFlowData UpdateFlowData
 	flowUpdateFlowData.Id = source.Id
 	flowUpdateFlowData.Title = source.Title
