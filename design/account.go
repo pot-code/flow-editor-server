@@ -5,9 +5,10 @@ import (
 	. "goa.design/goa/v3/dsl"
 )
 
-var AccountOutput = Type("AccountOutput", func() {
+var AccountInfo = Type("AccountInfo", func() {
 	Attribute("activated", Boolean)
 	Attribute("membership", Int)
+	Required("activated", "membership")
 })
 
 var _ = Service("account", func() {
@@ -17,7 +18,7 @@ var _ = Service("account", func() {
 	})
 	Method("getAccount", func() {
 		Description("Get account")
-		Result(AccountOutput)
+		Result(AccountInfo)
 		HTTP(func() {
 			GET("/")
 		})

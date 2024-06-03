@@ -14,7 +14,7 @@ import (
 // Account service
 type Service interface {
 	// Get account
-	GetAccount(context.Context) (res *AccountOutput, err error)
+	GetAccount(context.Context) (res *AccountInfo, err error)
 }
 
 // APIName is the name of the API as defined in the design.
@@ -33,8 +33,8 @@ const ServiceName = "account"
 // MethodKey key.
 var MethodNames = [1]string{"getAccount"}
 
-// AccountOutput is the result type of the account service getAccount method.
-type AccountOutput struct {
-	Activated  *bool
-	Membership *int
+// AccountInfo is the result type of the account service getAccount method.
+type AccountInfo struct {
+	Activated  bool
+	Membership int
 }

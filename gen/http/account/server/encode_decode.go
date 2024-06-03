@@ -19,7 +19,7 @@ import (
 // account getAccount endpoint.
 func EncodeGetAccountResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, any) error {
 	return func(ctx context.Context, w http.ResponseWriter, v any) error {
-		res, _ := v.(*account.AccountOutput)
+		res, _ := v.(*account.AccountInfo)
 		enc := encoder(ctx, w)
 		body := NewGetAccountResponseBody(res)
 		w.WriteHeader(http.StatusOK)

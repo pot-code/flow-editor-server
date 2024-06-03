@@ -19,13 +19,13 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/AccountOutput'
+                                $ref: '#/components/schemas/AccountInfo'
                             example:
                                 activated: false
                                 membership: 8587673403232436966
 components:
     schemas:
-        AccountOutput:
+        AccountInfo:
             type: object
             properties:
                 activated:
@@ -38,6 +38,9 @@ components:
             example:
                 activated: false
                 membership: 852299104535126489
+            required:
+                - activated
+                - membership
 tags:
     - name: account
       description: Account service

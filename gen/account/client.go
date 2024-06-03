@@ -26,11 +26,11 @@ func NewClient(getAccount goa.Endpoint) *Client {
 }
 
 // GetAccount calls the "getAccount" endpoint of the "account" service.
-func (c *Client) GetAccount(ctx context.Context) (res *AccountOutput, err error) {
+func (c *Client) GetAccount(ctx context.Context) (res *AccountInfo, err error) {
 	var ires any
 	ires, err = c.GetAccountEndpoint(ctx, nil)
 	if err != nil {
 		return
 	}
-	return ires.(*AccountOutput), nil
+	return ires.(*AccountInfo), nil
 }

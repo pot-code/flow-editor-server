@@ -24,6 +24,9 @@ paths:
                     description: OK response.
                     schema:
                         $ref: '#/definitions/AccountGetAccountResponseBody'
+                        required:
+                            - activated
+                            - membership
             schemes:
                 - http
 definitions:
@@ -41,3 +44,6 @@ definitions:
         example:
             activated: true
             membership: 7309928978923691591
+        required:
+            - activated
+            - membership

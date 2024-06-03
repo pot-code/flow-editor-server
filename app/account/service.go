@@ -17,7 +17,7 @@ type service struct {
 }
 
 // GetAccount implements account.Service.
-func (s *service) GetAccount(ctx context.Context) (res *account.AccountOutput, err error) {
+func (s *service) GetAccount(ctx context.Context) (res *account.AccountInfo, err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
 
 	var a AccountModel

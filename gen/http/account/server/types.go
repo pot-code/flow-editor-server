@@ -14,13 +14,13 @@ import (
 // GetAccountResponseBody is the type of the "account" service "getAccount"
 // endpoint HTTP response body.
 type GetAccountResponseBody struct {
-	Activated  *bool `form:"activated,omitempty" json:"activated,omitempty" xml:"activated,omitempty"`
-	Membership *int  `form:"membership,omitempty" json:"membership,omitempty" xml:"membership,omitempty"`
+	Activated  bool `form:"activated" json:"activated" xml:"activated"`
+	Membership int  `form:"membership" json:"membership" xml:"membership"`
 }
 
 // NewGetAccountResponseBody builds the HTTP response body from the result of
 // the "getAccount" endpoint of the "account" service.
-func NewGetAccountResponseBody(res *account.AccountOutput) *GetAccountResponseBody {
+func NewGetAccountResponseBody(res *account.AccountInfo) *GetAccountResponseBody {
 	body := &GetAccountResponseBody{
 		Activated:  res.Activated,
 		Membership: res.Membership,
