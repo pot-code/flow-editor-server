@@ -20,7 +20,7 @@ tasks:
       - "app/**/converter.go"
   gen:swag:
     cmds:
-      - swag init -g ./cmd/http/main.go -q
+      - swag init -g ./cmd/http/main.go -q --outputTypes go
     silent: true
     sources:
       - "app/**/api.go"
