@@ -5,7 +5,7 @@ import (
 )
 
 type CreateFlowInput struct {
-	Title string  `json:"title"`
+	Title string  `json:"title" validate:"required"`
 	Nodes *string `json:"nodes"`
 	Edges *string `json:"edges"`
 	Owner string  `json:"owner"`
@@ -19,14 +19,14 @@ func (c *CreateFlowInput) Validate() error {
 }
 
 type FlowListObjectOutput struct {
-	Id        int    `json:"id"`
-	Title     string `json:"title"`
-	CreatedAt string `json:"created_at"`
+	Id        int    `json:"id" validate:"required"`
+	Title     string `json:"title" validate:"required"`
+	CreatedAt string `json:"created_at" validate:"required"`
 }
 
 type UpdateFlowInput struct {
-	Id    int     `json:"id"`
-	Title string  `json:"title"`
+	Id    int     `json:"id" validate:"required"`
+	Title string  `json:"title" validate:"required"`
 	Nodes *string `json:"nodes"`
 	Edges *string `json:"edges"`
 	Owner string  `json:"owner"`
@@ -40,9 +40,9 @@ func (c *UpdateFlowInput) Validate() error {
 }
 
 type FlowDetailOutput struct {
-	Id        int     `json:"id"`
-	Title     string  `json:"title"`
+	Id        int     `json:"id" validate:"required"`
+	Title     string  `json:"title" validate:"required"`
 	Nodes     *string `json:"nodes"`
 	Edges     *string `json:"edges"`
-	CreatedAt string  `json:"created_at"`
+	CreatedAt string  `json:"created_at" validate:"required"`
 }

@@ -5,6 +5,9 @@ definitions:
         type: boolean
       membership:
         type: integer
+    required:
+    - activated
+    - membership
     type: object
   flow.CreateFlowInput:
     properties:
@@ -16,10 +19,12 @@ definitions:
         type: string
       title:
         type: string
+    required:
+    - title
     type: object
   flow.FlowDetailOutput:
     properties:
-      createdAt:
+      created_at:
         type: string
       edges:
         type: string
@@ -29,15 +34,23 @@ definitions:
         type: string
       title:
         type: string
+    required:
+    - created_at
+    - id
+    - title
     type: object
   flow.FlowListObjectOutput:
     properties:
-      createdAt:
+      created_at:
         type: string
       id:
         type: integer
       title:
         type: string
+    required:
+    - created_at
+    - id
+    - title
     type: object
   flow.UpdateFlowInput:
     properties:
@@ -51,6 +64,9 @@ definitions:
         type: string
       title:
         type: string
+    required:
+    - id
+    - title
     type: object
 info:
   contact: {}

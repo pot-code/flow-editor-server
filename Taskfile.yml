@@ -24,6 +24,7 @@ tasks:
     silent: true
     sources:
       - "app/**/api.go"
+      - "app/**/dto.go"
   swag:format:
     cmds:
       - swag fmt

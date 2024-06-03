@@ -180,6 +180,10 @@ const docTemplate = `{
     "definitions": {
         "account.AccountOutput": {
             "type": "object",
+            "required": [
+                "activated",
+                "membership"
+            ],
             "properties": {
                 "activated": {
                     "type": "boolean"
@@ -191,6 +195,9 @@ const docTemplate = `{
         },
         "flow.CreateFlowInput": {
             "type": "object",
+            "required": [
+                "title"
+            ],
             "properties": {
                 "edges": {
                     "type": "string"
@@ -208,8 +215,13 @@ const docTemplate = `{
         },
         "flow.FlowDetailOutput": {
             "type": "object",
+            "required": [
+                "created_at",
+                "id",
+                "title"
+            ],
             "properties": {
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "edges": {
@@ -228,8 +240,13 @@ const docTemplate = `{
         },
         "flow.FlowListObjectOutput": {
             "type": "object",
+            "required": [
+                "created_at",
+                "id",
+                "title"
+            ],
             "properties": {
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "id": {
@@ -242,6 +259,10 @@ const docTemplate = `{
         },
         "flow.UpdateFlowInput": {
             "type": "object",
+            "required": [
+                "id",
+                "title"
+            ],
             "properties": {
                 "edges": {
                     "type": "string"
