@@ -8,6 +8,23 @@ tasks:
       - go run ./cmd/http
     silent: true
   gen:
+    silent: true
+    deps:
+      - gen:converter
+      - gen:swag
+  gen:converter:
     cmds:
       - go generate ./...
+    silent: true
+    sources:
+      - "app/**/converter.go"
+  gen:swag:
+    cmds:
+      - swag init -g ./cmd/http/main.go -q
+    silent: true
+    sources:
+      - "app/**/api.go"
+  swag:format:
+    cmds:
+      - swag fmt
     silent: true

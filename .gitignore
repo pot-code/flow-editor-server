@@ -28,5 +28,6 @@ tmp
 .vscode
 *.db
 .DS_Store
+.task
 
 key.json

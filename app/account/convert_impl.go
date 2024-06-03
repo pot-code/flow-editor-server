@@ -5,9 +5,9 @@ package account
 
 type ConverterImpl struct{}
 
-func (c *ConverterImpl) ConvertAccountModel(source AccountModel) AccountObject {
-	var accountAccountObject AccountObject
-	accountAccountObject.Activated = source.Activated
-	accountAccountObject.Membership = int(source.Membership)
-	return accountAccountObject
+func (c *ConverterImpl) ConvertAccountModel(source AccountModel) AccountOutput {
+	var accountAccountOutput AccountOutput
+	accountAccountOutput.Activated = source.Activated
+	accountAccountOutput.Membership = int(source.Membership)
+	return accountAccountOutput
 }

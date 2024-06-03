@@ -15,8 +15,14 @@ type Controller struct {
 	c  Converter
 }
 
-// GetAccount implements ServerInterface.
-func (c *Controller) GetAccount(ctx echo.Context) error {
+// getAccount
+//
+//	@Tags		account
+//	@Summary	get account
+//	@Produce	json
+//	@Success	200	{object}	AccountOutput
+//	@Router		/account [get]
+func (c *Controller) getAccount(ctx echo.Context) error {
 	auth := authorization.Context[authorization.Ctx](ctx.Request().Context())
 
 	var a AccountModel
@@ -37,7 +43,10 @@ func (c *Controller) GetAccount(ctx echo.Context) error {
 	return ctx.JSON(200, c.c.ConvertAccountModel(a))
 }
 
-var _ ServerInterface = (*Controller)(nil)
+func (c *Controller) RegisterHandlers(e *echo.Echo) {
+	r := e.Group("/account")
+	r.GET("", c.getAccount)
+}
 
 func NewController(db *gorm.DB) *Controller {
 	return &Controller{db: db, c: &ConverterImpl{}}

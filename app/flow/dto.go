@@ -1,32 +1,30 @@
 package flow
 
 import (
-	"time"
-
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
-type CreateFlowData struct {
+type CreateFlowInput struct {
 	Title string  `json:"title"`
 	Nodes *string `json:"nodes"`
 	Edges *string `json:"edges"`
 	Owner string  `json:"owner"`
 }
 
-func (c *CreateFlowData) Validate() error {
+func (c *CreateFlowInput) Validate() error {
 	return validation.ValidateStruct(c,
 		validation.Field(&c.Title, validation.Required, validation.Length(1, 32)),
 		validation.Field(&c.Owner, validation.Required),
 	)
 }
 
-type FlowListItem struct {
-	Id        int
-	Title     string
-	CreatedAt time.Time
+type FlowListObjectOutput struct {
+	Id        int    `json:"id"`
+	Title     string `json:"title"`
+	CreatedAt string `json:"created_at"`
 }
 
-type UpdateFlowData struct {
+type UpdateFlowInput struct {
 	Id    int     `json:"id"`
 	Title string  `json:"title"`
 	Nodes *string `json:"nodes"`
@@ -34,9 +32,17 @@ type UpdateFlowData struct {
 	Owner string  `json:"owner"`
 }
 
-func (c *UpdateFlowData) Validate() error {
+func (c *UpdateFlowInput) Validate() error {
 	return validation.ValidateStruct(c,
 		validation.Field(&c.Title, validation.Required, validation.Length(1, 32)),
 		validation.Field(&c.Owner, validation.Required),
 	)
+}
+
+type FlowDetailOutput struct {
+	Id        int     `json:"id"`
+	Title     string  `json:"title"`
+	Nodes     *string `json:"nodes"`
+	Edges     *string `json:"edges"`
+	CreatedAt string  `json:"created_at"`
 }

@@ -5,74 +5,39 @@ package flow
 
 type ConverterImpl struct{}
 
-func (c *ConverterImpl) ConvertFlowModel(source FlowModel) FlowDetailObject {
-	var flowFlowDetailObject FlowDetailObject
-	flowFlowDetailObject.CreatedAt = TimeToString(source.Model.CreatedAt)
-	var pString *string
-	if source.Edges != nil {
-		xstring := *source.Edges
-		pString = &xstring
-	}
-	flowFlowDetailObject.Edges = pString
-	flowFlowDetailObject.Id = UintToInt(source.Model.ID)
-	var pString2 *string
-	if source.Nodes != nil {
-		xstring2 := *source.Nodes
-		pString2 = &xstring2
-	}
-	flowFlowDetailObject.Nodes = pString2
-	flowFlowDetailObject.Title = source.Title
-	return flowFlowDetailObject
-}
-func (c *ConverterImpl) ConvertPostFlowJSONRequestBody(source PostFlowJSONRequestBody) CreateFlowData {
-	var flowCreateFlowData CreateFlowData
-	flowCreateFlowData.Title = source.Title
+func (c *ConverterImpl) ConvertFlowModel(source FlowModel) FlowDetailOutput {
+	var flowFlowDetailOutput FlowDetailOutput
+	flowFlowDetailOutput.Id = UintToInt(source.Model.ID)
+	flowFlowDetailOutput.Title = source.Title
 	var pString *string
 	if source.Nodes != nil {
 		xstring := *source.Nodes
 		pString = &xstring
 	}
-	flowCreateFlowData.Nodes = pString
+	flowFlowDetailOutput.Nodes = pString
 	var pString2 *string
 	if source.Edges != nil {
 		xstring2 := *source.Edges
 		pString2 = &xstring2
 	}
-	flowCreateFlowData.Edges = pString2
-	return flowCreateFlowData
+	flowFlowDetailOutput.Edges = pString2
+	flowFlowDetailOutput.CreatedAt = TimeToString(source.Model.CreatedAt)
+	return flowFlowDetailOutput
 }
-func (c *ConverterImpl) ConvertPutFlowJSONRequestBody(source FlowDetailObject) UpdateFlowData {
-	var flowUpdateFlowData UpdateFlowData
-	flowUpdateFlowData.Id = source.Id
-	flowUpdateFlowData.Title = source.Title
-	var pString *string
-	if source.Nodes != nil {
-		xstring := *source.Nodes
-		pString = &xstring
-	}
-	flowUpdateFlowData.Nodes = pString
-	var pString2 *string
-	if source.Edges != nil {
-		xstring2 := *source.Edges
-		pString2 = &xstring2
-	}
-	flowUpdateFlowData.Edges = pString2
-	return flowUpdateFlowData
-}
-func (c *ConverterImpl) ConvertSliceFlowListItem(source []FlowListItem) []FlowListObject {
-	var flowFlowListObjectList []FlowListObject
+func (c *ConverterImpl) ConvertFlowModels(source []FlowModel) []FlowListObjectOutput {
+	var flowFlowListObjectOutputList []FlowListObjectOutput
 	if source != nil {
-		flowFlowListObjectList = make([]FlowListObject, len(source))
+		flowFlowListObjectOutputList = make([]FlowListObjectOutput, len(source))
 		for i := 0; i < len(source); i++ {
-			flowFlowListObjectList[i] = c.flowFlowListItemToFlowFlowListObject(source[i])
+			flowFlowListObjectOutputList[i] = c.ConverterFlowModel(source[i])
 		}
 	}
-	return flowFlowListObjectList
+	return flowFlowListObjectOutputList
 }
-func (c *ConverterImpl) flowFlowListItemToFlowFlowListObject(source FlowListItem) FlowListObject {
-	var flowFlowListObject FlowListObject
-	flowFlowListObject.CreatedAt = TimeToString(source.CreatedAt)
-	flowFlowListObject.Id = source.Id
-	flowFlowListObject.Title = source.Title
-	return flowFlowListObject
+func (c *ConverterImpl) ConverterFlowModel(source FlowModel) FlowListObjectOutput {
+	var flowFlowListObjectOutput FlowListObjectOutput
+	flowFlowListObjectOutput.Id = UintToInt(source.Model.ID)
+	flowFlowListObjectOutput.Title = source.Title
+	flowFlowListObjectOutput.CreatedAt = TimeToString(source.Model.CreatedAt)
+	return flowFlowListObjectOutput
 }

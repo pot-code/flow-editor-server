@@ -3,16 +3,19 @@ package main
 import (
 	"context"
 	"errors"
-	"openapi-go-demo/app/account"
-	"openapi-go-demo/app/flow"
-	"openapi-go-demo/middleware"
+	"flow-editor-server/app/account"
+	"flow-editor-server/app/flow"
+	_ "flow-editor-server/docs"
+	"flow-editor-server/middleware"
 	"os"
+	"strings"
 
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
+	swag "github.com/swaggo/echo-swagger"
 	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
 	"github.com/zitadel/zitadel-go/v3/pkg/authorization/oauth"
 	"github.com/zitadel/zitadel-go/v3/pkg/zitadel"
@@ -21,6 +24,9 @@ import (
 	"gorm.io/gorm/logger"
 )
 
+// @title			Flow Editor
+// @version		1.0
+// @description	Flow Editor APIs
 func main() {
 	log.Logger.Level(zerolog.DebugLevel)
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
@@ -76,10 +82,19 @@ func main() {
 			})
 		}
 	}
-	server.Use(middleware.OauthInterceptor(zitadel))
+	server.Use(middleware.OauthInterceptor(zitadel, func(c echo.Context) bool {
+		if strings.HasPrefix(c.Path(), "/swagger") {
+			return true
+		}
+		if strings.HasPrefix(c.Path(), "/healthz") {
+			return true
+		}
+		return false
+	}))
+	server.GET("/swagger/*", swag.WrapHandler)
 
-	flow.RegisterHandlers(server, flow.NewController(flow.NewService(db)))
-	account.RegisterHandlers(server, account.NewController(db))
+	flow.NewController(flow.NewService(db)).RegisterHandlers(server)
+	account.NewController(db).RegisterHandlers(server)
 
 	log.Fatal().Err(server.Start(viper.GetString("HTTP_PORT"))).Msg("")
 }

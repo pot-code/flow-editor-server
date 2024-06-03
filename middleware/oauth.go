@@ -8,9 +8,13 @@ import (
 	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
 )
 
-func OauthInterceptor[T authorization.Ctx](authorizer *authorization.Authorizer[T], options ...authorization.CheckOption) echo.MiddlewareFunc {
+func OauthInterceptor[T authorization.Ctx](authorizer *authorization.Authorizer[T], skipper func(c echo.Context) bool, options ...authorization.CheckOption) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
+			if skipper(c) {
+				return next(c)
+			}
+
 			ctx, err := authorizer.CheckAuthorization(c.Request().Context(), c.Request().Header.Get(authorization.HeaderName), options...)
 			if err != nil {
 				if errors.Is(err, &authorization.UnauthorizedErr{}) {

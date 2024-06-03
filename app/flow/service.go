@@ -12,7 +12,7 @@ func NewService(db *gorm.DB) *Service {
 	return &Service{db: db}
 }
 
-func (s *Service) CreateFlow(flow *CreateFlowData) (*FlowModel, error) {
+func (s *Service) CreateFlow(flow *CreateFlowInput) (*FlowModel, error) {
 	if err := flow.Validate(); err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (s *Service) DeleteFlow(id string, owner string) error {
 	return s.db.Where("id = ? AND owner = ?", id, owner).Delete(&FlowModel{}).Error
 }
 
-func (s *Service) UpdateFlow(id int, flow *UpdateFlowData) (*FlowModel, error) {
+func (s *Service) UpdateFlow(id string, flow *UpdateFlowInput) (*FlowModel, error) {
 	if err := flow.Validate(); err != nil {
 		return nil, err
 	}
@@ -56,9 +56,9 @@ func (s *Service) UpdateFlow(id int, flow *UpdateFlowData) (*FlowModel, error) {
 	return &model, nil
 }
 
-func (s *Service) ListFlows(owner string) ([]FlowListItem, error) {
-	var flows []FlowListItem
-	if err := s.db.Model(&FlowModel{}).Find(&flows).Error; err != nil {
+func (s *Service) ListFlows(owner string) ([]FlowModel, error) {
+	var flows []FlowModel
+	if err := s.db.Find(&flows, "owner = ?", owner).Error; err != nil {
 		return nil, err
 	}
 	return flows, nil

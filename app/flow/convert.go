@@ -1,21 +1,24 @@
 package flow
 
-import "time"
+import (
+	"time"
+)
 
-//go:generate go run github.com/jmattheis/goverter/cmd/goverter gen .
+//go:generate goverter gen .
 
 // goverter:converter
 // goverter:output:file convert_impl.go
-// goverter:output:package openapi-go-demo/app/flow
+// goverter:output:package flow-editor-server/app/flow
 // goverter:extend TimeToString
 // goverter:extend UintToInt
 type Converter interface {
-	ConvertPostFlowJSONRequestBody(s PostFlowJSONRequestBody) CreateFlowData
-	ConvertSliceFlowListItem(s []FlowListItem) []FlowListObject
-	ConvertPutFlowJSONRequestBody(s PutFlowIdJSONRequestBody) UpdateFlowData
+	ConvertFlowModels(s []FlowModel) []FlowListObjectOutput
 	// goverter:map Model.ID Id
 	// goverter:map Model.CreatedAt CreatedAt
-	ConvertFlowModel(s FlowModel) FlowDetailObject
+	ConvertFlowModel(s FlowModel) FlowDetailOutput
+	// goverter:map Model.ID Id
+	// goverter:map Model.CreatedAt CreatedAt
+	ConverterFlowModel(s FlowModel) FlowListObjectOutput
 }
 
 func TimeToString(t time.Time) string {

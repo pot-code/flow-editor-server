@@ -19,8 +19,16 @@ func NewController(s *Service) *Controller {
 	}
 }
 
-// DeleteFlowId implements ServerInterface.
-func (c *Controller) DeleteFlowId(ctx echo.Context, id string) error {
+// deleteFlow
+//
+//	@Tags		flow
+//	@Summary	delete flow
+//	@Accept		json
+//	@Param		id	path		string	true	"flow id"
+//	@Success	204	{object}	nil
+//	@Router		/flow/{id} [delete]
+func (c *Controller) deleteFlow(ctx echo.Context) error {
+	id := ctx.Param("id")
 	o := authorization.Context[authorization.Ctx](ctx.Request().Context())
 	if err := c.s.DeleteFlow(id, o.UserID()); err != nil {
 		return err
@@ -28,20 +36,33 @@ func (c *Controller) DeleteFlowId(ctx echo.Context, id string) error {
 	return ctx.NoContent(204)
 }
 
-// GetFlow implements ServerInterface.
-func (c *Controller) GetFlow(ctx echo.Context) error {
+// getFlowList
+//
+//	@Tags		flow
+//	@Summary	get flow list
+//	@Produce	json
+//	@Success	200	{array}	FlowListObjectOutput
+//	@Router		/flow [get]
+func (c *Controller) getFlowList(ctx echo.Context) error {
 	o := authorization.Context[authorization.Ctx](ctx.Request().Context())
 	flows, err := c.s.ListFlows(o.UserID())
 	if err != nil {
 		return err
 	}
-	return ctx.JSON(200, c.c.ConvertSliceFlowListItem(flows))
+	return ctx.JSON(200, c.c.ConvertFlowModels(flows))
 }
 
-// GetFlowId implements ServerInterface.
-func (c *Controller) GetFlowId(ctx echo.Context, id string) error {
+// getFlowDetail
+//
+//	@Tags		flow
+//	@Summary	get flow detail
+//	@Produce	json
+//	@Param		id	path		string	true	"flow id"
+//	@Success	200	{object}	FlowDetailOutput
+//	@Router		/flow/{id} [get]
+func (c *Controller) getFlowDetail(ctx echo.Context) error {
+	id := ctx.Param("id")
 	o := authorization.Context[authorization.Ctx](ctx.Request().Context())
-
 	flow, err := c.s.GetFlow(id, o.UserID())
 	if err != nil {
 		return err
@@ -49,38 +70,62 @@ func (c *Controller) GetFlowId(ctx echo.Context, id string) error {
 	return ctx.JSON(200, c.c.ConvertFlowModel(*flow))
 }
 
-// PostFlow implements ServerInterface.
-func (c *Controller) PostFlow(ctx echo.Context) error {
-	var payload PostFlowJSONRequestBody
+// createFlow
+//
+//	@Tags		flow
+//	@Summary	create flow
+//	@Accept		json
+//	@Produce	json
+//	@Param		payload	body		CreateFlowInput	true	"payload"
+//	@Success	201		{object}	FlowDetailOutput
+//	@Router		/flow [post]
+func (c *Controller) createFlow(ctx echo.Context) error {
+	var payload CreateFlowInput
 	if err := ctx.Bind(&payload); err != nil {
 		return err
 	}
 
 	o := authorization.Context[authorization.Ctx](ctx.Request().Context())
-	data := c.c.ConvertPostFlowJSONRequestBody(payload)
-	data.Owner = o.UserID()
-	m, err := c.s.CreateFlow(&data)
+	payload.Owner = o.UserID()
+	m, err := c.s.CreateFlow(&payload)
 	if err != nil {
 		return err
 	}
 	return ctx.JSON(201, c.c.ConvertFlowModel(*m))
 }
 
-// PutFlowId implements ServerInterface.
-func (c *Controller) PutFlowId(ctx echo.Context, id int) error {
-	var payload PutFlowIdJSONRequestBody
+// updateFlow
+//
+//	@Tags		flow
+//	@Summary	update flow
+//	@Accept		json
+//	@Produce	json
+//	@Param		id		path		string			true	"flow id"
+//	@Param		payload	body		UpdateFlowInput	true	"payload"
+//	@Success	200		{object}	FlowDetailOutput
+//	@Router		/flow/{id} [put]
+func (c *Controller) updateFlow(ctx echo.Context) error {
+	id := ctx.Param("id")
+
+	var payload UpdateFlowInput
 	if err := ctx.Bind(&payload); err != nil {
 		return err
 	}
 
 	o := authorization.Context[authorization.Ctx](ctx.Request().Context())
-	data := c.c.ConvertPutFlowJSONRequestBody(payload)
-	data.Owner = o.UserID()
-	m, err := c.s.UpdateFlow(id, &data)
+	payload.Owner = o.UserID()
+	m, err := c.s.UpdateFlow(id, &payload)
 	if err != nil {
 		return err
 	}
 	return ctx.JSON(200, c.c.ConvertFlowModel(*m))
 }
 
-var _ ServerInterface = (*Controller)(nil)
+func (c *Controller) RegisterHandlers(e *echo.Echo) {
+	r := e.Group("/flow")
+	r.GET("", c.getFlowList)
+	r.GET("/:id", c.getFlowDetail)
+	r.POST("", c.createFlow)
+	r.PUT("/:id", c.updateFlow)
+	r.DELETE("/:id", c.deleteFlow)
+}
