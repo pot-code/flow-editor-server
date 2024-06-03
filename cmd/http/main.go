@@ -58,6 +58,8 @@ func main() {
 	fx.New(
 		account.Module,
 
+		fx.Supply(db, zitadel),
+		fx.Provide(goahttp.NewMuxer),
 		fx.Provide(func(mux goahttp.ResolverMuxer, lc fx.Lifecycle) *http.Server {
 			srv := &http.Server{
 				Addr:    addr,
@@ -79,9 +81,6 @@ func main() {
 			})
 			return srv
 		}),
-		fx.Provide(goahttp.NewMuxer),
-		fx.Supply(db, zitadel),
-		fx.Invoke(func(s *http.Server) {
-		}),
+		fx.Invoke(func(s *http.Server) {}),
 	).Run()
 }
