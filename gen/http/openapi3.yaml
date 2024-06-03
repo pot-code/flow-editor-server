@@ -1,0 +1,43 @@
+openapi: 3.0.3
+info:
+    title: 流程编辑器 API
+    version: 0.0.1
+servers:
+    - url: http://localhost:80
+      description: Default server for flow-editor-server
+paths:
+    /account:
+        get:
+            tags:
+                - account
+            summary: getAccount account
+            description: Get account
+            operationId: account#getAccount
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AccountOutput'
+                            example:
+                                activated: false
+                                membership: 8587673403232436966
+components:
+    schemas:
+        AccountOutput:
+            type: object
+            properties:
+                activated:
+                    type: boolean
+                    example: true
+                membership:
+                    type: integer
+                    example: 2719051099608369158
+                    format: int64
+            example:
+                activated: false
+                membership: 852299104535126489
+tags:
+    - name: account
+      description: Account service

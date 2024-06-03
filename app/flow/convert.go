@@ -4,8 +4,6 @@ import (
 	"time"
 )
 
-//go:generate goverter gen .
-
 // goverter:converter
 // goverter:output:file convert_impl.go
 // goverter:output:package flow-editor-server/app/flow

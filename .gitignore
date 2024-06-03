@@ -31,3 +31,8 @@ tmp
 .task
 
 key.json
+
+# goa
+gen/http/cli
+gen/**/client
+gen/http/*.json

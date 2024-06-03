@@ -11,21 +11,16 @@ tasks:
     silent: true
     deps:
       - gen:converter
-      - gen:swag
+      - gen:goa
   gen:converter:
     cmds:
-      - go generate ./...
+      - goverter gen ./app/...
     silent: true
     sources:
       - "app/**/converter.go"
-  gen:swag:
+  gen:goa:
     cmds:
-      - swag init -g ./cmd/http/main.go -q --outputTypes go
+      - goa gen flow-editor-server/design
     silent: true
     sources:
-      - "app/**/api.go"
-      - "app/**/dto.go"
-  swag:format:
-    cmds:
-      - swag fmt
-    silent: true
+      - "design/**.go"
