@@ -9,8 +9,6 @@ package server
 
 import (
 	flow "flow-editor-server/gen/flow"
-
-	goa "goa.design/goa/v3/pkg"
 )
 
 // CreateFlowRequestBody is the type of the "flow" service "createFlow"
@@ -146,7 +144,7 @@ func NewUpdateFlowResponseBody(res *flow.FlowDetail) *UpdateFlowResponseBody {
 // NewCreateFlowData builds a flow service createFlow endpoint payload.
 func NewCreateFlowData(body *CreateFlowRequestBody) *flow.CreateFlowData {
 	v := &flow.CreateFlowData{
-		Title: *body.Title,
+		Title: body.Title,
 		Nodes: body.Nodes,
 		Edges: body.Edges,
 	}
@@ -167,13 +165,4 @@ func NewUpdateFlowPayload(body *UpdateFlowRequestBody, id string) *flow.UpdateFl
 	res.ID = &id
 
 	return res
-}
-
-// ValidateCreateFlowRequestBody runs the validations defined on
-// CreateFlowRequestBody
-func ValidateCreateFlowRequestBody(body *CreateFlowRequestBody) (err error) {
-	if body.Title == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
-	}
-	return
 }

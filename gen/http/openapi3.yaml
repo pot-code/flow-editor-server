@@ -53,6 +53,12 @@ paths:
                                 - created_at: Corporis totam.
                                   id: 5733579738933068263
                                   title: Nam fugiat perferendis est tempora in.
+                                - created_at: Corporis totam.
+                                  id: 5733579738933068263
+                                  title: Nam fugiat perferendis est tempora in.
+                                - created_at: Corporis totam.
+                                  id: 5733579738933068263
+                                  title: Nam fugiat perferendis est tempora in.
         post:
             tags:
                 - flow
@@ -97,8 +103,8 @@ paths:
                   schema:
                     type: string
                     description: 要删除的 flow id
-                    example: Fugiat ratione consequuntur sint.
-                  example: Ex rerum consequatur sunt vitae.
+                    example: Doloribus vel quidem occaecati veniam.
+                  example: Architecto earum soluta pariatur voluptatem voluptatem beatae.
             responses:
                 "204":
                     description: No Content response.
@@ -116,8 +122,8 @@ paths:
                   schema:
                     type: string
                     description: 要获取的 flow id
-                    example: Earum soluta.
-                  example: Voluptatem voluptatem beatae autem cupiditate et.
+                    example: Et sint officia aut est omnis.
+                  example: Excepturi sit alias minus omnis.
             responses:
                 "200":
                     description: OK response.
@@ -145,14 +151,14 @@ paths:
                   schema:
                     type: string
                     description: 要更新的 flow id
-                    example: Vero quia facilis saepe.
-                  example: Aliquam dolorum et accusantium.
+                    example: Quo architecto sed aperiam ullam debitis nam.
+                  example: Est sequi sit atque minus vel.
             requestBody:
                 required: true
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/UpdateFlowData'
+                            $ref: '#/components/schemas/CreateFlowRequestBody'
                         example:
                             edges: Quis dolor cum consequuntur eligendi fugit qui.
                             nodes: Dolore illum et consequatur quis voluptatum.
@@ -185,8 +191,8 @@ paths:
                   schema:
                     type: string
                     description: 要复制的 flow id
-                    example: Et necessitatibus.
-                  example: Cumque reiciendis et veritatis.
+                    example: Cupiditate et aut vero quia facilis saepe.
+                  example: Aliquam dolorum et accusantium.
             responses:
                 "201":
                     description: Created response.
@@ -227,8 +233,6 @@ components:
                 edges: Adipisci explicabo eveniet cum unde quam.
                 nodes: In et fugiat.
                 title: Veritatis vel voluptate rerum minus.
-            required:
-                - title
         FlowDetail:
             type: object
             properties:
@@ -287,25 +291,6 @@ components:
                 - id
                 - title
                 - created_at
-        UpdateFlowData:
-            type: object
-            properties:
-                edges:
-                    type: string
-                    description: flow 边
-                    example: Excepturi sit alias minus omnis.
-                nodes:
-                    type: string
-                    description: flow 节点
-                    example: Officia aut est omnis.
-                title:
-                    type: string
-                    description: flow 标题
-                    example: Consequuntur et.
-            example:
-                edges: Doloribus vel quidem occaecati veniam.
-                nodes: Est sequi sit atque minus vel.
-                title: Quo architecto sed aperiam ullam debitis nam.
 tags:
     - name: account
       description: Account service

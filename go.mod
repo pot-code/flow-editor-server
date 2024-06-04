@@ -6,6 +6,7 @@ toolchain go1.22.3
 
 require (
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
+	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
 	github.com/rs/zerolog v1.33.0
 	github.com/spf13/viper v1.18.2
 	github.com/zitadel/zitadel-go/v3 v3.0.0-next.2

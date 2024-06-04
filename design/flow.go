@@ -23,7 +23,6 @@ var CreateFlowData = Type("CreateFlowData", func() {
 	Attribute("title", String, "flow 标题")
 	Attribute("nodes", String, "flow 节点")
 	Attribute("edges", String, "flow 边")
-	Required("title")
 })
 
 var UpdateFlowData = Type("UpdateFlowData", func() {

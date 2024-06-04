@@ -57,8 +57,6 @@ paths:
                   required: true
                   schema:
                     $ref: '#/definitions/FlowCreateFlowRequestBody'
-                    required:
-                        - title
             responses:
                 "201":
                     description: Created response.
@@ -195,8 +193,6 @@ definitions:
             edges: Provident veniam porro ducimus voluptatem consequatur asperiores.
             nodes: Autem quibusdam quis delectus.
             title: Quibusdam reprehenderit dolorem nesciunt alias.
-        required:
-            - title
     FlowCreateFlowResponseBody:
         title: FlowCreateFlowResponseBody
         type: object
