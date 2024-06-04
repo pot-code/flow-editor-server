@@ -20,13 +20,19 @@ var FlowDetail = Type("FlowDetail", func() {
 })
 
 var CreateFlowData = Type("CreateFlowData", func() {
-	Attribute("title", String, "flow 标题")
+	Attribute("title", String, "flow 标题", func() {
+		Meta("struct:tag:json", "title")
+		Meta("struct:tag:validate", "required,min=1,max=32")
+	})
 	Attribute("nodes", String, "flow 节点")
 	Attribute("edges", String, "flow 边")
 })
 
 var UpdateFlowData = Type("UpdateFlowData", func() {
-	Attribute("title", String, "flow 标题")
+	Attribute("title", String, "flow 标题", func() {
+		Meta("struct:tag:json", "title")
+		Meta("struct:tag:validate", "required,min=1,max=32")
+	})
 	Attribute("nodes", String, "flow 节点")
 	Attribute("edges", String, "flow 边")
 })

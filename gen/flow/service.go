@@ -46,7 +46,7 @@ var MethodNames = [6]string{"getFlowList", "getFlow", "createFlow", "updateFlow"
 // CreateFlowData is the payload type of the flow service createFlow method.
 type CreateFlowData struct {
 	// flow 标题
-	Title *string
+	Title *string `json:"title" validate:"required,min=1,max=32"`
 	// flow 节点
 	Nodes *string
 	// flow 边
@@ -78,7 +78,7 @@ type FlowListItem struct {
 
 type UpdateFlowData struct {
 	// flow 标题
-	Title *string
+	Title *string `json:"title" validate:"required,min=1,max=32"`
 	// flow 节点
 	Nodes *string
 	// flow 边

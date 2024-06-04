@@ -4,7 +4,6 @@ import (
 	"context"
 	"flow-editor-server/gen/flow"
 
-	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
 	"gorm.io/gorm"
 )
@@ -29,11 +28,6 @@ func (s *Service) CopyFlow(ctx context.Context, copyId string) (err error) {
 // CreateFlow implements flow.Service.
 func (s *Service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (res *flow.FlowDetail, err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
-	if err := validation.ValidateStruct(data,
-		validation.Field(&data.Title, validation.Required.Error("标题不能为空"), validation.Length(1, 32).Error("标题长度不能超过32个字符")),
-	); err != nil {
-		return nil, err
-	}
 
 	m := &FlowModel{
 		Title: *data.Title,
@@ -77,11 +71,6 @@ func (s *Service) GetFlowList(ctx context.Context) (res []*flow.FlowListItem, er
 func (s *Service) UpdateFlow(ctx context.Context, payload *flow.UpdateFlowPayload) (res *flow.FlowDetail, err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
 	data := payload.Data
-	if err := validation.ValidateStruct(data,
-		validation.Field(&data.Title, validation.Required.Error("标题不能为空"), validation.Length(1, 32).Error("标题长度不能超过32个字符")),
-	); err != nil {
-		return nil, err
-	}
 
 	var model FlowModel
 	if err := s.db.First(&model, "id = ? AND owner = ?", payload.ID, auth.UserID()).Error; err != nil {

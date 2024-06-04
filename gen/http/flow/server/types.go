@@ -15,7 +15,7 @@ import (
 // endpoint HTTP request body.
 type CreateFlowRequestBody struct {
 	// flow 标题
-	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	Title *string `json:"title" validate:"required,min=1,max=32"`
 	// flow 节点
 	Nodes *string `form:"nodes,omitempty" json:"nodes,omitempty" xml:"nodes,omitempty"`
 	// flow 边
@@ -26,7 +26,7 @@ type CreateFlowRequestBody struct {
 // endpoint HTTP request body.
 type UpdateFlowRequestBody struct {
 	// flow 标题
-	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	Title *string `json:"title" validate:"required,min=1,max=32"`
 	// flow 节点
 	Nodes *string `form:"nodes,omitempty" json:"nodes,omitempty" xml:"nodes,omitempty"`
 	// flow 边

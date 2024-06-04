@@ -4,6 +4,7 @@ import (
 	"context"
 	"flow-editor-server/app/account"
 	"flow-editor-server/app/flow"
+	"flow-editor-server/internal/validate"
 	"net"
 	"net/http"
 	"os"
@@ -59,7 +60,7 @@ func main() {
 		flow.Module,
 
 		fx.Supply(db, zitadel),
-		fx.Provide(goahttp.NewMuxer),
+		fx.Provide(goahttp.NewMuxer, validate.NewTranslator, validate.NewValidator),
 		fx.Provide(func(mux goahttp.ResolverMuxer, lc fx.Lifecycle) *http.Server {
 			srv := &http.Server{
 				Addr:    addr,

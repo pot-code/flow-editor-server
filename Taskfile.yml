@@ -16,12 +16,14 @@ tasks:
     cmds:
       - goverter gen -cwd . ./app/...
     silent: true
+    ignore_error: true
     sources:
       - "app/**/converter.go"
   gen:goa:
     cmds:
       - goa gen flow-editor-server/design
     silent: true
+    ignore_error: true
     sources:
       - "design/**.go"
   docs:
