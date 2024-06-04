@@ -1,65 +1,97 @@
 package flow
 
 import (
+	"context"
+	"flow-editor-server/gen/flow"
+
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
 	"gorm.io/gorm"
 )
 
 type Service struct {
 	db *gorm.DB
+	c  Converter
 }
 
-func NewService(db *gorm.DB) *Service {
-	return &Service{db: db}
-}
-
-func (s *Service) CreateFlow(flow *CreateFlowInput) (*FlowModel, error) {
-	if err := flow.Validate(); err != nil {
+// CreateFlow implements flow.Service.
+func (s *Service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (res *flow.FlowDetail, err error) {
+	auth := authorization.Context[authorization.Ctx](ctx)
+	if err := validation.ValidateStruct(data,
+		validation.Field(&data.Title, validation.Required, validation.Length(1, 32)),
+	); err != nil {
 		return nil, err
 	}
 
 	m := &FlowModel{
-		Title: flow.Title,
-		Nodes: flow.Nodes,
-		Edges: flow.Edges,
-		Owner: flow.Owner,
+		Title: data.Title,
+		Nodes: data.Nodes,
+		Edges: data.Edges,
+		Owner: auth.UserID(),
 	}
 	if err := s.db.Create(m).Error; err != nil {
 		return nil, err
 	}
-	return m, nil
+	return s.c.FlowModelToFlowDetail(m), nil
 }
 
-func (s *Service) GetFlow(id string, owner string) (*FlowModel, error) {
+// DeleteFlow implements flow.Service.
+func (s *Service) DeleteFlow(ctx context.Context, id int) (err error) {
+	auth := authorization.Context[authorization.Ctx](ctx)
+	return s.db.Where("id = ? AND owner = ?", id, auth.UserID()).Delete(&FlowModel{}).Error
+}
+
+// GetFlow implements flow.Service.
+func (s *Service) GetFlow(ctx context.Context, id int) (res *flow.FlowDetail, err error) {
+	auth := authorization.Context[authorization.Ctx](ctx)
 	var flow FlowModel
-	if err := s.db.Where("id = ? AND owner = ?", id, owner).First(&flow).Error; err != nil {
+	if err := s.db.Where("id = ? AND owner = ?", id, auth.UserID()).First(&flow).Error; err != nil {
 		return nil, err
 	}
-	return &flow, nil
+	return s.c.FlowModelToFlowDetail(&flow), nil
 }
 
-func (s *Service) DeleteFlow(id string, owner string) error {
-	return s.db.Where("id = ? AND owner = ?", id, owner).Delete(&FlowModel{}).Error
+// GetFlowList implements flow.Service.
+func (s *Service) GetFlowList(ctx context.Context) (res []*flow.FlowListItem, err error) {
+	auth := authorization.Context[authorization.Ctx](ctx)
+	var flows []*FlowModel
+	if err := s.db.Find(&flows, "owner = ?", auth.UserID()).Error; err != nil {
+		return nil, err
+	}
+	return s.c.FlowModelsToFlowList(flows), nil
 }
 
-func (s *Service) UpdateFlow(id string, flow *UpdateFlowInput) (*FlowModel, error) {
-	if err := flow.Validate(); err != nil {
+// UpdateFlow implements flow.Service.
+func (s *Service) UpdateFlow(ctx context.Context, payload *flow.UpdateFlowPayload) (res *flow.FlowDetail, err error) {
+	auth := authorization.Context[authorization.Ctx](ctx)
+	data := payload.Data
+	if err := validation.ValidateStruct(data,
+		validation.Field(&data.Title, validation.Required, validation.Length(1, 32)),
+	); err != nil {
 		return nil, err
 	}
 
 	var model FlowModel
-	if err := s.db.First(&model, "id = ? AND owner = ?", id, flow.Owner).Error; err != nil {
+	if err := s.db.First(&model, "id = ? AND owner = ?", payload.ID, auth.UserID()).Error; err != nil {
 		return nil, err
 	}
-	if err := s.db.Model(&model).Omit("id").Updates(&flow).Error; err != nil {
+	if data.Edges != nil {
+		model.Edges = data.Edges
+	}
+	if data.Nodes != nil {
+		model.Nodes = data.Nodes
+	}
+	if data.Title != nil {
+		model.Title = *data.Title
+	}
+	if err := s.db.Model(&model).Omit("id").Updates(&model).Error; err != nil {
 		return nil, err
 	}
-	return &model, nil
+	return s.c.FlowModelToFlowDetail(&model), nil
 }
 
-func (s *Service) ListFlows(owner string) ([]FlowModel, error) {
-	var flows []FlowModel
-	if err := s.db.Find(&flows, "owner = ?", owner).Error; err != nil {
-		return nil, err
-	}
-	return flows, nil
+var _ flow.Service = (*Service)(nil)
+
+func NewService(db *gorm.DB, c Converter) *Service {
+	return &Service{db: db, c: c}
 }

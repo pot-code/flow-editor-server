@@ -29,6 +29,113 @@ paths:
                             - membership
             schemes:
                 - http
+    /flow:
+        get:
+            tags:
+                - flow
+            summary: getFlowList flow
+            description: 列出当前用户拥有的 flow
+            operationId: flow#getFlowList
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        type: array
+                        items:
+                            $ref: '#/definitions/FlowListItemResponse'
+            schemes:
+                - http
+        post:
+            tags:
+                - flow
+            summary: createFlow flow
+            description: 创建 flow
+            operationId: flow#createFlow
+            parameters:
+                - name: CreateFlowRequestBody
+                  in: body
+                  required: true
+                  schema:
+                    $ref: '#/definitions/FlowCreateFlowRequestBody'
+                    required:
+                        - title
+            responses:
+                "201":
+                    description: Created response.
+                    schema:
+                        $ref: '#/definitions/FlowCreateFlowResponseBody'
+                        required:
+                            - id
+                            - title
+                            - created_at
+            schemes:
+                - http
+    /flow/{id}:
+        get:
+            tags:
+                - flow
+            summary: getFlow flow
+            description: 根据 flow id 获取 flow 详情
+            operationId: flow#getFlow
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  type: integer
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        $ref: '#/definitions/FlowGetFlowResponseBody'
+                        required:
+                            - id
+                            - title
+                            - created_at
+            schemes:
+                - http
+        put:
+            tags:
+                - flow
+            summary: updateFlow flow
+            description: 更新 flow
+            operationId: flow#updateFlow
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  type: integer
+                - name: UpdateFlowRequestBody
+                  in: body
+                  required: true
+                  schema:
+                    $ref: '#/definitions/FlowUpdateFlowRequestBody'
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        $ref: '#/definitions/FlowUpdateFlowResponseBody'
+                        required:
+                            - id
+                            - title
+                            - created_at
+            schemes:
+                - http
+        delete:
+            tags:
+                - flow
+            summary: deleteFlow flow
+            description: 删除 flow
+            operationId: flow#deleteFlow
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  type: integer
+            responses:
+                "204":
+                    description: No Content response.
+            schemes:
+                - http
 definitions:
     AccountGetAccountResponseBody:
         title: AccountGetAccountResponseBody
@@ -36,14 +143,162 @@ definitions:
         properties:
             activated:
                 type: boolean
-                example: true
+                example: false
             membership:
                 type: integer
-                example: 1747045543197819866
+                example: 7481856739769398869
                 format: int64
         example:
             activated: true
-            membership: 7309928978923691591
+            membership: 751208545959143213
         required:
             - activated
             - membership
+    FlowCreateFlowRequestBody:
+        title: FlowCreateFlowRequestBody
+        type: object
+        properties:
+            edges:
+                type: string
+                example: Non illum possimus.
+            nodes:
+                type: string
+                example: Libero qui deleniti dolorum vel.
+            title:
+                type: string
+                example: Qui molestiae aut omnis distinctio beatae consequatur.
+        example:
+            edges: Quo nihil ut repellendus molestiae consequuntur amet.
+            nodes: Iusto pariatur quae.
+            title: Tenetur ipsam laboriosam.
+        required:
+            - title
+    FlowCreateFlowResponseBody:
+        title: FlowCreateFlowResponseBody
+        type: object
+        properties:
+            created_at:
+                type: string
+                example: Alias inventore totam repudiandae minima.
+            edges:
+                type: string
+                example: Consequatur ratione ab excepturi aut.
+            id:
+                type: integer
+                example: 9100414268010280678
+                format: int64
+            nodes:
+                type: string
+                example: Fugiat maiores.
+            title:
+                type: string
+                example: Vel accusamus saepe nemo debitis qui.
+        example:
+            created_at: Autem sapiente et.
+            edges: Commodi consequatur et.
+            id: 746663803852777819
+            nodes: Temporibus vitae asperiores omnis.
+            title: Optio velit.
+        required:
+            - id
+            - title
+            - created_at
+    FlowGetFlowResponseBody:
+        title: FlowGetFlowResponseBody
+        type: object
+        properties:
+            created_at:
+                type: string
+                example: Ullam nisi sint voluptates cupiditate dignissimos.
+            edges:
+                type: string
+                example: Sunt ut minus dolores consequatur eius.
+            id:
+                type: integer
+                example: 6565388738989218237
+                format: int64
+            nodes:
+                type: string
+                example: Laboriosam deserunt sit.
+            title:
+                type: string
+                example: Iste voluptas minus.
+        example:
+            created_at: Qui sint id sint asperiores nobis.
+            edges: Et eos aut consequuntur ut odit vero.
+            id: 8028815304413024753
+            nodes: Rerum rerum.
+            title: Rerum similique est tempore fugit voluptatem.
+        required:
+            - id
+            - title
+            - created_at
+    FlowListItemResponse:
+        title: FlowListItemResponse
+        type: object
+        properties:
+            created_at:
+                type: string
+                example: Accusantium quo maxime.
+            id:
+                type: integer
+                example: 7111211545012825406
+                format: int64
+            title:
+                type: string
+                example: Tempore et ut porro voluptas a et.
+        example:
+            created_at: Non consequatur dicta.
+            id: 3943196594614256413
+            title: At laborum molestiae vel consequuntur quia.
+        required:
+            - id
+            - title
+            - created_at
+    FlowUpdateFlowRequestBody:
+        title: FlowUpdateFlowRequestBody
+        type: object
+        properties:
+            edges:
+                type: string
+                example: Iste ab.
+            nodes:
+                type: string
+                example: In itaque et.
+            title:
+                type: string
+                example: Corrupti reprehenderit laudantium est optio aperiam at.
+        example:
+            edges: Veniam tempore.
+            nodes: Facilis deserunt.
+            title: Magnam repudiandae error numquam.
+    FlowUpdateFlowResponseBody:
+        title: FlowUpdateFlowResponseBody
+        type: object
+        properties:
+            created_at:
+                type: string
+                example: Minus doloremque blanditiis consequatur voluptate et.
+            edges:
+                type: string
+                example: Sed culpa vitae.
+            id:
+                type: integer
+                example: 8022364086387101098
+                format: int64
+            nodes:
+                type: string
+                example: Deserunt blanditiis rerum quae itaque.
+            title:
+                type: string
+                example: Quod possimus earum repudiandae iusto nobis.
+        example:
+            created_at: Porro ducimus voluptatem consequatur asperiores ipsa.
+            edges: Quibusdam quis delectus sint provident.
+            id: 8062358120128855813
+            nodes: In quibusdam reprehenderit dolorem nesciunt alias labore.
+            title: Deleniti et est quas.
+        required:
+            - id
+            - title
+            - created_at

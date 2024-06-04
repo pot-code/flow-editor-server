@@ -1,6 +1,7 @@
 package flow
 
 import (
+	"flow-editor-server/gen/flow"
 	"time"
 )
 
@@ -10,13 +11,13 @@ import (
 // goverter:extend TimeToString
 // goverter:extend UintToInt
 type Converter interface {
-	ConvertFlowModels(s []FlowModel) []FlowListObjectOutput
-	// goverter:map Model.ID Id
+	FlowModelsToFlowList(s []*FlowModel) []*flow.FlowListItem
+	// goverter:map Model.ID ID
 	// goverter:map Model.CreatedAt CreatedAt
-	ConvertFlowModel(s FlowModel) FlowDetailOutput
-	// goverter:map Model.ID Id
+	FlowModelToFlowDetail(s *FlowModel) *flow.FlowDetail
+	// goverter:map Model.ID ID
 	// goverter:map Model.CreatedAt CreatedAt
-	ConverterFlowModel(s FlowModel) FlowListObjectOutput
+	FlowModelToFlowListItem(s *FlowModel) *flow.FlowListItem
 }
 
 func TimeToString(t time.Time) string {

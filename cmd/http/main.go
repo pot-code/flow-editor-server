@@ -57,6 +57,7 @@ func main() {
 	addr := viper.GetString("HTTP_ADDR")
 	fx.New(
 		account.Module,
+		flow.Module,
 
 		fx.Supply(db, zitadel),
 		fx.Provide(goahttp.NewMuxer),

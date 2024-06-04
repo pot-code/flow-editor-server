@@ -14,7 +14,7 @@ tasks:
       - gen:goa
   gen:converter:
     cmds:
-      - goverter gen ./app/...
+      - goverter gen -cwd . ./app/...
     silent: true
     sources:
       - "app/**/converter.go"
