@@ -23,6 +23,8 @@ type Service interface {
 	UpdateFlow(context.Context, *UpdateFlowPayload) (res *FlowDetail, err error)
 	// 删除 flow
 	DeleteFlow(context.Context, string) (err error)
+	// 复制 flow
+	CopyFlow(context.Context, string) (err error)
 }
 
 // APIName is the name of the API as defined in the design.
@@ -39,7 +41,7 @@ const ServiceName = "flow"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [5]string{"getFlowList", "getFlow", "createFlow", "updateFlow", "deleteFlow"}
+var MethodNames = [6]string{"getFlowList", "getFlow", "createFlow", "updateFlow", "deleteFlow", "copyFlow"}
 
 // CreateFlowData is the payload type of the flow service createFlow method.
 type CreateFlowData struct {
@@ -86,5 +88,6 @@ type UpdateFlowData struct {
 // UpdateFlowPayload is the payload type of the flow service updateFlow method.
 type UpdateFlowPayload struct {
 	Data *UpdateFlowData
-	ID   *string
+	// 要更新的 flow id
+	ID *string
 }

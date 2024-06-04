@@ -24,6 +24,7 @@ type Server struct {
 	CreateFlow  http.Handler
 	UpdateFlow  http.Handler
 	DeleteFlow  http.Handler
+	CopyFlow    http.Handler
 }
 
 // MountPoint holds information about the mounted endpoints.
@@ -58,12 +59,14 @@ func New(
 			{"CreateFlow", "POST", "/flow"},
 			{"UpdateFlow", "PUT", "/flow/{id}"},
 			{"DeleteFlow", "DELETE", "/flow/{id}"},
+			{"CopyFlow", "POST", "/flow/{id}/copy"},
 		},
 		GetFlowList: NewGetFlowListHandler(e.GetFlowList, mux, decoder, encoder, errhandler, formatter),
 		GetFlow:     NewGetFlowHandler(e.GetFlow, mux, decoder, encoder, errhandler, formatter),
 		CreateFlow:  NewCreateFlowHandler(e.CreateFlow, mux, decoder, encoder, errhandler, formatter),
 		UpdateFlow:  NewUpdateFlowHandler(e.UpdateFlow, mux, decoder, encoder, errhandler, formatter),
 		DeleteFlow:  NewDeleteFlowHandler(e.DeleteFlow, mux, decoder, encoder, errhandler, formatter),
+		CopyFlow:    NewCopyFlowHandler(e.CopyFlow, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -77,6 +80,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.CreateFlow = m(s.CreateFlow)
 	s.UpdateFlow = m(s.UpdateFlow)
 	s.DeleteFlow = m(s.DeleteFlow)
+	s.CopyFlow = m(s.CopyFlow)
 }
 
 // MethodNames returns the methods served.
@@ -89,6 +93,7 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountCreateFlowHandler(mux, h.CreateFlow)
 	MountUpdateFlowHandler(mux, h.UpdateFlow)
 	MountDeleteFlowHandler(mux, h.DeleteFlow)
+	MountCopyFlowHandler(mux, h.CopyFlow)
 }
 
 // Mount configures the mux to serve the flow endpoints.
@@ -323,6 +328,57 @@ func NewDeleteFlowHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "deleteFlow")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "flow")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountCopyFlowHandler configures the mux to serve the "flow" service
+// "copyFlow" endpoint.
+func MountCopyFlowHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/flow/{id}/copy", f)
+}
+
+// NewCopyFlowHandler creates a HTTP handler which loads the HTTP request and
+// calls the "flow" service "copyFlow" endpoint.
+func NewCopyFlowHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(ctx context.Context, err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeCopyFlowRequest(mux, decoder)
+		encodeResponse = EncodeCopyFlowResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "copyFlow")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "flow")
 		payload, err := decodeRequest(r)
 		if err != nil {

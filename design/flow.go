@@ -47,7 +47,7 @@ var _ = Service("flow", func() {
 
 	Method("getFlow", func() {
 		Description("根据 flow id 获取 flow 详情")
-		Payload(String)
+		Payload(String, "要获取的 flow id")
 		HTTP(func() {
 			GET("/{id}")
 		})
@@ -68,7 +68,7 @@ var _ = Service("flow", func() {
 		Description("更新 flow")
 		Payload(func() {
 			Attribute("data", UpdateFlowData)
-			Attribute("id", String)
+			Attribute("id", String, "要更新的 flow id")
 		})
 		HTTP(func() {
 			PUT("/{id}")
@@ -79,10 +79,19 @@ var _ = Service("flow", func() {
 
 	Method("deleteFlow", func() {
 		Description("删除 flow")
-		Payload(String)
+		Payload(String, "要删除的 flow id")
 		HTTP(func() {
 			DELETE("/{id}")
 			Response(StatusNoContent)
+		})
+	})
+
+	Method("copyFlow", func() {
+		Description("复制 flow")
+		Payload(String, "要复制的 flow id")
+		HTTP(func() {
+			POST("/{id}/copy")
+			Response(StatusCreated)
 		})
 	})
 })

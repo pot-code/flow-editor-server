@@ -169,6 +169,31 @@ func DecodeDeleteFlowRequest(mux goahttp.Muxer, decoder func(*http.Request) goah
 	}
 }
 
+// EncodeCopyFlowResponse returns an encoder for responses returned by the flow
+// copyFlow endpoint.
+func EncodeCopyFlowResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, any) error {
+	return func(ctx context.Context, w http.ResponseWriter, v any) error {
+		w.WriteHeader(http.StatusCreated)
+		return nil
+	}
+}
+
+// DecodeCopyFlowRequest returns a decoder for requests sent to the flow
+// copyFlow endpoint.
+func DecodeCopyFlowRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (any, error) {
+	return func(r *http.Request) (any, error) {
+		var (
+			id string
+
+			params = mux.Vars(r)
+		)
+		id = params["id"]
+		payload := id
+
+		return payload, nil
+	}
+}
+
 // marshalFlowFlowListItemToFlowListItemResponse builds a value of type
 // *FlowListItemResponse from a value of type *flow.FlowListItem.
 func marshalFlowFlowListItemToFlowListItemResponse(v *flow.FlowListItem) *FlowListItemResponse {

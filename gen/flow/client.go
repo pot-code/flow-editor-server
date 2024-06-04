@@ -20,16 +20,18 @@ type Client struct {
 	CreateFlowEndpoint  goa.Endpoint
 	UpdateFlowEndpoint  goa.Endpoint
 	DeleteFlowEndpoint  goa.Endpoint
+	CopyFlowEndpoint    goa.Endpoint
 }
 
 // NewClient initializes a "flow" service client given the endpoints.
-func NewClient(getFlowList, getFlow, createFlow, updateFlow, deleteFlow goa.Endpoint) *Client {
+func NewClient(getFlowList, getFlow, createFlow, updateFlow, deleteFlow, copyFlow goa.Endpoint) *Client {
 	return &Client{
 		GetFlowListEndpoint: getFlowList,
 		GetFlowEndpoint:     getFlow,
 		CreateFlowEndpoint:  createFlow,
 		UpdateFlowEndpoint:  updateFlow,
 		DeleteFlowEndpoint:  deleteFlow,
+		CopyFlowEndpoint:    copyFlow,
 	}
 }
 
@@ -76,5 +78,11 @@ func (c *Client) UpdateFlow(ctx context.Context, p *UpdateFlowPayload) (res *Flo
 // DeleteFlow calls the "deleteFlow" endpoint of the "flow" service.
 func (c *Client) DeleteFlow(ctx context.Context, p string) (err error) {
 	_, err = c.DeleteFlowEndpoint(ctx, p)
+	return
+}
+
+// CopyFlow calls the "copyFlow" endpoint of the "flow" service.
+func (c *Client) CopyFlow(ctx context.Context, p string) (err error) {
+	_, err = c.CopyFlowEndpoint(ctx, p)
 	return
 }

@@ -35,3 +35,8 @@ func UpdateFlowFlowPath(id string) string {
 func DeleteFlowFlowPath(id string) string {
 	return fmt.Sprintf("/flow/%v", id)
 }
+
+// CopyFlowFlowPath returns the URL path to the flow service copyFlow HTTP endpoint.
+func CopyFlowFlowPath(id string) string {
+	return fmt.Sprintf("/flow/%v/copy", id)
+}

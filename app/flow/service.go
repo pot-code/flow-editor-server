@@ -14,6 +14,18 @@ type Service struct {
 	c  Converter
 }
 
+// CopyFlow implements flow.Service.
+func (s *Service) CopyFlow(ctx context.Context, copyId string) (err error) {
+	auth := authorization.Context[authorization.Ctx](ctx)
+	var m FlowModel
+	if err := s.db.First(&m, copyId).Error; err != nil {
+		return err
+	}
+
+	m.Owner = auth.UserID()
+	return s.db.Model(&FlowModel{}).Omit("id").Create(&m).Error
+}
+
 // CreateFlow implements flow.Service.
 func (s *Service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (res *flow.FlowDetail, err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
@@ -84,7 +96,7 @@ func (s *Service) UpdateFlow(ctx context.Context, payload *flow.UpdateFlowPayloa
 	if data.Title != nil {
 		model.Title = *data.Title
 	}
-	if err := s.db.Model(&model).Omit("id").Updates(&model).Error; err != nil {
+	if err := s.db.Save(&model).Error; err != nil {
 		return nil, err
 	}
 	return s.c.FlowModelToFlowDetail(&model), nil

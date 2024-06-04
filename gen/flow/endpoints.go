@@ -20,6 +20,7 @@ type Endpoints struct {
 	CreateFlow  goa.Endpoint
 	UpdateFlow  goa.Endpoint
 	DeleteFlow  goa.Endpoint
+	CopyFlow    goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "flow" service with endpoints.
@@ -30,6 +31,7 @@ func NewEndpoints(s Service) *Endpoints {
 		CreateFlow:  NewCreateFlowEndpoint(s),
 		UpdateFlow:  NewUpdateFlowEndpoint(s),
 		DeleteFlow:  NewDeleteFlowEndpoint(s),
+		CopyFlow:    NewCopyFlowEndpoint(s),
 	}
 }
 
@@ -40,6 +42,7 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.CreateFlow = m(e.CreateFlow)
 	e.UpdateFlow = m(e.UpdateFlow)
 	e.DeleteFlow = m(e.DeleteFlow)
+	e.CopyFlow = m(e.CopyFlow)
 }
 
 // NewGetFlowListEndpoint returns an endpoint function that calls the method
@@ -83,5 +86,14 @@ func NewDeleteFlowEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req any) (any, error) {
 		p := req.(string)
 		return nil, s.DeleteFlow(ctx, p)
+	}
+}
+
+// NewCopyFlowEndpoint returns an endpoint function that calls the method
+// "copyFlow" of service "flow".
+func NewCopyFlowEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req any) (any, error) {
+		p := req.(string)
+		return nil, s.CopyFlow(ctx, p)
 	}
 }
