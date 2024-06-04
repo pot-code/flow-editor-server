@@ -1,4 +1,4 @@
-package middleware
+package goa
 
 import (
 	"context"
@@ -6,7 +6,6 @@ import (
 
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
-	"github.com/rs/zerolog/log"
 	goa "goa.design/goa/v3/pkg"
 )
 
@@ -20,7 +19,6 @@ func ValidatePayload(validate *validator.Validate, trans ut.Translator) func(goa
 					if errs, ok := err.(validator.ValidationErrors); ok {
 						return nil, goa.DecodePayloadError(errs[0].Translate(trans))
 					}
-					log.Err(err).Msg("validation failed")
 					return nil, err
 				}
 			}

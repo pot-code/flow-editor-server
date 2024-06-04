@@ -5,6 +5,7 @@ package account
 import (
 	"flow-editor-server/gen/account"
 	"flow-editor-server/gen/http/account/server"
+	"flow-editor-server/internal/goa"
 
 	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
 	"github.com/zitadel/zitadel-go/v3/pkg/authorization/oauth"
@@ -24,7 +25,7 @@ var Module = fx.Module(
 	),
 	fx.Invoke(func(s account.Service, mux http.ResolverMuxer, zitadel *authorization.Authorizer[*oauth.IntrospectionContext]) {
 		endpoints := account.NewEndpoints(s)
-		srv := server.New(endpoints, mux, http.RequestDecoder, http.ResponseEncoder, nil, nil)
+		srv := server.New(endpoints, mux, http.RequestDecoder, http.ResponseEncoder, nil, goa.ErrorFormatter)
 		srv.Use(middleware.New(zitadel).RequireAuthorization())
 		server.Mount(mux, srv)
 	}),

@@ -5,7 +5,7 @@ package flow
 import (
 	"flow-editor-server/gen/flow"
 	"flow-editor-server/gen/http/flow/server"
-	"flow-editor-server/internal/middleware"
+	"flow-editor-server/internal/goa"
 
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
@@ -33,8 +33,8 @@ var Module = fx.Module(
 		trans ut.Translator,
 	) {
 		endpoints := flow.NewEndpoints(s)
-		endpoints.Use(middleware.ValidatePayload(validator, trans))
-		srv := server.New(endpoints, mux, http.RequestDecoder, http.ResponseEncoder, nil, nil)
+		endpoints.Use(goa.ValidatePayload(validator, trans))
+		srv := server.New(endpoints, mux, http.RequestDecoder, http.ResponseEncoder, nil, goa.ErrorFormatter)
 		srv.Use(zw.New(zitadel).RequireAuthorization())
 		server.Mount(mux, srv)
 	}),

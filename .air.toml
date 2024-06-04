@@ -4,7 +4,7 @@ tmp_dir = "tmp"
 
 [build]
   args_bin = []
-  bin = "tmp\\http.exe"
+  bin = "tmp/http.exe"
   cmd = "go build -o ./tmp/http.exe ./cmd/http"
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata"]
