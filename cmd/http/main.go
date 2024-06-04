@@ -4,7 +4,6 @@ import (
 	"context"
 	"flow-editor-server/app/account"
 	"flow-editor-server/app/flow"
-	_ "flow-editor-server/docs"
 	"net"
 	"net/http"
 	"os"

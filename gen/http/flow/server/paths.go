@@ -17,7 +17,7 @@ func GetFlowListFlowPath() string {
 }
 
 // GetFlowFlowPath returns the URL path to the flow service getFlow HTTP endpoint.
-func GetFlowFlowPath(id int) string {
+func GetFlowFlowPath(id string) string {
 	return fmt.Sprintf("/flow/%v", id)
 }
 
@@ -27,11 +27,11 @@ func CreateFlowFlowPath() string {
 }
 
 // UpdateFlowFlowPath returns the URL path to the flow service updateFlow HTTP endpoint.
-func UpdateFlowFlowPath(id int) string {
+func UpdateFlowFlowPath(id string) string {
 	return fmt.Sprintf("/flow/%v", id)
 }
 
 // DeleteFlowFlowPath returns the URL path to the flow service deleteFlow HTTP endpoint.
-func DeleteFlowFlowPath(id int) string {
+func DeleteFlowFlowPath(id string) string {
 	return fmt.Sprintf("/flow/%v", id)
 }

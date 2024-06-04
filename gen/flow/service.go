@@ -16,13 +16,13 @@ type Service interface {
 	// 列出当前用户拥有的 flow
 	GetFlowList(context.Context) (res []*FlowListItem, err error)
 	// 根据 flow id 获取 flow 详情
-	GetFlow(context.Context, int) (res *FlowDetail, err error)
+	GetFlow(context.Context, string) (res *FlowDetail, err error)
 	// 创建 flow
 	CreateFlow(context.Context, *CreateFlowData) (res *FlowDetail, err error)
 	// 更新 flow
 	UpdateFlow(context.Context, *UpdateFlowPayload) (res *FlowDetail, err error)
 	// 删除 flow
-	DeleteFlow(context.Context, int) (err error)
+	DeleteFlow(context.Context, string) (err error)
 }
 
 // APIName is the name of the API as defined in the design.
@@ -43,34 +43,48 @@ var MethodNames = [5]string{"getFlowList", "getFlow", "createFlow", "updateFlow"
 
 // CreateFlowData is the payload type of the flow service createFlow method.
 type CreateFlowData struct {
+	// flow 标题
 	Title string
+	// flow 节点
 	Nodes *string
+	// flow 边
 	Edges *string
 }
 
 // FlowDetail is the result type of the flow service getFlow method.
 type FlowDetail struct {
-	ID        int
-	Title     string
-	Nodes     *string
-	Edges     *string
+	// flow id
+	ID int
+	// flow 标题
+	Title string
+	// flow 节点
+	Nodes *string
+	// flow 边
+	Edges *string
+	// flow 创建时间
 	CreatedAt string
 }
 
 type FlowListItem struct {
-	ID        int
-	Title     string
+	// flow id
+	ID int
+	// flow 标题
+	Title string
+	// flow 创建时间
 	CreatedAt string
 }
 
 type UpdateFlowData struct {
+	// flow 标题
 	Title *string
+	// flow 节点
 	Nodes *string
+	// flow 边
 	Edges *string
 }
 
 // UpdateFlowPayload is the payload type of the flow service updateFlow method.
 type UpdateFlowPayload struct {
 	Data *UpdateFlowData
-	ID   *int
+	ID   *string
 }

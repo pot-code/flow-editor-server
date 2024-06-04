@@ -16,16 +16,22 @@ import (
 // CreateFlowRequestBody is the type of the "flow" service "createFlow"
 // endpoint HTTP request body.
 type CreateFlowRequestBody struct {
+	// flow 标题
 	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	// flow 节点
 	Nodes *string `form:"nodes,omitempty" json:"nodes,omitempty" xml:"nodes,omitempty"`
+	// flow 边
 	Edges *string `form:"edges,omitempty" json:"edges,omitempty" xml:"edges,omitempty"`
 }
 
 // UpdateFlowRequestBody is the type of the "flow" service "updateFlow"
 // endpoint HTTP request body.
 type UpdateFlowRequestBody struct {
+	// flow 标题
 	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	// flow 节点
 	Nodes *string `form:"nodes,omitempty" json:"nodes,omitempty" xml:"nodes,omitempty"`
+	// flow 边
 	Edges *string `form:"edges,omitempty" json:"edges,omitempty" xml:"edges,omitempty"`
 }
 
@@ -36,37 +42,55 @@ type GetFlowListResponseBody []*FlowListItemResponse
 // GetFlowResponseBody is the type of the "flow" service "getFlow" endpoint
 // HTTP response body.
 type GetFlowResponseBody struct {
-	ID        int     `form:"id" json:"id" xml:"id"`
-	Title     string  `form:"title" json:"title" xml:"title"`
-	Nodes     *string `form:"nodes,omitempty" json:"nodes,omitempty" xml:"nodes,omitempty"`
-	Edges     *string `form:"edges,omitempty" json:"edges,omitempty" xml:"edges,omitempty"`
-	CreatedAt string  `form:"created_at" json:"created_at" xml:"created_at"`
+	// flow id
+	ID int `form:"id" json:"id" xml:"id"`
+	// flow 标题
+	Title string `form:"title" json:"title" xml:"title"`
+	// flow 节点
+	Nodes *string `form:"nodes,omitempty" json:"nodes,omitempty" xml:"nodes,omitempty"`
+	// flow 边
+	Edges *string `form:"edges,omitempty" json:"edges,omitempty" xml:"edges,omitempty"`
+	// flow 创建时间
+	CreatedAt string `form:"created_at" json:"created_at" xml:"created_at"`
 }
 
 // CreateFlowResponseBody is the type of the "flow" service "createFlow"
 // endpoint HTTP response body.
 type CreateFlowResponseBody struct {
-	ID        int     `form:"id" json:"id" xml:"id"`
-	Title     string  `form:"title" json:"title" xml:"title"`
-	Nodes     *string `form:"nodes,omitempty" json:"nodes,omitempty" xml:"nodes,omitempty"`
-	Edges     *string `form:"edges,omitempty" json:"edges,omitempty" xml:"edges,omitempty"`
-	CreatedAt string  `form:"created_at" json:"created_at" xml:"created_at"`
+	// flow id
+	ID int `form:"id" json:"id" xml:"id"`
+	// flow 标题
+	Title string `form:"title" json:"title" xml:"title"`
+	// flow 节点
+	Nodes *string `form:"nodes,omitempty" json:"nodes,omitempty" xml:"nodes,omitempty"`
+	// flow 边
+	Edges *string `form:"edges,omitempty" json:"edges,omitempty" xml:"edges,omitempty"`
+	// flow 创建时间
+	CreatedAt string `form:"created_at" json:"created_at" xml:"created_at"`
 }
 
 // UpdateFlowResponseBody is the type of the "flow" service "updateFlow"
 // endpoint HTTP response body.
 type UpdateFlowResponseBody struct {
-	ID        int     `form:"id" json:"id" xml:"id"`
-	Title     string  `form:"title" json:"title" xml:"title"`
-	Nodes     *string `form:"nodes,omitempty" json:"nodes,omitempty" xml:"nodes,omitempty"`
-	Edges     *string `form:"edges,omitempty" json:"edges,omitempty" xml:"edges,omitempty"`
-	CreatedAt string  `form:"created_at" json:"created_at" xml:"created_at"`
+	// flow id
+	ID int `form:"id" json:"id" xml:"id"`
+	// flow 标题
+	Title string `form:"title" json:"title" xml:"title"`
+	// flow 节点
+	Nodes *string `form:"nodes,omitempty" json:"nodes,omitempty" xml:"nodes,omitempty"`
+	// flow 边
+	Edges *string `form:"edges,omitempty" json:"edges,omitempty" xml:"edges,omitempty"`
+	// flow 创建时间
+	CreatedAt string `form:"created_at" json:"created_at" xml:"created_at"`
 }
 
 // FlowListItemResponse is used to define fields on response body types.
 type FlowListItemResponse struct {
-	ID        int    `form:"id" json:"id" xml:"id"`
-	Title     string `form:"title" json:"title" xml:"title"`
+	// flow id
+	ID int `form:"id" json:"id" xml:"id"`
+	// flow 标题
+	Title string `form:"title" json:"title" xml:"title"`
+	// flow 创建时间
 	CreatedAt string `form:"created_at" json:"created_at" xml:"created_at"`
 }
 
@@ -131,7 +155,7 @@ func NewCreateFlowData(body *CreateFlowRequestBody) *flow.CreateFlowData {
 }
 
 // NewUpdateFlowPayload builds a flow service updateFlow endpoint payload.
-func NewUpdateFlowPayload(body *UpdateFlowRequestBody, id int) *flow.UpdateFlowPayload {
+func NewUpdateFlowPayload(body *UpdateFlowRequestBody, id string) *flow.UpdateFlowPayload {
 	v := &flow.UpdateFlowData{
 		Title: body.Title,
 		Nodes: body.Nodes,

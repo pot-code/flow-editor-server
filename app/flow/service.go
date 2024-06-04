@@ -36,13 +36,13 @@ func (s *Service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (re
 }
 
 // DeleteFlow implements flow.Service.
-func (s *Service) DeleteFlow(ctx context.Context, id int) (err error) {
+func (s *Service) DeleteFlow(ctx context.Context, id string) (err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
 	return s.db.Where("id = ? AND owner = ?", id, auth.UserID()).Delete(&FlowModel{}).Error
 }
 
 // GetFlow implements flow.Service.
-func (s *Service) GetFlow(ctx context.Context, id int) (res *flow.FlowDetail, err error) {
+func (s *Service) GetFlow(ctx context.Context, id string) (res *flow.FlowDetail, err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
 	var flow FlowModel
 	if err := s.db.Where("id = ? AND owner = ?", id, auth.UserID()).First(&flow).Error; err != nil {

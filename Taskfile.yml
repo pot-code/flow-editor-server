@@ -24,3 +24,7 @@ tasks:
     silent: true
     sources:
       - "design/**.go"
+  docs:
+    cmds:
+      - redocly preview-docs ./gen/http/openapi3.yaml -p 3001
+    silent: true

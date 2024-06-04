@@ -13,7 +13,6 @@ import (
 	flow "flow-editor-server/gen/flow"
 	"io"
 	"net/http"
-	"strconv"
 
 	goahttp "goa.design/goa/v3/http"
 	goa "goa.design/goa/v3/pkg"
@@ -48,22 +47,11 @@ func EncodeGetFlowResponse(encoder func(context.Context, http.ResponseWriter) go
 func DecodeGetFlowRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (any, error) {
 	return func(r *http.Request) (any, error) {
 		var (
-			id  int
-			err error
+			id string
 
 			params = mux.Vars(r)
 		)
-		{
-			idRaw := params["id"]
-			v, err2 := strconv.ParseInt(idRaw, 10, strconv.IntSize)
-			if err2 != nil {
-				err = goa.MergeErrors(err, goa.InvalidFieldTypeError("id", idRaw, "integer"))
-			}
-			id = int(v)
-		}
-		if err != nil {
-			return nil, err
-		}
+		id = params["id"]
 		payload := id
 
 		return payload, nil
@@ -145,21 +133,11 @@ func DecodeUpdateFlowRequest(mux goahttp.Muxer, decoder func(*http.Request) goah
 		}
 
 		var (
-			id int
+			id string
 
 			params = mux.Vars(r)
 		)
-		{
-			idRaw := params["id"]
-			v, err2 := strconv.ParseInt(idRaw, 10, strconv.IntSize)
-			if err2 != nil {
-				err = goa.MergeErrors(err, goa.InvalidFieldTypeError("id", idRaw, "integer"))
-			}
-			id = int(v)
-		}
-		if err != nil {
-			return nil, err
-		}
+		id = params["id"]
 		payload := NewUpdateFlowPayload(&body, id)
 
 		return payload, nil
@@ -180,22 +158,11 @@ func EncodeDeleteFlowResponse(encoder func(context.Context, http.ResponseWriter)
 func DecodeDeleteFlowRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (any, error) {
 	return func(r *http.Request) (any, error) {
 		var (
-			id  int
-			err error
+			id string
 
 			params = mux.Vars(r)
 		)
-		{
-			idRaw := params["id"]
-			v, err2 := strconv.ParseInt(idRaw, 10, strconv.IntSize)
-			if err2 != nil {
-				err = goa.MergeErrors(err, goa.InvalidFieldTypeError("id", idRaw, "integer"))
-			}
-			id = int(v)
-		}
-		if err != nil {
-			return nil, err
-		}
+		id = params["id"]
 		payload := id
 
 		return payload, nil

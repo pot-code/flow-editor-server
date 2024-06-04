@@ -44,7 +44,7 @@ func (c *Client) GetFlowList(ctx context.Context) (res []*FlowListItem, err erro
 }
 
 // GetFlow calls the "getFlow" endpoint of the "flow" service.
-func (c *Client) GetFlow(ctx context.Context, p int) (res *FlowDetail, err error) {
+func (c *Client) GetFlow(ctx context.Context, p string) (res *FlowDetail, err error) {
 	var ires any
 	ires, err = c.GetFlowEndpoint(ctx, p)
 	if err != nil {
@@ -74,7 +74,7 @@ func (c *Client) UpdateFlow(ctx context.Context, p *UpdateFlowPayload) (res *Flo
 }
 
 // DeleteFlow calls the "deleteFlow" endpoint of the "flow" service.
-func (c *Client) DeleteFlow(ctx context.Context, p int) (err error) {
+func (c *Client) DeleteFlow(ctx context.Context, p string) (err error) {
 	_, err = c.DeleteFlowEndpoint(ctx, p)
 	return
 }

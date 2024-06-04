@@ -4,32 +4,32 @@ package design
 import . "goa.design/goa/v3/dsl"
 
 var FlowListItem = Type("FlowListItem", func() {
-	Attribute("id", Int)
-	Attribute("title", String)
-	Attribute("created_at", String)
+	Attribute("id", Int, "flow id")
+	Attribute("title", String, "flow 标题")
+	Attribute("created_at", String, "flow 创建时间")
 	Required("id", "title", "created_at")
 })
 
 var FlowDetail = Type("FlowDetail", func() {
-	Attribute("id", Int)
-	Attribute("title", String)
-	Attribute("nodes", String)
-	Attribute("edges", String)
-	Attribute("created_at", String)
+	Attribute("id", Int, "flow id")
+	Attribute("title", String, "flow 标题")
+	Attribute("nodes", String, "flow 节点")
+	Attribute("edges", String, "flow 边")
+	Attribute("created_at", String, "flow 创建时间")
 	Required("id", "title", "created_at")
 })
 
 var CreateFlowData = Type("CreateFlowData", func() {
-	Attribute("title", String)
-	Attribute("nodes", String)
-	Attribute("edges", String)
+	Attribute("title", String, "flow 标题")
+	Attribute("nodes", String, "flow 节点")
+	Attribute("edges", String, "flow 边")
 	Required("title")
 })
 
 var UpdateFlowData = Type("UpdateFlowData", func() {
-	Attribute("title", String)
-	Attribute("nodes", String)
-	Attribute("edges", String)
+	Attribute("title", String, "flow 标题")
+	Attribute("nodes", String, "flow 节点")
+	Attribute("edges", String, "flow 边")
 })
 
 var _ = Service("flow", func() {
@@ -47,7 +47,7 @@ var _ = Service("flow", func() {
 
 	Method("getFlow", func() {
 		Description("根据 flow id 获取 flow 详情")
-		Payload(Int)
+		Payload(String)
 		HTTP(func() {
 			GET("/{id}")
 		})
@@ -68,7 +68,7 @@ var _ = Service("flow", func() {
 		Description("更新 flow")
 		Payload(func() {
 			Attribute("data", UpdateFlowData)
-			Attribute("id", Int)
+			Attribute("id", String)
 		})
 		HTTP(func() {
 			PUT("/{id}")
@@ -79,7 +79,7 @@ var _ = Service("flow", func() {
 
 	Method("deleteFlow", func() {
 		Description("删除 flow")
-		Payload(Int)
+		Payload(String)
 		HTTP(func() {
 			DELETE("/{id}")
 			Response(StatusNoContent)

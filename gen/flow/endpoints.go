@@ -54,7 +54,7 @@ func NewGetFlowListEndpoint(s Service) goa.Endpoint {
 // "getFlow" of service "flow".
 func NewGetFlowEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req any) (any, error) {
-		p := req.(int)
+		p := req.(string)
 		return s.GetFlow(ctx, p)
 	}
 }
@@ -81,7 +81,7 @@ func NewUpdateFlowEndpoint(s Service) goa.Endpoint {
 // "deleteFlow" of service "flow".
 func NewDeleteFlowEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req any) (any, error) {
-		p := req.(int)
+		p := req.(string)
 		return nil, s.DeleteFlow(ctx, p)
 	}
 }
