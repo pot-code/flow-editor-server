@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/open-policy-agent/opa/sdk"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
@@ -34,15 +35,6 @@ func main() {
 		log.Fatal().Err(err).Msg("failed to read config")
 	}
 
-	zitadel, err := authorization.New(
-		context.Background(),
-		zitadel.New(viper.GetString("ZITADEL_DOMAIN"), zitadel.WithInsecure(viper.GetString("ZITADEL_PORT"))),
-		oauth.DefaultAuthorization("key.json"),
-	)
-	if err != nil {
-		log.Fatal().Err(err).Msg("failed to connect to zitadel")
-	}
-
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
@@ -54,12 +46,34 @@ func main() {
 		log.Fatal().Err(err).Msg("failed to migrate database")
 	}
 
+	zitadel, err := authorization.New(
+		context.Background(),
+		zitadel.New(viper.GetString("ZITADEL_DOMAIN"), zitadel.WithInsecure(viper.GetString("ZITADEL_PORT"))),
+		oauth.DefaultAuthorization("key.json"),
+	)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to connect to zitadel")
+	}
+
+	config, err := os.Open("opa.yaml")
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to open opa.yaml")
+	}
+	defer config.Close()
+
+	opa, err := sdk.New(context.Background(), sdk.Options{
+		Config: config,
+	})
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to connect to opa")
+	}
+
 	addr := viper.GetString("HTTP_ADDR")
 	fx.New(
 		account.Module,
 		flow.Module,
 
-		fx.Supply(db, zitadel),
+		fx.Supply(db, zitadel, opa),
 		fx.Provide(goahttp.NewMuxer, validate.NewTranslator, validate.NewValidator),
 		fx.Provide(func(mux goahttp.ResolverMuxer, lc fx.Lifecycle) *http.Server {
 			srv := &http.Server{
@@ -77,6 +91,7 @@ func main() {
 					return nil
 				},
 				OnStop: func(ctx context.Context) error {
+					opa.Stop(ctx)
 					return srv.Shutdown(ctx)
 				},
 			})

@@ -4,8 +4,7 @@ version: "3"
 
 tasks:
   http:
-    cmds:
-      - go run ./cmd/http
+    cmd: go run ./cmd/http
     silent: true
   gen:
     silent: true
@@ -13,20 +12,20 @@ tasks:
       - gen:converter
       - gen:goa
   gen:converter:
-    cmds:
-      - goverter gen -cwd . ./app/...
+    cmd: goverter gen -cwd . ./app/...
     silent: true
     ignore_error: true
     sources:
       - "app/**/converter.go"
   gen:goa:
-    cmds:
-      - goa gen flow-editor-server/design
+    cmd: goa gen flow-editor-server/design
     silent: true
     ignore_error: true
     sources:
       - "design/**.go"
   docs:
-    cmds:
-      - redocly preview-docs ./gen/http/openapi3.yaml -p 3001
+    cmd: redocly preview-docs ./gen/http/openapi3.yaml -p 3001
+    silent: true
+  opa:
+    cmd: opa run -w -a localhost:8181 -s -b policy
     silent: true
