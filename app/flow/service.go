@@ -2,7 +2,6 @@ package flow
 
 import (
 	"context"
-	"errors"
 	"flow-editor-server/gen/flow"
 
 	"github.com/open-policy-agent/opa/sdk"
@@ -30,14 +29,6 @@ func (s *Service) CopyFlow(ctx context.Context, copyId string) (err error) {
 
 // CreateFlow implements flow.Service.
 func (s *Service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (res *flow.FlowDetail, err error) {
-	if r, err := s.opa.Decision(ctx, sdk.DecisionOptions{
-		Path: "/flow/create",
-	}); err != nil {
-		return nil, err
-	} else if !r.Result.(bool) {
-		return nil, errors.New("unauthorized")
-	}
-
 	auth := authorization.Context[authorization.Ctx](ctx)
 	m := &FlowModel{
 		Title: *data.Title,
