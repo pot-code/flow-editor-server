@@ -29,3 +29,6 @@ tasks:
   opa:
     cmd: opa run -w -a localhost:8181 -s -b policy
     silent: true
+  seed:
+    cmd: go run ./scripts/seed
+    silent: true
