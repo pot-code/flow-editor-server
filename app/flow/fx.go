@@ -12,14 +12,14 @@ import (
 var Module = fx.Module(
 	"flow",
 	fx.Provide(
-		NewServer,
+		NewRoute,
 		fx.Annotate(NewService, fx.As(new(flow.Service))),
 	),
 	fx.Supply(
 		fx.Private,
 		fx.Annotate(new(ConverterImpl), fx.As(new(Converter))),
 	),
-	fx.Invoke(func(s *Server, mux http.ResolverMuxer) {
-		s.MountHttpServer(mux)
+	fx.Invoke(func(s *Route, mux http.ResolverMuxer) {
+		s.MountRoute(mux)
 	}),
 )

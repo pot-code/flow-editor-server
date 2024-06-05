@@ -11,21 +11,21 @@ import (
 	"goa.design/goa/v3/http"
 )
 
-type Server struct {
+type Route struct {
 	s account.Service
 	z *authorization.Authorizer[*oauth.IntrospectionContext]
 }
 
-// MountHttpServer implements goa.HttpServer.
-func (s *Server) MountHttpServer(mux http.ResolverMuxer) {
+// MountRoute implements goa.HttpServer.
+func (s *Route) MountRoute(mux http.ResolverMuxer) {
 	endpoints := account.NewEndpoints(s.s)
 	srv := server.New(endpoints, mux, http.RequestDecoder, http.ResponseEncoder, nil, goa.ErrorFormatter)
 	srv.Use(zw.New(s.z).RequireAuthorization())
 	server.Mount(mux, srv)
 }
 
-var _ goa.HttpServer = (*Server)(nil)
+var _ goa.HttpRoute = (*Route)(nil)
 
-func NewServer(s account.Service, z *authorization.Authorizer[*oauth.IntrospectionContext]) *Server {
-	return &Server{s: s, z: z}
+func NewRoute(s account.Service, z *authorization.Authorizer[*oauth.IntrospectionContext]) *Route {
+	return &Route{s: s, z: z}
 }

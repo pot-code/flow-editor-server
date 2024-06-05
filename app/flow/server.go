@@ -13,15 +13,15 @@ import (
 	"goa.design/goa/v3/http"
 )
 
-type Server struct {
+type Route struct {
 	s flow.Service
 	v *validator.Validate
 	t ut.Translator
 	z *authorization.Authorizer[*oauth.IntrospectionContext]
 }
 
-// MountHttpServer implements goa.Server.
-func (s *Server) MountHttpServer(mux http.ResolverMuxer) {
+// MountRoute implements goa.Server.
+func (s *Route) MountRoute(mux http.ResolverMuxer) {
 	endpoints := flow.NewEndpoints(s.s)
 	endpoints.Use(goa.ValidatePayload(s.v, s.t))
 	srv := server.New(endpoints, mux, http.RequestDecoder, http.ResponseEncoder, nil, goa.ErrorFormatter)
@@ -29,13 +29,13 @@ func (s *Server) MountHttpServer(mux http.ResolverMuxer) {
 	server.Mount(mux, srv)
 }
 
-var _ goa.HttpServer = (*Server)(nil)
+var _ goa.HttpRoute = (*Route)(nil)
 
-func NewServer(
+func NewRoute(
 	s flow.Service,
 	v *validator.Validate,
 	t ut.Translator,
 	z *authorization.Authorizer[*oauth.IntrospectionContext],
-) *Server {
-	return &Server{s: s, v: v, t: t, z: z}
+) *Route {
+	return &Route{s: s, v: v, t: t, z: z}
 }
