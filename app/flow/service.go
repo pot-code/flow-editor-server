@@ -4,15 +4,13 @@ import (
 	"context"
 	"flow-editor-server/gen/flow"
 
-	"github.com/open-policy-agent/opa/sdk"
 	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
 	"gorm.io/gorm"
 )
 
 type Service struct {
-	db  *gorm.DB
-	c   Converter
-	opa *sdk.OPA
+	db *gorm.DB
+	c  Converter
 }
 
 // CopyFlow implements flow.Service.
@@ -94,6 +92,6 @@ func (s *Service) UpdateFlow(ctx context.Context, payload *flow.UpdateFlowPayloa
 
 var _ flow.Service = (*Service)(nil)
 
-func NewService(db *gorm.DB, c Converter, opa *sdk.OPA) *Service {
-	return &Service{db: db, c: c, opa: opa}
+func NewService(db *gorm.DB, c Converter) *Service {
+	return &Service{db: db, c: c}
 }
