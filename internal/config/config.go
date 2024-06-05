@@ -7,14 +7,15 @@ import (
 
 type HttpConfig struct {
 	Addr          string
-	zitadelDomain string
-	zitadelPort   int
+	ZitadelDomain string
+	ZitadelPort   string
 }
 
 func NewHttpConfig() *HttpConfig {
 	viper.SetConfigFile(".env")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(".")
+
 	err := viper.ReadInConfig()
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to read config")
@@ -22,7 +23,7 @@ func NewHttpConfig() *HttpConfig {
 
 	return &HttpConfig{
 		Addr:          viper.GetString("HTTP_ADDR"),
-		zitadelDomain: viper.GetString("ZITADEL_DOMAIN"),
-		zitadelPort:   viper.GetInt("ZITADEL_PORT"),
+		ZitadelDomain: viper.GetString("ZITADEL_DOMAIN"),
+		ZitadelPort:   viper.GetString("ZITADEL_PORT"),
 	}
 }

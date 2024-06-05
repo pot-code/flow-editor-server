@@ -8,13 +8,13 @@ import (
 	"gorm.io/gorm"
 )
 
-type Service struct {
+type service struct {
 	db *gorm.DB
 	c  Converter
 }
 
 // CopyFlow implements flow.Service.
-func (s *Service) CopyFlow(ctx context.Context, copyId string) (err error) {
+func (s *service) CopyFlow(ctx context.Context, copyId string) (err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
 	var m FlowModel
 	if err := s.db.First(&m, copyId).Error; err != nil {
@@ -26,7 +26,7 @@ func (s *Service) CopyFlow(ctx context.Context, copyId string) (err error) {
 }
 
 // CreateFlow implements flow.Service.
-func (s *Service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (res *flow.FlowDetail, err error) {
+func (s *service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (res *flow.FlowDetail, err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
 	m := &FlowModel{
 		Title: *data.Title,
@@ -41,13 +41,13 @@ func (s *Service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (re
 }
 
 // DeleteFlow implements flow.Service.
-func (s *Service) DeleteFlow(ctx context.Context, id string) (err error) {
+func (s *service) DeleteFlow(ctx context.Context, id string) (err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
 	return s.db.Where("id = ? AND owner = ?", id, auth.UserID()).Delete(&FlowModel{}).Error
 }
 
 // GetFlow implements flow.Service.
-func (s *Service) GetFlow(ctx context.Context, id string) (res *flow.FlowDetail, err error) {
+func (s *service) GetFlow(ctx context.Context, id string) (res *flow.FlowDetail, err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
 	var flow FlowModel
 	if err := s.db.Where("id = ? AND owner = ?", id, auth.UserID()).First(&flow).Error; err != nil {
@@ -57,7 +57,7 @@ func (s *Service) GetFlow(ctx context.Context, id string) (res *flow.FlowDetail,
 }
 
 // GetFlowList implements flow.Service.
-func (s *Service) GetFlowList(ctx context.Context) (res []*flow.FlowListItem, err error) {
+func (s *service) GetFlowList(ctx context.Context) (res []*flow.FlowListItem, err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
 	var flows []*FlowModel
 	if err := s.db.Find(&flows, "owner = ?", auth.UserID()).Error; err != nil {
@@ -67,7 +67,7 @@ func (s *Service) GetFlowList(ctx context.Context) (res []*flow.FlowListItem, er
 }
 
 // UpdateFlow implements flow.Service.
-func (s *Service) UpdateFlow(ctx context.Context, payload *flow.UpdateFlowPayload) (res *flow.FlowDetail, err error) {
+func (s *service) UpdateFlow(ctx context.Context, payload *flow.UpdateFlowPayload) (res *flow.FlowDetail, err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
 	data := payload.Data
 
@@ -90,8 +90,8 @@ func (s *Service) UpdateFlow(ctx context.Context, payload *flow.UpdateFlowPayloa
 	return s.c.FlowModelToFlowDetail(&model), nil
 }
 
-var _ flow.Service = (*Service)(nil)
+var _ flow.Service = (*service)(nil)
 
-func NewService(db *gorm.DB, c Converter) *Service {
-	return &Service{db: db, c: c}
+func NewService(db *gorm.DB, c Converter) *service {
+	return &service{db: db, c: c}
 }

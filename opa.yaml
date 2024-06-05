@@ -1,3 +1,0 @@
-services:
-  policy:
-    url: http://localhost:8181

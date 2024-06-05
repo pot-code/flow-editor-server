@@ -10,13 +10,16 @@ const (
 	MembershipTypeEnterprise
 )
 
-type AccountModel struct {
+type Account struct {
 	gorm.Model
 	UserId     string `gorm:"unique;not null"`
 	Membership MembershipType
 	Activated  bool
+	Roles      []Role `gorm:"many2many:account_roles;"`
 }
 
-func (*AccountModel) TableName() string {
-	return "accounts"
+type Role struct {
+	gorm.Model
+	Name        string
+	Description string
 }

@@ -17,26 +17,39 @@ type service struct {
 }
 
 // GetAccount implements account.Service.
-func (s *service) GetAccount(ctx context.Context) (res *account.AccountInfo, err error) {
+func (s *service) GetAccount(ctx context.Context) (*account.AccountInfo, error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
 
-	var a AccountModel
-	err = s.db.First(&a, &AccountModel{UserId: auth.UserID()}).Error
+	var a Account
+	err := s.db.First(&a, &Account{UserId: auth.UserID()}).Error
 	if err == nil {
-		res = s.c.FromAccountModelToAccountInfo(a)
-		return
+		return s.c.FromAccountToAccountInfo(a), nil
 	}
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
-		return
+		return nil, err
+	}
+	return s.createAccount(ctx)
+}
+
+func (s *service) createAccount(ctx context.Context) (*account.AccountInfo, error) {
+	auth := authorization.Context[authorization.Ctx](ctx)
+
+	var role Role
+	if err := s.db.Where("name = ?", "user").First(&role).Error; err != nil {
+		return nil, err
 	}
 
+	var a Account
 	a.UserId = auth.UserID()
 	a.Membership = MembershipTypeFree
 	a.Activated = true
-	if err = s.db.Create(&a).Error; err != nil {
-		return
+	if err := s.db.Create(&a).Error; err != nil {
+		return nil, err
 	}
-	return s.c.FromAccountModelToAccountInfo(a), nil
+	if err := s.db.Omit("Roles.*").Model(&a).Association("Roles").Append(&role); err != nil {
+		return nil, err
+	}
+	return s.c.FromAccountToAccountInfo(a), nil
 }
 
 var _ account.Service = (*service)(nil)

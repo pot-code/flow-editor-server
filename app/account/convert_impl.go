@@ -7,7 +7,7 @@ import account "flow-editor-server/gen/account"
 
 type ConverterImpl struct{}
 
-func (c *ConverterImpl) FromAccountModelToAccountInfo(source AccountModel) *account.AccountInfo {
+func (c *ConverterImpl) FromAccountToAccountInfo(source Account) *account.AccountInfo {
 	var accountAccountInfo account.AccountInfo
 	accountAccountInfo.Activated = source.Activated
 	accountAccountInfo.Membership = int(source.Membership)
