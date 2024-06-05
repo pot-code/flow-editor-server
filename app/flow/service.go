@@ -16,19 +16,19 @@ type service struct {
 // CopyFlow implements flow.Service.
 func (s *service) CopyFlow(ctx context.Context, copyId string) (err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
-	var m FlowModel
+	var m Flow
 	if err := s.db.First(&m, copyId).Error; err != nil {
 		return err
 	}
 
 	m.Owner = auth.UserID()
-	return s.db.Model(&FlowModel{}).Omit("id").Create(&m).Error
+	return s.db.Model(&Flow{}).Omit("id").Create(&m).Error
 }
 
 // CreateFlow implements flow.Service.
-func (s *service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (res *flow.FlowDetail, err error) {
+func (s *service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (res *flow.FlowDetailData, err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
-	m := &FlowModel{
+	m := &Flow{
 		Title: *data.Title,
 		Nodes: data.Nodes,
 		Edges: data.Edges,
@@ -43,13 +43,13 @@ func (s *service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (re
 // DeleteFlow implements flow.Service.
 func (s *service) DeleteFlow(ctx context.Context, id string) (err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
-	return s.db.Where("id = ? AND owner = ?", id, auth.UserID()).Delete(&FlowModel{}).Error
+	return s.db.Where("id = ? AND owner = ?", id, auth.UserID()).Delete(&Flow{}).Error
 }
 
 // GetFlow implements flow.Service.
-func (s *service) GetFlow(ctx context.Context, id string) (res *flow.FlowDetail, err error) {
+func (s *service) GetFlow(ctx context.Context, id string) (res *flow.FlowDetailData, err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
-	var flow FlowModel
+	var flow Flow
 	if err := s.db.Where("id = ? AND owner = ?", id, auth.UserID()).First(&flow).Error; err != nil {
 		return nil, err
 	}
@@ -57,9 +57,9 @@ func (s *service) GetFlow(ctx context.Context, id string) (res *flow.FlowDetail,
 }
 
 // GetFlowList implements flow.Service.
-func (s *service) GetFlowList(ctx context.Context) (res []*flow.FlowListItem, err error) {
+func (s *service) GetFlowList(ctx context.Context) (res []*flow.FlowListItemData, err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
-	var flows []*FlowModel
+	var flows []*Flow
 	if err := s.db.Find(&flows, "owner = ?", auth.UserID()).Error; err != nil {
 		return nil, err
 	}
@@ -67,11 +67,11 @@ func (s *service) GetFlowList(ctx context.Context) (res []*flow.FlowListItem, er
 }
 
 // UpdateFlow implements flow.Service.
-func (s *service) UpdateFlow(ctx context.Context, payload *flow.UpdateFlowPayload) (res *flow.FlowDetail, err error) {
+func (s *service) UpdateFlow(ctx context.Context, payload *flow.UpdateFlowPayload) (res *flow.FlowDetailData, err error) {
 	auth := authorization.Context[authorization.Ctx](ctx)
 	data := payload.Data
 
-	var model FlowModel
+	var model Flow
 	if err := s.db.First(&model, "id = ? AND owner = ?", payload.ID, auth.UserID()).Error; err != nil {
 		return nil, err
 	}

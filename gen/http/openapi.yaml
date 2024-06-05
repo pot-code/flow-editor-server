@@ -42,7 +42,7 @@ paths:
                     schema:
                         type: array
                         items:
-                            $ref: '#/definitions/FlowListItemResponse'
+                            $ref: '#/definitions/FlowListItemDataResponse'
             schemes:
                 - http
         post:
@@ -263,8 +263,8 @@ definitions:
             - id
             - title
             - created_at
-    FlowListItemResponse:
-        title: FlowListItemResponse
+    FlowListItemDataResponse:
+        title: FlowListItemDataResponse
         type: object
         properties:
             created_at:

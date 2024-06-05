@@ -14,13 +14,13 @@ import (
 // Flow 服务
 type Service interface {
 	// 列出当前用户拥有的 flow
-	GetFlowList(context.Context) (res []*FlowListItem, err error)
+	GetFlowList(context.Context) (res []*FlowListItemData, err error)
 	// 根据 flow id 获取 flow 详情
-	GetFlow(context.Context, string) (res *FlowDetail, err error)
+	GetFlow(context.Context, string) (res *FlowDetailData, err error)
 	// 创建 flow
-	CreateFlow(context.Context, *CreateFlowData) (res *FlowDetail, err error)
+	CreateFlow(context.Context, *CreateFlowData) (res *FlowDetailData, err error)
 	// 更新 flow
-	UpdateFlow(context.Context, *UpdateFlowPayload) (res *FlowDetail, err error)
+	UpdateFlow(context.Context, *UpdateFlowPayload) (res *FlowDetailData, err error)
 	// 删除 flow
 	DeleteFlow(context.Context, string) (err error)
 	// 复制 flow
@@ -53,8 +53,8 @@ type CreateFlowData struct {
 	Edges *string
 }
 
-// FlowDetail is the result type of the flow service getFlow method.
-type FlowDetail struct {
+// FlowDetailData is the result type of the flow service getFlow method.
+type FlowDetailData struct {
 	// flow id
 	ID int
 	// flow 标题
@@ -67,7 +67,7 @@ type FlowDetail struct {
 	CreatedAt string
 }
 
-type FlowListItem struct {
+type FlowListItemData struct {
 	// flow id
 	ID int
 	// flow 标题

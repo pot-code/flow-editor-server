@@ -3,14 +3,14 @@ package design
 //lint:ignore ST1001 dsl
 import . "goa.design/goa/v3/dsl"
 
-var FlowListItem = Type("FlowListItem", func() {
+var FlowListItemData = Type("FlowListItemData", func() {
 	Attribute("id", Int, "flow id")
 	Attribute("title", String, "flow 标题")
 	Attribute("created_at", String, "flow 创建时间")
 	Required("id", "title", "created_at")
 })
 
-var FlowDetail = Type("FlowDetail", func() {
+var FlowDetailData = Type("FlowDetailData", func() {
 	Attribute("id", Int, "flow id")
 	Attribute("title", String, "flow 标题")
 	Attribute("nodes", String, "flow 节点")
@@ -47,7 +47,7 @@ var _ = Service("flow", func() {
 		HTTP(func() {
 			GET("/")
 		})
-		Result(ArrayOf(FlowListItem))
+		Result(ArrayOf(FlowListItemData))
 	})
 
 	Method("getFlow", func() {
@@ -56,7 +56,7 @@ var _ = Service("flow", func() {
 		HTTP(func() {
 			GET("/{id}")
 		})
-		Result(FlowDetail)
+		Result(FlowDetailData)
 	})
 
 	Method("createFlow", func() {
@@ -66,7 +66,7 @@ var _ = Service("flow", func() {
 			POST("/")
 			Response(StatusCreated)
 		})
-		Result(FlowDetail)
+		Result(FlowDetailData)
 	})
 
 	Method("updateFlow", func() {
@@ -79,7 +79,7 @@ var _ = Service("flow", func() {
 			PUT("/{id}")
 			Body("data")
 		})
-		Result(FlowDetail)
+		Result(FlowDetailData)
 	})
 
 	Method("deleteFlow", func() {

@@ -38,7 +38,7 @@ paths:
                             schema:
                                 type: array
                                 items:
-                                    $ref: '#/components/schemas/FlowListItem'
+                                    $ref: '#/components/schemas/FlowListItemData'
                                 example:
                                     - created_at: Corporis totam.
                                       id: 5733579738933068263
@@ -81,7 +81,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/FlowDetail'
+                                $ref: '#/components/schemas/FlowDetailData'
                             example:
                                 created_at: Qui ipsa.
                                 edges: Est ab est illo sequi.
@@ -130,7 +130,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/FlowDetail'
+                                $ref: '#/components/schemas/FlowDetailData'
                             example:
                                 created_at: Delectus autem.
                                 edges: Vitae quidem non earum sed.
@@ -169,7 +169,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/FlowDetail'
+                                $ref: '#/components/schemas/FlowDetailData'
                             example:
                                 created_at: At laborum molestiae vel consequuntur quia.
                                 edges: A et ut accusantium quo maxime omnis.
@@ -233,7 +233,7 @@ components:
                 edges: Adipisci explicabo eveniet cum unde quam.
                 nodes: In et fugiat.
                 title: Veritatis vel voluptate rerum minus.
-        FlowDetail:
+        FlowDetailData:
             type: object
             properties:
                 created_at:
@@ -267,7 +267,7 @@ components:
                 - id
                 - title
                 - created_at
-        FlowListItem:
+        FlowListItemData:
             type: object
             properties:
                 created_at:

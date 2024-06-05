@@ -7,47 +7,47 @@ import flow "flow-editor-server/gen/flow"
 
 type ConverterImpl struct{}
 
-func (c *ConverterImpl) FlowModelToFlowDetail(source *FlowModel) *flow.FlowDetail {
-	var pFlowFlowDetail *flow.FlowDetail
+func (c *ConverterImpl) FlowModelToFlowDetail(source *Flow) *flow.FlowDetailData {
+	var pFlowFlowDetailData *flow.FlowDetailData
 	if source != nil {
-		var flowFlowDetail flow.FlowDetail
-		flowFlowDetail.ID = UintToInt((*source).Model.ID)
-		flowFlowDetail.Title = (*source).Title
+		var flowFlowDetailData flow.FlowDetailData
+		flowFlowDetailData.ID = UintToInt((*source).Model.ID)
+		flowFlowDetailData.Title = (*source).Title
 		var pString *string
 		if (*source).Nodes != nil {
 			xstring := *(*source).Nodes
 			pString = &xstring
 		}
-		flowFlowDetail.Nodes = pString
+		flowFlowDetailData.Nodes = pString
 		var pString2 *string
 		if (*source).Edges != nil {
 			xstring2 := *(*source).Edges
 			pString2 = &xstring2
 		}
-		flowFlowDetail.Edges = pString2
-		flowFlowDetail.CreatedAt = TimeToString((*source).Model.CreatedAt)
-		pFlowFlowDetail = &flowFlowDetail
+		flowFlowDetailData.Edges = pString2
+		flowFlowDetailData.CreatedAt = TimeToString((*source).Model.CreatedAt)
+		pFlowFlowDetailData = &flowFlowDetailData
 	}
-	return pFlowFlowDetail
+	return pFlowFlowDetailData
 }
-func (c *ConverterImpl) FlowModelToFlowListItem(source *FlowModel) *flow.FlowListItem {
-	var pFlowFlowListItem *flow.FlowListItem
+func (c *ConverterImpl) FlowModelToFlowListItem(source *Flow) *flow.FlowListItemData {
+	var pFlowFlowListItemData *flow.FlowListItemData
 	if source != nil {
-		var flowFlowListItem flow.FlowListItem
-		flowFlowListItem.ID = UintToInt((*source).Model.ID)
-		flowFlowListItem.Title = (*source).Title
-		flowFlowListItem.CreatedAt = TimeToString((*source).Model.CreatedAt)
-		pFlowFlowListItem = &flowFlowListItem
+		var flowFlowListItemData flow.FlowListItemData
+		flowFlowListItemData.ID = UintToInt((*source).Model.ID)
+		flowFlowListItemData.Title = (*source).Title
+		flowFlowListItemData.CreatedAt = TimeToString((*source).Model.CreatedAt)
+		pFlowFlowListItemData = &flowFlowListItemData
 	}
-	return pFlowFlowListItem
+	return pFlowFlowListItemData
 }
-func (c *ConverterImpl) FlowModelsToFlowList(source []*FlowModel) []*flow.FlowListItem {
-	var pFlowFlowListItemList []*flow.FlowListItem
+func (c *ConverterImpl) FlowModelsToFlowList(source []*Flow) []*flow.FlowListItemData {
+	var pFlowFlowListItemDataList []*flow.FlowListItemData
 	if source != nil {
-		pFlowFlowListItemList = make([]*flow.FlowListItem, len(source))
+		pFlowFlowListItemDataList = make([]*flow.FlowListItemData, len(source))
 		for i := 0; i < len(source); i++ {
-			pFlowFlowListItemList[i] = c.FlowModelToFlowListItem(source[i])
+			pFlowFlowListItemDataList[i] = c.FlowModelToFlowListItem(source[i])
 		}
 	}
-	return pFlowFlowListItemList
+	return pFlowFlowListItemDataList
 }

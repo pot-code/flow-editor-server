@@ -22,7 +22,7 @@ import (
 // flow getFlowList endpoint.
 func EncodeGetFlowListResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, any) error {
 	return func(ctx context.Context, w http.ResponseWriter, v any) error {
-		res, _ := v.([]*flow.FlowListItem)
+		res, _ := v.([]*flow.FlowListItemData)
 		enc := encoder(ctx, w)
 		body := NewGetFlowListResponseBody(res)
 		w.WriteHeader(http.StatusOK)
@@ -34,7 +34,7 @@ func EncodeGetFlowListResponse(encoder func(context.Context, http.ResponseWriter
 // getFlow endpoint.
 func EncodeGetFlowResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, any) error {
 	return func(ctx context.Context, w http.ResponseWriter, v any) error {
-		res, _ := v.(*flow.FlowDetail)
+		res, _ := v.(*flow.FlowDetailData)
 		enc := encoder(ctx, w)
 		body := NewGetFlowResponseBody(res)
 		w.WriteHeader(http.StatusOK)
@@ -62,7 +62,7 @@ func DecodeGetFlowRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp
 // flow createFlow endpoint.
 func EncodeCreateFlowResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, any) error {
 	return func(ctx context.Context, w http.ResponseWriter, v any) error {
-		res, _ := v.(*flow.FlowDetail)
+		res, _ := v.(*flow.FlowDetailData)
 		enc := encoder(ctx, w)
 		body := NewCreateFlowResponseBody(res)
 		w.WriteHeader(http.StatusCreated)
@@ -99,7 +99,7 @@ func DecodeCreateFlowRequest(mux goahttp.Muxer, decoder func(*http.Request) goah
 // flow updateFlow endpoint.
 func EncodeUpdateFlowResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, any) error {
 	return func(ctx context.Context, w http.ResponseWriter, v any) error {
-		res, _ := v.(*flow.FlowDetail)
+		res, _ := v.(*flow.FlowDetailData)
 		enc := encoder(ctx, w)
 		body := NewUpdateFlowResponseBody(res)
 		w.WriteHeader(http.StatusOK)
@@ -190,10 +190,10 @@ func DecodeCopyFlowRequest(mux goahttp.Muxer, decoder func(*http.Request) goahtt
 	}
 }
 
-// marshalFlowFlowListItemToFlowListItemResponse builds a value of type
-// *FlowListItemResponse from a value of type *flow.FlowListItem.
-func marshalFlowFlowListItemToFlowListItemResponse(v *flow.FlowListItem) *FlowListItemResponse {
-	res := &FlowListItemResponse{
+// marshalFlowFlowListItemDataToFlowListItemDataResponse builds a value of type
+// *FlowListItemDataResponse from a value of type *flow.FlowListItemData.
+func marshalFlowFlowListItemDataToFlowListItemDataResponse(v *flow.FlowListItemData) *FlowListItemDataResponse {
+	res := &FlowListItemDataResponse{
 		ID:        v.ID,
 		Title:     v.Title,
 		CreatedAt: v.CreatedAt,

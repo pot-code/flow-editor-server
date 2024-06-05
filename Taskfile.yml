@@ -16,7 +16,7 @@ tasks:
     silent: true
     ignore_error: true
     sources:
-      - "app/**/converter.go"
+      - "app/**/convert.go"
   gen:goa:
     cmd: goa gen flow-editor-server/design
     silent: true

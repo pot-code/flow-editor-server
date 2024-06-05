@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type FlowModel struct {
+type Flow struct {
 	gorm.Model
 	Title string
 	Nodes *string `gorm:"default:null"`
@@ -12,6 +12,6 @@ type FlowModel struct {
 	Owner string
 }
 
-func (g *FlowModel) TableName() string {
+func (g *Flow) TableName() string {
 	return "flows"
 }

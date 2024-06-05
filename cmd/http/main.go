@@ -66,7 +66,10 @@ func newGormDB(lc fx.Lifecycle) (*gorm.DB, error) {
 
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			if err := db.AutoMigrate(&flow.FlowModel{}, &account.Account{}); err != nil {
+			if err := db.AutoMigrate(
+				&flow.Flow{},
+				&account.Account{},
+			); err != nil {
 				return fmt.Errorf("failed to migrate database: %w", err)
 			}
 			return nil

@@ -35,7 +35,7 @@ type UpdateFlowRequestBody struct {
 
 // GetFlowListResponseBody is the type of the "flow" service "getFlowList"
 // endpoint HTTP response body.
-type GetFlowListResponseBody []*FlowListItemResponse
+type GetFlowListResponseBody []*FlowListItemDataResponse
 
 // GetFlowResponseBody is the type of the "flow" service "getFlow" endpoint
 // HTTP response body.
@@ -82,8 +82,8 @@ type UpdateFlowResponseBody struct {
 	CreatedAt string `form:"created_at" json:"created_at" xml:"created_at"`
 }
 
-// FlowListItemResponse is used to define fields on response body types.
-type FlowListItemResponse struct {
+// FlowListItemDataResponse is used to define fields on response body types.
+type FlowListItemDataResponse struct {
 	// flow id
 	ID int `form:"id" json:"id" xml:"id"`
 	// flow 标题
@@ -94,17 +94,17 @@ type FlowListItemResponse struct {
 
 // NewGetFlowListResponseBody builds the HTTP response body from the result of
 // the "getFlowList" endpoint of the "flow" service.
-func NewGetFlowListResponseBody(res []*flow.FlowListItem) GetFlowListResponseBody {
-	body := make([]*FlowListItemResponse, len(res))
+func NewGetFlowListResponseBody(res []*flow.FlowListItemData) GetFlowListResponseBody {
+	body := make([]*FlowListItemDataResponse, len(res))
 	for i, val := range res {
-		body[i] = marshalFlowFlowListItemToFlowListItemResponse(val)
+		body[i] = marshalFlowFlowListItemDataToFlowListItemDataResponse(val)
 	}
 	return body
 }
 
 // NewGetFlowResponseBody builds the HTTP response body from the result of the
 // "getFlow" endpoint of the "flow" service.
-func NewGetFlowResponseBody(res *flow.FlowDetail) *GetFlowResponseBody {
+func NewGetFlowResponseBody(res *flow.FlowDetailData) *GetFlowResponseBody {
 	body := &GetFlowResponseBody{
 		ID:        res.ID,
 		Title:     res.Title,
@@ -117,7 +117,7 @@ func NewGetFlowResponseBody(res *flow.FlowDetail) *GetFlowResponseBody {
 
 // NewCreateFlowResponseBody builds the HTTP response body from the result of
 // the "createFlow" endpoint of the "flow" service.
-func NewCreateFlowResponseBody(res *flow.FlowDetail) *CreateFlowResponseBody {
+func NewCreateFlowResponseBody(res *flow.FlowDetailData) *CreateFlowResponseBody {
 	body := &CreateFlowResponseBody{
 		ID:        res.ID,
 		Title:     res.Title,
@@ -130,7 +130,7 @@ func NewCreateFlowResponseBody(res *flow.FlowDetail) *CreateFlowResponseBody {
 
 // NewUpdateFlowResponseBody builds the HTTP response body from the result of
 // the "updateFlow" endpoint of the "flow" service.
-func NewUpdateFlowResponseBody(res *flow.FlowDetail) *UpdateFlowResponseBody {
+func NewUpdateFlowResponseBody(res *flow.FlowDetailData) *UpdateFlowResponseBody {
 	body := &UpdateFlowResponseBody{
 		ID:        res.ID,
 		Title:     res.Title,

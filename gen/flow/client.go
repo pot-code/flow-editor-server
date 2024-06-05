@@ -36,43 +36,43 @@ func NewClient(getFlowList, getFlow, createFlow, updateFlow, deleteFlow, copyFlo
 }
 
 // GetFlowList calls the "getFlowList" endpoint of the "flow" service.
-func (c *Client) GetFlowList(ctx context.Context) (res []*FlowListItem, err error) {
+func (c *Client) GetFlowList(ctx context.Context) (res []*FlowListItemData, err error) {
 	var ires any
 	ires, err = c.GetFlowListEndpoint(ctx, nil)
 	if err != nil {
 		return
 	}
-	return ires.([]*FlowListItem), nil
+	return ires.([]*FlowListItemData), nil
 }
 
 // GetFlow calls the "getFlow" endpoint of the "flow" service.
-func (c *Client) GetFlow(ctx context.Context, p string) (res *FlowDetail, err error) {
+func (c *Client) GetFlow(ctx context.Context, p string) (res *FlowDetailData, err error) {
 	var ires any
 	ires, err = c.GetFlowEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.(*FlowDetail), nil
+	return ires.(*FlowDetailData), nil
 }
 
 // CreateFlow calls the "createFlow" endpoint of the "flow" service.
-func (c *Client) CreateFlow(ctx context.Context, p *CreateFlowData) (res *FlowDetail, err error) {
+func (c *Client) CreateFlow(ctx context.Context, p *CreateFlowData) (res *FlowDetailData, err error) {
 	var ires any
 	ires, err = c.CreateFlowEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.(*FlowDetail), nil
+	return ires.(*FlowDetailData), nil
 }
 
 // UpdateFlow calls the "updateFlow" endpoint of the "flow" service.
-func (c *Client) UpdateFlow(ctx context.Context, p *UpdateFlowPayload) (res *FlowDetail, err error) {
+func (c *Client) UpdateFlow(ctx context.Context, p *UpdateFlowPayload) (res *FlowDetailData, err error) {
 	var ires any
 	ires, err = c.UpdateFlowEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.(*FlowDetail), nil
+	return ires.(*FlowDetailData), nil
 }
 
 // DeleteFlow calls the "deleteFlow" endpoint of the "flow" service.
