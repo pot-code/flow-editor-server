@@ -6,6 +6,9 @@ tasks:
   http:
     cmd: go run ./cmd/http
     silent: true
+  build:http:
+    cmd: go build -o ./build/http -ldflags="-s -w" ./cmd/http
+    silent: true
   gen:
     silent: true
     deps:
