@@ -5,33 +5,42 @@ version: "3"
 tasks:
   http:
     cmd: go run ./cmd/http
+    desc: Run http server
     silent: true
   build:http:
     cmd: go build -o ./build/http -ldflags="-s -w" ./cmd/http
+    desc: Build http server
     silent: true
   gen:
+    desc: Run all generators
     silent: true
     deps:
       - gen:converter
       - gen:goa
   gen:converter:
     cmd: goverter gen -cwd . ./app/...
+    desc: Generate converter code
     silent: true
     ignore_error: true
     sources:
       - "app/**/convert.go"
   gen:goa:
     cmd: goa gen flow-editor-server/design
+    desc: Generate goa services
     silent: true
     ignore_error: true
     sources:
       - "design/**.go"
-  docs:
+  swagger:
     cmd: redocly preview-docs ./gen/http/openapi3.yaml -p 3001
-    silent: true
-  opa:
-    cmd: opa run -w -a localhost:8181 -s -b policy
+    desc: Serve OpenAPI 3.0 documentation
     silent: true
   seed:
     cmd: go run ./scripts/seed
+    desc: Seed database
     silent: true
+  docker:
+    cmd: docker compose -p flow-editor-server up -d --remove-orphans
+    desc: Run docker compose services
+    silent: true
+    dir: docker
