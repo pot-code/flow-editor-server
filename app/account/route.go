@@ -16,7 +16,6 @@ type Route struct {
 	z *authorization.Authorizer[*oauth.IntrospectionContext]
 }
 
-// MountRoute implements goa.HttpServer.
 func (s *Route) MountRoute(mux http.ResolverMuxer) {
 	endpoints := account.NewEndpoints(s.s)
 	srv := server.New(endpoints, mux, http.RequestDecoder, http.ResponseEncoder, nil, goa.ErrorFormatter)

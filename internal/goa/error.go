@@ -3,6 +3,7 @@ package goa
 import (
 	"context"
 	"errors"
+	"flow-editor-server/internal/authz"
 	"net/http"
 
 	"github.com/rs/zerolog/log"
@@ -29,6 +30,9 @@ func ErrorFormatter(ctx context.Context, err error) ghttp.Statuser {
 	}
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return &ErrorResponse{ID: goa.NewErrorID(), Message: err.Error(), code: http.StatusNotFound}
+	}
+	if errors.Is(err, authz.ErrUnauthorized) {
+		return &ErrorResponse{ID: goa.NewErrorID(), Message: err.Error(), code: http.StatusForbidden}
 	}
 	log.Err(err).Msg("internal server error")
 	return &ErrorResponse{ID: goa.NewErrorID(), Message: err.Error(), code: http.StatusInternalServerError}

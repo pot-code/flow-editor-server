@@ -11,7 +11,3 @@ type Flow struct {
 	Edges *string `gorm:"default:null"`
 	Owner string
 }
-
-func (g *Flow) TableName() string {
-	return "flows"
-}

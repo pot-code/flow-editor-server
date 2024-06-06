@@ -1,0 +1,6 @@
+p,user,flow,read
+p,user,flow,delete
+p,user,flow,create
+p,user,flow,update
+p,user,flow,copy
+g,admin,user
