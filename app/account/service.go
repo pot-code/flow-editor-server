@@ -23,7 +23,7 @@ func (s *service) GetAccount(ctx context.Context) (*account.AccountInfo, error) 
 	var a Account
 	err := s.db.First(&a, &Account{UserID: auth.UserID()}).Error
 	if err == nil {
-		return s.c.FromAccountToAccountInfo(a), nil
+		return s.c.AccountToAccountInfo(a), nil
 	}
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
@@ -49,7 +49,7 @@ func (s *service) createAccount(ctx context.Context) (*account.AccountInfo, erro
 	if err := s.db.Omit("Roles.*").Model(&a).Association("Roles").Append(&role); err != nil {
 		return nil, err
 	}
-	return s.c.FromAccountToAccountInfo(a), nil
+	return s.c.AccountToAccountInfo(a), nil
 }
 
 var _ account.Service = (*service)(nil)

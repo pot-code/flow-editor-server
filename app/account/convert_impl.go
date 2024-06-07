@@ -7,9 +7,18 @@ import account "flow-editor-server/gen/account"
 
 type ConverterImpl struct{}
 
-func (c *ConverterImpl) FromAccountToAccountInfo(source Account) *account.AccountInfo {
+func (c *ConverterImpl) AccountToAccountInfo(source Account) *account.AccountInfo {
 	var accountAccountInfo account.AccountInfo
+	accountAccountInfo.UserID = source.UserID
 	accountAccountInfo.Activated = source.Activated
 	accountAccountInfo.Membership = int(source.Membership)
+	var stringList []string
+	if source.Roles != nil {
+		stringList = make([]string, len(source.Roles))
+		for i := 0; i < len(source.Roles); i++ {
+			stringList[i] = RoleToString(source.Roles[i])
+		}
+	}
+	accountAccountInfo.Roles = stringList
 	return &accountAccountInfo
 }

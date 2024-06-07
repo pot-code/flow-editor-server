@@ -16,6 +16,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
 	"github.com/zitadel/zitadel-go/v3/pkg/authorization/oauth"
+	zw "github.com/zitadel/zitadel-go/v3/pkg/http/middleware"
 	"github.com/zitadel/zitadel-go/v3/pkg/zitadel"
 	"go.uber.org/fx"
 	ghttp "goa.design/goa/v3/http"
@@ -28,18 +29,29 @@ func main() {
 	log.Logger.Level(zerolog.DebugLevel)
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
+	config := config.NewHttpConfig()
+
+	z, err := authorization.New(
+		context.Background(),
+		zitadel.New(config.ZitadelDomain, zitadel.WithInsecure(config.ZitadelPort)),
+		oauth.DefaultAuthorization("key.json"),
+	)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to connect to zitadel")
+	}
+
+	mux := ghttp.NewMuxer()
+	mux.Use(zw.New(z).RequireAuthorization())
 	fx.New(
 		account.Module,
 		flow.Module,
 
+		fx.Supply(z, config, fx.Annotate(mux, fx.As(new(ghttp.ResolverMuxer)))),
 		fx.Provide(
-			ghttp.NewMuxer,
 			validate.NewTranslator,
 			validate.NewValidator,
-			config.NewHttpConfig,
 			newHttpServer,
 			newGormDB,
-			newZitadel,
 			// newCasbinEnforcer,
 			newCerbosClient,
 		),
@@ -55,37 +67,19 @@ func main() {
 // 	return e, nil
 // }
 
-func newZitadel(config *config.HttpConfig) (*authorization.Authorizer[*oauth.IntrospectionContext], error) {
-	z, err := authorization.New(
-		context.Background(),
-		zitadel.New(config.ZitadelDomain, zitadel.WithInsecure(config.ZitadelPort)),
-		oauth.DefaultAuthorization("key.json"),
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to zitadel: %w", err)
-	}
-	return z, nil
-}
-
-func newGormDB(lc fx.Lifecycle) (*gorm.DB, error) {
+func newGormDB() (*gorm.DB, error) {
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect database: %w", err)
+		return nil, fmt.Errorf("failed to connect database")
 	}
-
-	lc.Append(fx.Hook{
-		OnStart: func(ctx context.Context) error {
-			if err := db.AutoMigrate(
-				&flow.Flow{},
-				&account.Account{},
-			); err != nil {
-				return fmt.Errorf("failed to migrate database: %w", err)
-			}
-			return nil
-		},
-	})
+	if err := db.AutoMigrate(
+		&flow.Flow{},
+		&account.Account{},
+	); err != nil {
+		return nil, fmt.Errorf("failed to migrate database")
+	}
 	return db, nil
 }
 

@@ -2,10 +2,9 @@ package flow
 
 import (
 	"context"
+	"flow-editor-server/app/account"
 	"flow-editor-server/gen/flow"
-	"flow-editor-server/internal/authz"
 
-	"github.com/casbin/casbin/v2"
 	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
 	"gorm.io/gorm"
 )
@@ -13,7 +12,6 @@ import (
 type service struct {
 	db *gorm.DB
 	c  Converter
-	e  *casbin.Enforcer
 }
 
 // CopyFlow implements flow.Service.
@@ -30,14 +28,6 @@ func (s *service) CopyFlow(ctx context.Context, copyId string) (err error) {
 
 // CreateFlow implements flow.Service.
 func (s *service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (res *flow.FlowDetailData, err error) {
-	ok, err := s.e.Enforce("user", "flow", "create")
-	if err != nil {
-		return nil, err
-	}
-	if !ok {
-		return nil, authz.ErrUnauthorized
-	}
-
 	auth := authorization.Context[authorization.Ctx](ctx)
 	m := &Flow{
 		Title: *data.Title,
@@ -59,9 +49,9 @@ func (s *service) DeleteFlow(ctx context.Context, id string) (err error) {
 
 // GetFlow implements flow.Service.
 func (s *service) GetFlow(ctx context.Context, id string) (res *flow.FlowDetailData, err error) {
-	auth := authorization.Context[authorization.Ctx](ctx)
+	a := account.Context(ctx)
 	var flow Flow
-	if err := s.db.Where("id = ? AND owner = ?", id, auth.UserID()).First(&flow).Error; err != nil {
+	if err := s.db.Where("id = ? AND owner = ?", id, a.UserID).First(&flow).Error; err != nil {
 		return nil, err
 	}
 	return s.c.FlowModelToFlowDetail(&flow), nil
@@ -103,6 +93,6 @@ func (s *service) UpdateFlow(ctx context.Context, payload *flow.UpdateFlowPayloa
 
 var _ flow.Service = (*service)(nil)
 
-func NewService(db *gorm.DB, c Converter, e *casbin.Enforcer) *service {
-	return &service{db: db, c: c, e: e}
+func NewService(db *gorm.DB, c Converter) *service {
+	return &service{db: db, c: c}
 }
