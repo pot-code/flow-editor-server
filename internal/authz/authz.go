@@ -24,7 +24,7 @@ func NewAuthz[T Resource](c *cerbos.GRPCClient) *Authz[T] {
 func (az *Authz[T]) CheckPermission(ctx context.Context, obj T, action string) error {
 	a := Context(ctx)
 	p := cerbos.NewPrincipal(a.UserID, a.Roles...)
-	r := cerbos.NewResource("flow", obj.ResourceID())
+	r := cerbos.NewResource(obj.Kind(), obj.ResourceID())
 	r.WithAttr("owner", obj.OwnerID())
 	ok, err := az.c.IsAllowed(ctx, p, r, action)
 	if err != nil {
