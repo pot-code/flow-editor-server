@@ -1,10 +1,10 @@
 package flow
 
 import (
-	"flow-editor-server/app/account"
-	ga "flow-editor-server/gen/account"
+	"flow-editor-server/gen/account"
 	"flow-editor-server/gen/flow"
 	"flow-editor-server/gen/http/flow/server"
+	"flow-editor-server/internal/authz"
 	"flow-editor-server/internal/goa"
 
 	ut "github.com/go-playground/universal-translator"
@@ -16,14 +16,14 @@ type Route struct {
 	s  flow.Service
 	v  *validator.Validate
 	t  ut.Translator
-	as ga.Service
+	as account.Service
 }
 
 func (s *Route) MountRoute(mux http.ResolverMuxer) {
 	endpoints := flow.NewEndpoints(s.s)
 	endpoints.Use(goa.ValidatePayload(s.v, s.t))
 	srv := server.New(endpoints, mux, http.RequestDecoder, http.ResponseEncoder, nil, goa.ErrorFormatter)
-	srv.Use(account.Middleware(s.as))
+	srv.Use(authz.Middleware(s.as))
 	server.Mount(mux, srv)
 }
 
@@ -31,7 +31,7 @@ var _ goa.HttpRoute = (*Route)(nil)
 
 func NewRoute(
 	s flow.Service,
-	as ga.Service,
+	as account.Service,
 	v *validator.Validate,
 	t ut.Translator,
 ) *Route {

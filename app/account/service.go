@@ -21,7 +21,7 @@ func (s *service) GetAccount(ctx context.Context) (*account.AccountInfo, error) 
 	auth := authorization.Context[authorization.Ctx](ctx)
 
 	var a Account
-	err := s.db.First(&a, &Account{UserID: auth.UserID()}).Error
+	err := s.db.Preload("Roles").First(&a, &Account{UserID: auth.UserID()}).Error
 	if err == nil {
 		return s.c.AccountToAccountInfo(a), nil
 	}

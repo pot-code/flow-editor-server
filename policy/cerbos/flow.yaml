@@ -5,7 +5,6 @@ resourcePolicy:
   resource: "flow"
   rules:
     - actions:
-        - create
         - update
         - delete
       effect: EFFECT_ALLOW
