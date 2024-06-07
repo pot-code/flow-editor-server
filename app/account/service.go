@@ -21,7 +21,7 @@ func (s *service) GetAccount(ctx context.Context) (*account.AccountInfo, error) 
 	auth := authorization.Context[authorization.Ctx](ctx)
 
 	var a Account
-	err := s.db.First(&a, &Account{UserId: auth.UserID()}).Error
+	err := s.db.First(&a, &Account{UserID: auth.UserID()}).Error
 	if err == nil {
 		return s.c.FromAccountToAccountInfo(a), nil
 	}
@@ -40,7 +40,7 @@ func (s *service) createAccount(ctx context.Context) (*account.AccountInfo, erro
 	}
 
 	var a Account
-	a.UserId = auth.UserID()
+	a.UserID = auth.UserID()
 	a.Membership = MembershipTypeFree
 	a.Activated = true
 	if err := s.db.Create(&a).Error; err != nil {

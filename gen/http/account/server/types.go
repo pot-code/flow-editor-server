@@ -14,16 +14,25 @@ import (
 // GetAccountResponseBody is the type of the "account" service "getAccount"
 // endpoint HTTP response body.
 type GetAccountResponseBody struct {
-	Activated  bool `form:"activated" json:"activated" xml:"activated"`
-	Membership int  `form:"membership" json:"membership" xml:"membership"`
+	UserID     string   `form:"user_id" json:"user_id" xml:"user_id"`
+	Activated  bool     `form:"activated" json:"activated" xml:"activated"`
+	Membership int      `form:"membership" json:"membership" xml:"membership"`
+	Roles      []string `form:"roles,omitempty" json:"roles,omitempty" xml:"roles,omitempty"`
 }
 
 // NewGetAccountResponseBody builds the HTTP response body from the result of
 // the "getAccount" endpoint of the "account" service.
 func NewGetAccountResponseBody(res *account.AccountInfo) *GetAccountResponseBody {
 	body := &GetAccountResponseBody{
+		UserID:     res.UserID,
 		Activated:  res.Activated,
 		Membership: res.Membership,
+	}
+	if res.Roles != nil {
+		body.Roles = make([]string, len(res.Roles))
+		for i, val := range res.Roles {
+			body.Roles[i] = val
+		}
 	}
 	return body
 }

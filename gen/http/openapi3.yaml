@@ -22,7 +22,12 @@ paths:
                                 $ref: '#/components/schemas/AccountInfo'
                             example:
                                 activated: true
-                                membership: 7755093410145240675
+                                membership: 4248600860158212725
+                                roles:
+                                    - Est iste sapiente sint veritatis sunt et.
+                                    - Consequatur et reiciendis vitae quidem.
+                                    - Earum sed similique delectus autem.
+                                user_id: Consequatur pariatur architecto possimus rerum eaque ea.
     /flow:
         get:
             tags:
@@ -40,25 +45,25 @@ paths:
                                 items:
                                     $ref: '#/components/schemas/FlowListItemData'
                                 example:
-                                    - created_at: Corporis totam.
-                                      id: 5733579738933068263
-                                      title: Nam fugiat perferendis est tempora in.
-                                    - created_at: Corporis totam.
-                                      id: 5733579738933068263
-                                      title: Nam fugiat perferendis est tempora in.
+                                    - created_at: Expedita ut omnis quam.
+                                      id: 5491639435536833503
+                                      title: Reprehenderit placeat.
+                                    - created_at: Expedita ut omnis quam.
+                                      id: 5491639435536833503
+                                      title: Reprehenderit placeat.
+                                    - created_at: Expedita ut omnis quam.
+                                      id: 5491639435536833503
+                                      title: Reprehenderit placeat.
                             example:
-                                - created_at: Corporis totam.
-                                  id: 5733579738933068263
-                                  title: Nam fugiat perferendis est tempora in.
-                                - created_at: Corporis totam.
-                                  id: 5733579738933068263
-                                  title: Nam fugiat perferendis est tempora in.
-                                - created_at: Corporis totam.
-                                  id: 5733579738933068263
-                                  title: Nam fugiat perferendis est tempora in.
-                                - created_at: Corporis totam.
-                                  id: 5733579738933068263
-                                  title: Nam fugiat perferendis est tempora in.
+                                - created_at: Expedita ut omnis quam.
+                                  id: 5491639435536833503
+                                  title: Reprehenderit placeat.
+                                - created_at: Expedita ut omnis quam.
+                                  id: 5491639435536833503
+                                  title: Reprehenderit placeat.
+                                - created_at: Expedita ut omnis quam.
+                                  id: 5491639435536833503
+                                  title: Reprehenderit placeat.
         post:
             tags:
                 - flow
@@ -72,9 +77,9 @@ paths:
                         schema:
                             $ref: '#/components/schemas/CreateFlowRequestBody'
                         example:
-                            edges: Veniam omnis repellendus.
-                            nodes: Ut omnis quam.
-                            title: Veritatis reprehenderit placeat quis.
+                            edges: Error non tempore.
+                            nodes: Qui veniam quo nostrum odit quo.
+                            title: Dolor cum consequuntur eligendi.
             responses:
                 "201":
                     description: Created response.
@@ -83,11 +88,11 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/FlowDetailData'
                             example:
-                                created_at: Qui ipsa.
-                                edges: Est ab est illo sequi.
-                                id: 7586672659878409806
-                                nodes: Iure quia quam at repudiandae.
-                                title: Impedit beatae nihil voluptas laudantium fugit.
+                                created_at: Vel consequuntur quia neque.
+                                edges: Maxime omnis porro at laborum.
+                                id: 4246908477237644263
+                                nodes: Ut accusantium.
+                                title: Porro voluptas a.
     /flow/{id}:
         delete:
             tags:
@@ -103,8 +108,8 @@ paths:
                   schema:
                     type: string
                     description: 要删除的 flow id
-                    example: Doloribus vel quidem occaecati veniam.
-                  example: Architecto earum soluta pariatur voluptatem voluptatem beatae.
+                    example: Nihil vel reprehenderit laudantium totam.
+                  example: Et consequuntur vel.
             responses:
                 "204":
                     description: No Content response.
@@ -122,8 +127,8 @@ paths:
                   schema:
                     type: string
                     description: 要获取的 flow id
-                    example: Et sint officia aut est omnis.
-                  example: Excepturi sit alias minus omnis.
+                    example: Qui assumenda quibusdam architecto.
+                  example: Est assumenda iusto itaque omnis.
             responses:
                 "200":
                     description: OK response.
@@ -132,11 +137,11 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/FlowDetailData'
                             example:
-                                created_at: Delectus autem.
-                                edges: Vitae quidem non earum sed.
-                                id: 2015585179657686444
-                                nodes: Sunt et consequatur consequatur et.
-                                title: Sapiente sint.
+                                created_at: Illum et consequatur quis voluptatum assumenda.
+                                edges: Qui eum asperiores reiciendis corporis aliquam sunt.
+                                id: 5894164223073658948
+                                nodes: Ipsa quo quasi.
+                                title: Ipsum est ab est illo sequi molestias.
         put:
             tags:
                 - flow
@@ -151,8 +156,8 @@ paths:
                   schema:
                     type: string
                     description: 要更新的 flow id
-                    example: Quo architecto sed aperiam ullam debitis nam.
-                  example: Est sequi sit atque minus vel.
+                    example: Expedita dolorem ut magnam consequatur doloribus.
+                  example: Et doloremque fugit occaecati dolores suscipit perferendis.
             requestBody:
                 required: true
                 content:
@@ -160,9 +165,9 @@ paths:
                         schema:
                             $ref: '#/components/schemas/CreateFlowRequestBody'
                         example:
-                            edges: Quis dolor cum consequuntur eligendi fugit qui.
-                            nodes: Dolore illum et consequatur quis voluptatum.
-                            title: Asperiores reiciendis corporis aliquam.
+                            edges: Nisi sint voluptates cupiditate dignissimos qui sit.
+                            nodes: Ut minus dolores consequatur eius esse.
+                            title: Minus reprehenderit laboriosam deserunt sit voluptates.
             responses:
                 "200":
                     description: OK response.
@@ -171,11 +176,11 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/FlowDetailData'
                             example:
-                                created_at: At laborum molestiae vel consequuntur quia.
-                                edges: A et ut accusantium quo maxime omnis.
-                                id: 7028823793012778726
-                                nodes: Ut porro.
-                                title: Error non tempore.
+                                created_at: Accusamus saepe nemo.
+                                edges: Sint asperiores nobis vitae eos.
+                                id: 1167611504762411030
+                                nodes: Ut odit vero rerum qui sint.
+                                title: Doloribus rerum rerum voluptas et eos aut.
     /flow/{id}/copy:
         post:
             tags:
@@ -191,8 +196,8 @@ paths:
                   schema:
                     type: string
                     description: 要复制的 flow id
-                    example: Cupiditate et aut vero quia facilis saepe.
-                  example: Aliquam dolorum et accusantium.
+                    example: Optio voluptatem doloribus.
+                  example: Animi est in impedit esse libero autem.
             responses:
                 "201":
                     description: Created response.
@@ -203,15 +208,32 @@ components:
             properties:
                 activated:
                     type: boolean
-                    example: true
+                    example: false
                 membership:
                     type: integer
-                    example: 6077889507282666396
+                    example: 388031239930522295
                     format: int64
+                roles:
+                    type: array
+                    items:
+                        type: string
+                        example: Est omnis architecto excepturi sit.
+                    example:
+                        - Omnis quia quo architecto sed aperiam ullam.
+                        - Nam ut est sequi.
+                        - Atque minus vel vero doloribus vel.
+                user_id:
+                    type: string
+                    example: Consequuntur et.
             example:
-                activated: false
-                membership: 5604669765176843498
+                activated: true
+                membership: 6167860447850313283
+                roles:
+                    - Cupiditate et aut vero quia facilis saepe.
+                    - Aliquam dolorum et accusantium.
+                user_id: Occaecati veniam quam architecto earum soluta pariatur.
             required:
+                - user_id
                 - activated
                 - membership
         CreateFlowRequestBody:
@@ -220,49 +242,49 @@ components:
                 edges:
                     type: string
                     description: flow 边
-                    example: Libero maxime.
+                    example: Ex et aut sed enim.
                 nodes:
                     type: string
                     description: flow 节点
-                    example: Quas et voluptatum iure voluptas aperiam.
+                    example: Temporibus voluptas.
                 title:
                     type: string
                     description: flow 标题
-                    example: Porro nam ut.
+                    example: Dolor sunt sint.
             example:
-                edges: Adipisci explicabo eveniet cum unde quam.
-                nodes: In et fugiat.
-                title: Veritatis vel voluptate rerum minus.
+                edges: Ullam enim.
+                nodes: Tenetur itaque similique et vitae reiciendis.
+                title: Maiores fugiat.
         FlowDetailData:
             type: object
             properties:
                 created_at:
                     type: string
                     description: flow 创建时间
-                    example: Et neque ex.
+                    example: Eligendi voluptas sequi saepe quia.
                 edges:
                     type: string
                     description: flow 边
-                    example: Ipsum aut distinctio ipsa.
+                    example: Repellendus voluptas.
                 id:
                     type: integer
                     description: flow id
-                    example: 2327380425094630291
+                    example: 7474924033919102999
                     format: int64
                 nodes:
                     type: string
                     description: flow 节点
-                    example: Suscipit autem esse illo qui.
+                    example: Est earum nesciunt et.
                 title:
                     type: string
                     description: flow 标题
-                    example: Molestias et fuga beatae.
+                    example: Earum voluptatem nemo dolorem suscipit eos est.
             example:
-                created_at: Id voluptatem quis nihil.
-                edges: Adipisci ex.
-                id: 4025439544900775537
-                nodes: Fugiat magnam maxime repudiandae consequatur.
-                title: Rerum reprehenderit.
+                created_at: Molestiae est asperiores et quis.
+                edges: Laborum architecto inventore dicta exercitationem.
+                id: 4162289681499716662
+                nodes: Eum dolorem inventore aut officiis.
+                title: Aperiam molestiae quo perferendis.
             required:
                 - id
                 - title
@@ -273,20 +295,20 @@ components:
                 created_at:
                     type: string
                     description: flow 创建时间
-                    example: Exercitationem omnis ipsum deserunt architecto reiciendis.
+                    example: Dolores ex rerum consequatur.
                 id:
                     type: integer
                     description: flow id
-                    example: 450530213079432727
+                    example: 7454326162427327981
                     format: int64
                 title:
                     type: string
                     description: flow 标题
-                    example: Odio fuga voluptas voluptas minima.
+                    example: Ratione consequuntur.
             example:
-                created_at: Voluptas optio consectetur quo possimus nobis.
-                id: 1465049891302521045
-                title: Odit voluptatem.
+                created_at: Magni deleniti sint saepe deleniti.
+                id: 338101955933799849
+                title: Accusantium et necessitatibus ut cumque reiciendis et.
             required:
                 - id
                 - title

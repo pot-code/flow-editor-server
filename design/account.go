@@ -4,9 +4,11 @@ package design
 import . "goa.design/goa/v3/dsl"
 
 var AccountInfo = Type("AccountInfo", func() {
+	Attribute("user_id", String)
 	Attribute("activated", Boolean)
 	Attribute("membership", Int)
-	Required("activated", "membership")
+	Attribute("roles", ArrayOf(String))
+	Required("user_id", "activated", "membership")
 })
 
 var _ = Service("account", func() {

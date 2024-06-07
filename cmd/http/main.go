@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/casbin/casbin/v2"
+	"github.com/cerbos/cerbos-sdk-go/cerbos"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
@@ -40,19 +40,20 @@ func main() {
 			newHttpServer,
 			newGormDB,
 			newZitadel,
-			newCasbinEnforcer,
+			// newCasbinEnforcer,
+			newCerbosClient,
 		),
 		fx.Invoke(func(s *http.Server) {}),
 	).Run()
 }
 
-func newCasbinEnforcer(config *config.HttpConfig) (*casbin.Enforcer, error) {
-	e, err := casbin.NewEnforcer("policy/casbin/model.conf", "policy/casbin/policy.csv")
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to casbin: %w", err)
-	}
-	return e, nil
-}
+// func newCasbinEnforcer(config *config.HttpConfig) (*casbin.Enforcer, error) {
+// 	e, err := casbin.NewEnforcer("policy/casbin/model.conf", "policy/casbin/policy.csv")
+// 	if err != nil {
+// 		return nil, fmt.Errorf("failed to connect to casbin: %w", err)
+// 	}
+// 	return e, nil
+// }
 
 func newZitadel(config *config.HttpConfig) (*authorization.Authorizer[*oauth.IntrospectionContext], error) {
 	z, err := authorization.New(
@@ -108,4 +109,12 @@ func newHttpServer(mux ghttp.ResolverMuxer, config *config.HttpConfig, lc fx.Lif
 		},
 	})
 	return srv
+}
+
+func newCerbosClient() (*cerbos.GRPCClient, error) {
+	c, err := cerbos.New("localhost:3593", cerbos.WithPlaintext())
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to cerbos: %w", err)
+	}
+	return c, err
 }

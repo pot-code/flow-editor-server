@@ -35,6 +35,8 @@ var MethodNames = [1]string{"getAccount"}
 
 // AccountInfo is the result type of the account service getAccount method.
 type AccountInfo struct {
+	UserID     string
 	Activated  bool
 	Membership int
+	Roles      []string
 }

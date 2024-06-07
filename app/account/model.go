@@ -12,7 +12,7 @@ const (
 
 type Account struct {
 	gorm.Model
-	UserId     string `gorm:"unique;not null"`
+	UserID     string `gorm:"unique;not null"`
 	Membership MembershipType
 	Activated  bool
 	Roles      []Role `gorm:"many2many:account_roles;"`

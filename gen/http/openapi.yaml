@@ -25,6 +25,7 @@ paths:
                     schema:
                         $ref: '#/definitions/AccountGetAccountResponseBody'
                         required:
+                            - user_id
                             - activated
                             - membership
             schemes:
@@ -162,15 +163,34 @@ definitions:
         properties:
             activated:
                 type: boolean
-                example: true
+                example: false
             membership:
                 type: integer
-                example: 2403486949651356170
+                example: 5198081747063490700
                 format: int64
+            roles:
+                type: array
+                items:
+                    type: string
+                    example: Voluptatibus autem sapiente et sequi.
+                example:
+                    - Aut omnis distinctio.
+                    - Consequatur velit libero.
+                    - Deleniti dolorum vel.
+                    - Non illum possimus.
+            user_id:
+                type: string
+                example: Voluptate temporibus vitae asperiores omnis odio.
         example:
-            activated: false
-            membership: 404467491484711029
+            activated: true
+            membership: 5905438953811239422
+            roles:
+                - Impedit quo nihil ut repellendus molestiae consequuntur.
+                - Et voluptas quod possimus earum repudiandae.
+                - Nobis est deserunt blanditiis rerum.
+            user_id: Tenetur ipsam laboriosam.
         required:
+            - user_id
             - activated
             - membership
     FlowCreateFlowRequestBody:
@@ -180,19 +200,19 @@ definitions:
             edges:
                 type: string
                 description: flow 边
-                example: Qui deleniti et est quas at.
+                example: Cumque odio fuga.
             nodes:
                 type: string
                 description: flow 节点
-                example: Minus doloremque blanditiis consequatur voluptate et.
+                example: Ut non ut.
             title:
                 type: string
                 description: flow 标题
-                example: Sed culpa vitae.
+                example: Aut aperiam repellendus fugit facilis.
         example:
-            edges: Provident veniam porro ducimus voluptatem consequatur asperiores.
-            nodes: Autem quibusdam quis delectus.
-            title: Quibusdam reprehenderit dolorem nesciunt alias.
+            edges: Voluptas optio consectetur quo possimus nobis.
+            nodes: Reiciendis eligendi nostrum odit voluptatem.
+            title: Voluptas minima et exercitationem omnis ipsum deserunt.
     FlowCreateFlowResponseBody:
         title: FlowCreateFlowResponseBody
         type: object
@@ -200,30 +220,30 @@ definitions:
             created_at:
                 type: string
                 description: flow 创建时间
-                example: Laboriosam laudantium.
+                example: Ut quis et repellat facere et.
             edges:
                 type: string
                 description: flow 边
-                example: Officiis non illum possimus sit tenetur.
+                example: Modi dignissimos non perferendis possimus sint.
             id:
                 type: integer
                 description: flow id
-                example: 7055418067584315525
+                example: 4187506608466379594
                 format: int64
             nodes:
                 type: string
                 description: flow 节点
-                example: Beatae consequatur velit libero qui deleniti dolorum.
+                example: At optio ex quae.
             title:
                 type: string
                 description: flow 标题
-                example: Molestiae aut omnis.
+                example: Tempore beatae distinctio dolorem reprehenderit aliquam.
         example:
-            created_at: Deserunt blanditiis rerum quae itaque.
-            edges: Voluptas quod possimus earum repudiandae iusto nobis.
-            id: 5905438953811239422
-            nodes: Ut repellendus molestiae consequuntur amet.
-            title: Quae impedit quo.
+            created_at: Atque dolor tempore alias ut.
+            edges: Nesciunt ad dolores aut incidunt sit architecto.
+            id: 1213080747031818249
+            nodes: Nihil eius unde consequatur.
+            title: Iure assumenda quos quae consequuntur beatae.
         required:
             - id
             - title
@@ -235,30 +255,30 @@ definitions:
             created_at:
                 type: string
                 description: flow 创建时间
-                example: Ratione ab excepturi aut doloribus alias.
+                example: Est optio aperiam.
             edges:
                 type: string
                 description: flow 边
-                example: Maiores corporis.
+                example: Repellat corrupti reprehenderit.
             id:
                 type: integer
                 description: flow id
-                example: 8621733761409741819
+                example: 6882596758243384156
                 format: int64
             nodes:
                 type: string
                 description: flow 节点
-                example: Debitis qui praesentium.
+                example: Provident veniam porro ducimus voluptatem consequatur asperiores.
             title:
                 type: string
                 description: flow 标题
-                example: Asperiores nobis vitae eos vel accusamus saepe.
+                example: Quis delectus.
         example:
-            created_at: Autem sapiente et.
-            edges: Commodi consequatur et.
-            id: 2500838439770270367
-            nodes: Vitae asperiores omnis.
-            title: Repudiandae minima similique ducimus optio velit voluptate.
+            created_at: Facilis deserunt.
+            edges: Magnam repudiandae error numquam.
+            id: 7244976131529825890
+            nodes: Iste ab.
+            title: In itaque et.
         required:
             - id
             - title
@@ -270,20 +290,20 @@ definitions:
             created_at:
                 type: string
                 description: flow 创建时间
-                example: Similique est tempore.
+                example: Minus doloremque blanditiis consequatur voluptate et.
             id:
                 type: integer
                 description: flow id
-                example: 6419423105656687679
+                example: 7816148651312659555
                 format: int64
             title:
                 type: string
                 description: flow 标题
-                example: Dignissimos qui sit.
+                example: Et sed culpa vitae.
         example:
-            created_at: Ut odit vero rerum qui sint.
-            id: 1167611504762411030
-            title: Doloribus rerum rerum voluptas et eos aut.
+            created_at: In quibusdam reprehenderit dolorem nesciunt alias labore.
+            id: 8062358120128855813
+            title: Deleniti et est quas.
         required:
             - id
             - title
@@ -295,19 +315,19 @@ definitions:
             edges:
                 type: string
                 description: flow 边
-                example: Beatae quia nihil eius unde consequatur.
+                example: Libero maxime.
             nodes:
                 type: string
                 description: flow 节点
-                example: Voluptas iure assumenda quos quae.
+                example: Voluptas aperiam.
             title:
                 type: string
                 description: flow 标题
-                example: Ut quis et repellat facere et.
+                example: Ut sed quas et voluptatum.
         example:
-            edges: Aut aperiam repellendus fugit facilis.
-            nodes: Atque dolor tempore alias ut.
-            title: Nesciunt ad dolores aut incidunt sit architecto.
+            edges: Adipisci explicabo eveniet cum unde quam.
+            nodes: In et fugiat.
+            title: Veritatis vel voluptate rerum minus.
     FlowUpdateFlowResponseBody:
         title: FlowUpdateFlowResponseBody
         type: object
@@ -315,30 +335,30 @@ definitions:
             created_at:
                 type: string
                 description: flow 创建时间
-                example: Magnam repudiandae error numquam.
+                example: Consequatur et neque.
             edges:
                 type: string
                 description: flow 边
-                example: Iste ab.
+                example: Illo qui repudiandae ipsum aut distinctio.
             id:
                 type: integer
                 description: flow id
-                example: 7124095684933745533
+                example: 7895679563155964847
                 format: int64
             nodes:
                 type: string
                 description: flow 节点
-                example: In itaque et.
+                example: Fuga beatae et suscipit autem.
             title:
                 type: string
                 description: flow 标题
-                example: Corrupti reprehenderit laudantium est optio aperiam at.
+                example: In molestias.
         example:
-            created_at: Non perferendis possimus sint.
-            edges: Ex quae rerum modi.
-            id: 6419679406707055543
-            nodes: Beatae distinctio dolorem reprehenderit aliquam animi at.
-            title: Deserunt omnis veniam.
+            created_at: Voluptatem quis nihil voluptatem porro.
+            edges: Ex maiores.
+            id: 2062647879852682326
+            nodes: Magnam maxime repudiandae consequatur ratione.
+            title: Eaque rerum reprehenderit autem.
         required:
             - id
             - title
