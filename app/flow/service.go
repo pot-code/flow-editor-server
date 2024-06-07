@@ -6,7 +6,6 @@ import (
 	"flow-editor-server/internal/authz"
 
 	"github.com/cerbos/cerbos-sdk-go/cerbos"
-	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
 	"gorm.io/gorm"
 )
 
@@ -18,13 +17,13 @@ type service struct {
 
 // CopyFlow implements flow.Service.
 func (s *service) CopyFlow(ctx context.Context, copyId string) (err error) {
-	auth := authorization.Context[authorization.Ctx](ctx)
 	var m Flow
 	if err := s.db.First(&m, copyId).Error; err != nil {
 		return err
 	}
-
-	m.Owner = auth.UserID()
+	if err := s.a.CheckPermission(ctx, &m, "copy"); err != nil {
+		return err
+	}
 	return s.db.Model(&Flow{}).Omit("id").Create(&m).Error
 }
 

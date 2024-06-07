@@ -7,6 +7,7 @@ resourcePolicy:
     - actions:
         - update
         - delete
+        - copy
       effect: EFFECT_ALLOW
       roles:
         - user
