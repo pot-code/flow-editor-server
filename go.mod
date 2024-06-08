@@ -5,7 +5,6 @@ go 1.22
 toolchain go1.22.3
 
 require (
-	github.com/casbin/casbin/v2 v2.90.0
 	github.com/cerbos/cerbos-sdk-go v0.2.6
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1
@@ -23,7 +22,6 @@ require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.34.1-20240508200655-46a4cf4ba109.1 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
 	github.com/bufbuild/protovalidate-go v0.6.2 // indirect
-	github.com/casbin/govaluate v1.1.0 // indirect
 	github.com/cerbos/cerbos/api/genpb v0.36.1-0.20240531134640-f2ad52fc0af3 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0 // indirect
@@ -46,7 +44,6 @@ require (
 	github.com/jdxcode/netrc v1.0.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/justinas/alice v1.2.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/lestrrat-go/blackmagic v1.0.2 // indirect
 	github.com/lestrrat-go/httpcc v1.0.1 // indirect

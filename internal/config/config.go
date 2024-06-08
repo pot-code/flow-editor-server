@@ -9,6 +9,7 @@ type HttpConfig struct {
 	Addr          string
 	ZitadelDomain string
 	ZitadelPort   string
+	CerobsAddr    string
 }
 
 func NewHttpConfig() *HttpConfig {
@@ -25,5 +26,6 @@ func NewHttpConfig() *HttpConfig {
 		Addr:          viper.GetString("HTTP_ADDR"),
 		ZitadelDomain: viper.GetString("ZITADEL_DOMAIN"),
 		ZitadelPort:   viper.GetString("ZITADEL_PORT"),
+		CerobsAddr:    viper.GetString("CERBOS_ADDR"),
 	}
 }

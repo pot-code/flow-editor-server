@@ -52,20 +52,11 @@ func main() {
 			validate.NewValidator,
 			newHttpServer,
 			newGormDB,
-			// newCasbinEnforcer,
 			newCerbosClient,
 		),
 		fx.Invoke(func(s *http.Server) {}),
 	).Run()
 }
-
-// func newCasbinEnforcer(config *config.HttpConfig) (*casbin.Enforcer, error) {
-// 	e, err := casbin.NewEnforcer("policy/casbin/model.conf", "policy/casbin/policy.csv")
-// 	if err != nil {
-// 		return nil, fmt.Errorf("failed to connect to casbin: %w", err)
-// 	}
-// 	return e, nil
-// }
 
 func newGormDB() (*gorm.DB, error) {
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{
@@ -105,8 +96,8 @@ func newHttpServer(mux ghttp.ResolverMuxer, config *config.HttpConfig, lc fx.Lif
 	return srv
 }
 
-func newCerbosClient() (*cerbos.GRPCClient, error) {
-	c, err := cerbos.New("localhost:3593", cerbos.WithPlaintext())
+func newCerbosClient(config *config.HttpConfig) (*cerbos.GRPCClient, error) {
+	c, err := cerbos.New(config.CerobsAddr, cerbos.WithPlaintext())
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to cerbos: %w", err)
 	}
