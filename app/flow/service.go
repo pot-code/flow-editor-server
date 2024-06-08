@@ -5,14 +5,13 @@ import (
 	"flow-editor-server/gen/flow"
 	"flow-editor-server/internal/authz"
 
-	"github.com/cerbos/cerbos-sdk-go/cerbos"
 	"gorm.io/gorm"
 )
 
 type service struct {
 	db *gorm.DB
 	c  Converter
-	a  *authz.Authz[*Flow]
+	a  *Authz
 }
 
 // CopyFlow implements flow.Service.
@@ -29,6 +28,10 @@ func (s *service) CopyFlow(ctx context.Context, copyId string) (err error) {
 
 // CreateFlow implements flow.Service.
 func (s *service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (res *flow.FlowDetailData, err error) {
+	if err := s.a.CheckCreatePermission(ctx); err != nil {
+		return nil, err
+	}
+
 	a := authz.Context(ctx)
 	m := &Flow{
 		Title: *data.Title,
@@ -102,6 +105,6 @@ func (s *service) UpdateFlow(ctx context.Context, payload *flow.UpdateFlowPayloa
 
 var _ flow.Service = (*service)(nil)
 
-func NewService(db *gorm.DB, c Converter, cb *cerbos.GRPCClient) *service {
-	return &service{db: db, c: c, a: authz.NewAuthz[*Flow](cb)}
+func NewService(db *gorm.DB, c Converter, a *Authz) *service {
+	return &service{db: db, c: c, a: a}
 }

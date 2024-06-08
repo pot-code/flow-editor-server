@@ -1,5 +1,13 @@
 package authz
 
-import "errors"
+type UnAuthorizedError struct {
+	err error
+}
 
-var ErrUnauthorized = errors.New("未授权")
+func NewUnAuthorizedError(err error) *UnAuthorizedError {
+	return &UnAuthorizedError{err: err}
+}
+
+func (e *UnAuthorizedError) Error() string {
+	return e.err.Error()
+}

@@ -13,6 +13,7 @@ var Module = fx.Module(
 	"flow",
 	fx.Provide(
 		NewRoute,
+		NewAuthz,
 		fx.Annotate(NewService, fx.As(new(flow.Service))),
 	),
 	fx.Supply(

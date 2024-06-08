@@ -13,7 +13,19 @@ resourcePolicy:
         - user
       condition:
         match:
-          expr: request.resource.attr.owner == request.principal.id
+          expr: R.attr.owner == P.id
+    - actions:
+        - create
+      effect: EFFECT_ALLOW
+      roles:
+        - user
+      condition:
+        match:
+          any:
+            of:
+              - expr: P.attr.membership == 0 && R.attr.total < 3
+              - expr: P.attr.membership == 1 && R.attr.total < 100
+              - expr: P.attr.membership == 2 && R.attr.total < 1000
     - actions:
         - "*"
       effect: EFFECT_ALLOW

@@ -2,6 +2,7 @@ package authz
 
 import (
 	"context"
+	"errors"
 
 	"github.com/cerbos/cerbos-sdk-go/cerbos"
 	"github.com/rs/zerolog/log"
@@ -38,7 +39,7 @@ func (az *Authz[T]) CheckPermission(ctx context.Context, obj T, action string) e
 		Bool("allowed", ok).
 		Msg("authorization result")
 	if !ok {
-		return ErrUnauthorized
+		return NewUnAuthorizedError(errors.New("未授权的操作"))
 	}
 	return nil
 }

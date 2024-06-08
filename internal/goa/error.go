@@ -31,8 +31,8 @@ func ErrorFormatter(ctx context.Context, err error) ghttp.Statuser {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return &ErrorResponse{ID: goa.NewErrorID(), Message: err.Error(), code: http.StatusNotFound}
 	}
-	if errors.Is(err, authz.ErrUnauthorized) {
-		return &ErrorResponse{ID: goa.NewErrorID(), Message: err.Error(), code: http.StatusForbidden}
+	if ue, ok := err.(*authz.UnAuthorizedError); ok {
+		return &ErrorResponse{ID: goa.NewErrorID(), Message: ue.Error(), code: http.StatusForbidden}
 	}
 	log.Err(err).Msg("internal server error")
 	return &ErrorResponse{ID: goa.NewErrorID(), Message: err.Error(), code: http.StatusInternalServerError}
