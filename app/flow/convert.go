@@ -11,13 +11,13 @@ import (
 // goverter:extend TimeToString
 // goverter:extend UintToInt
 type Converter interface {
-	FlowModelsToFlowList(s []*Flow) []*flow.FlowListItemData
+	FlowSliceToFlowList(s []*Flow) []*flow.FlowListItemData
 	// goverter:map Model.ID ID
 	// goverter:map Model.CreatedAt CreatedAt
-	FlowModelToFlowDetail(s *Flow) *flow.FlowDetailData
+	FlowToFlowDetail(s *Flow) *flow.FlowDetailData
 	// goverter:map Model.ID ID
 	// goverter:map Model.CreatedAt CreatedAt
-	FlowModelToFlowListItem(s *Flow) *flow.FlowListItemData
+	FlowToFlowListItem(s *Flow) *flow.FlowListItemData
 }
 
 func TimeToString(t time.Time) string {

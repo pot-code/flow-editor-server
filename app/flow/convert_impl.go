@@ -7,7 +7,17 @@ import flow "flow-editor-server/gen/flow"
 
 type ConverterImpl struct{}
 
-func (c *ConverterImpl) FlowModelToFlowDetail(source *Flow) *flow.FlowDetailData {
+func (c *ConverterImpl) FlowSliceToFlowList(source []*Flow) []*flow.FlowListItemData {
+	var pFlowFlowListItemDataList []*flow.FlowListItemData
+	if source != nil {
+		pFlowFlowListItemDataList = make([]*flow.FlowListItemData, len(source))
+		for i := 0; i < len(source); i++ {
+			pFlowFlowListItemDataList[i] = c.FlowToFlowListItem(source[i])
+		}
+	}
+	return pFlowFlowListItemDataList
+}
+func (c *ConverterImpl) FlowToFlowDetail(source *Flow) *flow.FlowDetailData {
 	var pFlowFlowDetailData *flow.FlowDetailData
 	if source != nil {
 		var flowFlowDetailData flow.FlowDetailData
@@ -30,7 +40,7 @@ func (c *ConverterImpl) FlowModelToFlowDetail(source *Flow) *flow.FlowDetailData
 	}
 	return pFlowFlowDetailData
 }
-func (c *ConverterImpl) FlowModelToFlowListItem(source *Flow) *flow.FlowListItemData {
+func (c *ConverterImpl) FlowToFlowListItem(source *Flow) *flow.FlowListItemData {
 	var pFlowFlowListItemData *flow.FlowListItemData
 	if source != nil {
 		var flowFlowListItemData flow.FlowListItemData
@@ -40,14 +50,4 @@ func (c *ConverterImpl) FlowModelToFlowListItem(source *Flow) *flow.FlowListItem
 		pFlowFlowListItemData = &flowFlowListItemData
 	}
 	return pFlowFlowListItemData
-}
-func (c *ConverterImpl) FlowModelsToFlowList(source []*Flow) []*flow.FlowListItemData {
-	var pFlowFlowListItemDataList []*flow.FlowListItemData
-	if source != nil {
-		pFlowFlowListItemDataList = make([]*flow.FlowListItemData, len(source))
-		for i := 0; i < len(source); i++ {
-			pFlowFlowListItemDataList[i] = c.FlowModelToFlowListItem(source[i])
-		}
-	}
-	return pFlowFlowListItemDataList
 }

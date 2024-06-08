@@ -42,7 +42,7 @@ func (s *service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (re
 	if err := s.db.Create(m).Error; err != nil {
 		return nil, err
 	}
-	return s.c.FlowModelToFlowDetail(m), nil
+	return s.c.FlowToFlowDetail(m), nil
 }
 
 // DeleteFlow implements flow.Service.
@@ -64,7 +64,7 @@ func (s *service) GetFlow(ctx context.Context, id string) (res *flow.FlowDetailD
 	if err := s.db.Where("id = ? AND owner = ?", id, a.UserID).First(&flow).Error; err != nil {
 		return nil, err
 	}
-	return s.c.FlowModelToFlowDetail(&flow), nil
+	return s.c.FlowToFlowDetail(&flow), nil
 }
 
 // GetFlowList implements flow.Service.
@@ -74,7 +74,7 @@ func (s *service) GetFlowList(ctx context.Context) (res []*flow.FlowListItemData
 	if err := s.db.Find(&flows, "owner = ?", a.UserID).Error; err != nil {
 		return nil, err
 	}
-	return s.c.FlowModelsToFlowList(flows), nil
+	return s.c.FlowSliceToFlowList(flows), nil
 }
 
 // UpdateFlow implements flow.Service.
@@ -100,7 +100,7 @@ func (s *service) UpdateFlow(ctx context.Context, payload *flow.UpdateFlowPayloa
 	if err := s.db.Save(&model).Error; err != nil {
 		return nil, err
 	}
-	return s.c.FlowModelToFlowDetail(&model), nil
+	return s.c.FlowToFlowDetail(&model), nil
 }
 
 var _ flow.Service = (*service)(nil)
