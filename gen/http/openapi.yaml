@@ -28,6 +28,7 @@ paths:
                             - user_id
                             - activated
                             - membership
+                            - roles
             schemes:
                 - http
     /flow:
@@ -193,6 +194,7 @@ definitions:
             - user_id
             - activated
             - membership
+            - roles
     FlowCreateFlowRequestBody:
         title: FlowCreateFlowRequestBody
         type: object

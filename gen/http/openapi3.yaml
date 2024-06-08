@@ -236,6 +236,7 @@ components:
                 - user_id
                 - activated
                 - membership
+                - roles
         CreateFlowRequestBody:
             type: object
             properties:

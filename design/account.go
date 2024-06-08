@@ -8,7 +8,7 @@ var AccountInfo = Type("AccountInfo", func() {
 	Attribute("activated", Boolean)
 	Attribute("membership", Int)
 	Attribute("roles", ArrayOf(String))
-	Required("user_id", "activated", "membership")
+	Required("user_id", "activated", "membership", "roles")
 })
 
 var _ = Service("account", func() {

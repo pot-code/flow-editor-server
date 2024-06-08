@@ -17,7 +17,7 @@ type GetAccountResponseBody struct {
 	UserID     string   `form:"user_id" json:"user_id" xml:"user_id"`
 	Activated  bool     `form:"activated" json:"activated" xml:"activated"`
 	Membership int      `form:"membership" json:"membership" xml:"membership"`
-	Roles      []string `form:"roles,omitempty" json:"roles,omitempty" xml:"roles,omitempty"`
+	Roles      []string `form:"roles" json:"roles" xml:"roles"`
 }
 
 // NewGetAccountResponseBody builds the HTTP response body from the result of
@@ -33,6 +33,8 @@ func NewGetAccountResponseBody(res *account.AccountInfo) *GetAccountResponseBody
 		for i, val := range res.Roles {
 			body.Roles[i] = val
 		}
+	} else {
+		body.Roles = []string{}
 	}
 	return body
 }
