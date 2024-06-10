@@ -5,7 +5,7 @@ services:
       - "3592:3592"
       - "3593:3593"
     volumes:
-      - "../policy/cerbos:/policies"
+      - "../policy:/policies"
       - "./config/cerbos.yaml:/config/cerbos.yaml"
     command: [server, --config=config/cerbos.yaml]
 
