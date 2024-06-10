@@ -12,28 +12,28 @@ import (
 	"gorm.io/gorm"
 )
 
-type ErrorResponse struct {
+type HttpErrorResponse struct {
 	ID      string `json:"id,omitempty"`
 	Message string `json:"message,omitempty"`
 	code    int    `json:"-"`
 }
 
-func (r *ErrorResponse) StatusCode() int { return r.code }
+func (r *HttpErrorResponse) StatusCode() int { return r.code }
 
-func ErrorFormatter(ctx context.Context, err error) ghttp.Statuser {
+func HttpErrorFormatter(ctx context.Context, err error) ghttp.Statuser {
 	if gerr, ok := err.(*goa.ServiceError); ok {
-		return &ErrorResponse{
+		return &HttpErrorResponse{
 			ID:      gerr.ID,
 			Message: gerr.Message,
 			code:    ghttp.NewErrorResponse(ctx, gerr).StatusCode(),
 		}
 	}
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return &ErrorResponse{ID: goa.NewErrorID(), Message: err.Error(), code: http.StatusNotFound}
+		return &HttpErrorResponse{ID: goa.NewErrorID(), Message: err.Error(), code: http.StatusNotFound}
 	}
 	if ue, ok := err.(*authz.UnAuthorizedError); ok {
-		return &ErrorResponse{ID: goa.NewErrorID(), Message: ue.Error(), code: http.StatusForbidden}
+		return &HttpErrorResponse{ID: goa.NewErrorID(), Message: ue.Error(), code: http.StatusForbidden}
 	}
 	log.Err(err).Msg("internal server error")
-	return &ErrorResponse{ID: goa.NewErrorID(), Message: err.Error(), code: http.StatusInternalServerError}
+	return &HttpErrorResponse{ID: goa.NewErrorID(), Message: err.Error(), code: http.StatusInternalServerError}
 }

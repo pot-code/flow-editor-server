@@ -32,6 +32,7 @@ func (az *Authz) CheckPermission(ctx context.Context, obj *Flow, action string) 
 		return err
 	}
 	log.Debug().
+		Ctx(ctx).
 		Str("principal", a.UserID).
 		Str("action", action).
 		Str("obj", ri).
@@ -60,6 +61,7 @@ func (a *Authz) CheckCreatePermission(ctx context.Context) error {
 		return err
 	}
 	log.Debug().
+		Ctx(ctx).
 		Str("principal", ac.UserID).
 		Int("membership", ac.Membership).
 		Int64("total", total).

@@ -22,7 +22,7 @@ type Route struct {
 func (s *Route) MountRoute(mux http.ResolverMuxer) {
 	endpoints := flow.NewEndpoints(s.s)
 	endpoints.Use(goa.ValidatePayload(s.v, s.t))
-	srv := server.New(endpoints, mux, http.RequestDecoder, http.ResponseEncoder, nil, goa.ErrorFormatter)
+	srv := server.New(endpoints, mux, http.RequestDecoder, http.ResponseEncoder, nil, goa.HttpErrorFormatter)
 	srv.Use(aa.Middleware(s.as))
 	server.Mount(mux, srv)
 }

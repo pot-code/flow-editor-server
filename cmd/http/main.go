@@ -75,7 +75,14 @@ func main() {
 				return nil, fmt.Errorf("failed to open log file: %w", err)
 			}
 			muxer.Use(alice.New(
-				hlog.NewHandler(zerolog.New(output).With().Timestamp().Logger()),
+				otelhttp.NewMiddleware("flow-editor",
+					otelhttp.WithTracerProvider(tp),
+					otelhttp.WithSpanNameFormatter(func(operation string, r *http.Request) string {
+						return fmt.Sprintf("%s %s", r.Method, r.URL.Path)
+					}),
+				),
+				// FIXME: no trace_id attached
+				hlog.NewHandler(zerolog.New(output).With().Timestamp().Logger().Hook(instrument.NewZerologHook())),
 				hlog.AccessHandler(func(r *http.Request, status, size int, duration time.Duration) {
 					hlog.FromRequest(r).Info().
 						Str("method", r.Method).
@@ -86,7 +93,6 @@ func main() {
 						Msg("")
 				}),
 				zw.New(z).RequireAuthorization(),
-				otelhttp.NewMiddleware("flow-editor", otelhttp.WithTracerProvider(tp)),
 			).Then)
 
 			for _, route := range routes {
@@ -145,7 +151,7 @@ func main() {
 					if err != nil {
 						return fmt.Errorf("failed to open app log file: %w", err)
 					}
-					log.Logger = log.Output(output)
+					log.Logger = log.Output(output).Hook(instrument.NewZerologHook())
 					return nil
 				},
 				OnStop: func(ctx context.Context) error {

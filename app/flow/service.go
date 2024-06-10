@@ -5,6 +5,7 @@ import (
 	"flow-editor-server/app/account"
 	"flow-editor-server/gen/flow"
 
+	"go.opentelemetry.io/otel/trace"
 	"gorm.io/gorm"
 )
 
@@ -12,6 +13,7 @@ type service struct {
 	db *gorm.DB
 	c  Converter
 	az *Authz
+	tp trace.Tracer
 }
 
 // CopyFlow implements flow.Service.
@@ -23,6 +25,13 @@ func (s *service) CopyFlow(ctx context.Context, copyId string) (err error) {
 	if err := s.az.CheckPermission(ctx, &m, "copy"); err != nil {
 		return err
 	}
+	if err := s.az.CheckCreatePermission(ctx); err != nil {
+		return err
+	}
+
+	_, span := s.tp.Start(ctx, "flow.CopyFlow")
+	defer span.End()
+
 	return s.db.Model(&Flow{}).Omit("id").Create(&m).Error
 }
 
@@ -31,6 +40,9 @@ func (s *service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (re
 	if err := s.az.CheckCreatePermission(ctx); err != nil {
 		return nil, err
 	}
+
+	_, span := s.tp.Start(ctx, "flow.CreateFlow")
+	defer span.End()
 
 	a := account.Context(ctx)
 	m := &Flow{
@@ -105,6 +117,6 @@ func (s *service) UpdateFlow(ctx context.Context, payload *flow.UpdateFlowPayloa
 
 var _ flow.Service = (*service)(nil)
 
-func NewService(db *gorm.DB, c Converter, a *Authz) *service {
-	return &service{db: db, c: c, az: a}
+func NewService(db *gorm.DB, c Converter, a *Authz, tp trace.Tracer) *service {
+	return &service{db: db, c: c, az: a, tp: tp}
 }

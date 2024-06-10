@@ -16,10 +16,12 @@ scrape_configs:
             message: message
             time: time
             level: level
+            trace_id: trace_id
       - labels:
           message:
           time:
           level:
+          trace_id:
     static_configs:
       - targets:
           - localhost

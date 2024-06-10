@@ -14,7 +14,7 @@ type Route struct {
 
 func (s *Route) MountRoute(mux http.ResolverMuxer) {
 	endpoints := account.NewEndpoints(s.s)
-	srv := server.New(endpoints, mux, http.RequestDecoder, http.ResponseEncoder, nil, goa.ErrorFormatter)
+	srv := server.New(endpoints, mux, http.RequestDecoder, http.ResponseEncoder, nil, goa.HttpErrorFormatter)
 	server.Mount(mux, srv)
 }
 
