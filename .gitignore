@@ -39,3 +39,5 @@ key.json
 gen/http/cli
 gen/**/client
 gen/http/*.json
+
+logs

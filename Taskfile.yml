@@ -40,7 +40,7 @@ tasks:
     desc: Seed database
     silent: true
   docker:
-    cmd: docker compose -p flow-editor-server up -d --remove-orphans
+    cmd: docker compose -p flow-editor up -d --remove-orphans
     desc: Run docker compose services
     silent: true
     dir: docker

@@ -9,6 +9,7 @@ require (
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.21.0
+	github.com/justinas/alice v1.2.0
 	github.com/rs/zerolog v1.33.0
 	github.com/spf13/viper v1.18.2
 	github.com/zitadel/zitadel-go/v3 v3.0.0-next.2

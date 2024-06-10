@@ -7,5 +7,13 @@ services:
     volumes:
       - "../policy/cerbos:/policies"
       - "./config/cerbos.yaml:/config/cerbos.yaml"
-    command: ["server", "--config=config/cerbos.yaml"]
-    
+    command: [server, --config=config/cerbos.yaml]
+
+  promtail:
+    image: grafana/promtail
+    ports:
+      - "9080:9080"
+    volumes:
+      - "./config/promtail.yaml:/mnt/config/promtail.yaml"
+      - "../logs:/var/log"
+    command: [--config.file=/mnt/config/promtail.yaml]
