@@ -9,7 +9,7 @@ import (
 	"goa.design/goa/v3/http"
 )
 
-var Module = fx.Module(
+var HttpModule = fx.Module(
 	"account",
 	fx.Provide(
 		NewRoute,
