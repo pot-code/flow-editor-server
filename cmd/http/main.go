@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flow-editor-server/app"
 	"flow-editor-server/app/account"
 	"flow-editor-server/app/flow"
 	"flow-editor-server/internal/authn"
@@ -41,6 +42,7 @@ func main() {
 	fx.New(
 		instrument.Module,
 		validate.Module,
+		app.Module,
 
 		fx.Provide(
 			config.NewHttpConfig,
@@ -157,11 +159,6 @@ func main() {
 				},
 			})
 		}),
-
-		// services
-		account.HttpModule,
-		flow.HttpModule,
-
 		fx.StartTimeout(30*time.Second),
 	).Run()
 }
