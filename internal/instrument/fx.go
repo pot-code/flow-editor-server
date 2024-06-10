@@ -6,7 +6,7 @@ var Module = fx.Module(
 	"instrument",
 	fx.Provide(
 		NewOtelPropagator,
-		NewOtelTracerProvider,
-		NewOtelMeterProvider,
+		NewOtelMeterExporter,
+		NewOtelTracerExporter,
 	),
 )

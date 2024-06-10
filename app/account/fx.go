@@ -3,10 +3,12 @@
 package account
 
 import (
+	"context"
 	"flow-editor-server/gen/account"
 	"flow-editor-server/internal/goa"
 
 	"go.uber.org/fx"
+	"gorm.io/gorm"
 )
 
 var HttpModule = fx.Module(
@@ -19,4 +21,13 @@ var HttpModule = fx.Module(
 		fx.Private,
 		fx.Annotate(new(ConverterImpl), fx.As(new(Converter))),
 	),
+	fx.Invoke(func(db *gorm.DB, l fx.Lifecycle) {
+		l.Append(fx.Hook{
+			OnStart: func(ctx context.Context) error {
+				return db.AutoMigrate(
+					&Account{},
+				)
+			},
+		})
+	}),
 )

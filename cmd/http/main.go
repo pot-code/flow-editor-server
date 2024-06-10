@@ -3,8 +3,6 @@ package main
 import (
 	"context"
 	"flow-editor-server/app"
-	"flow-editor-server/app/account"
-	"flow-editor-server/app/flow"
 	"flow-editor-server/internal/authn"
 	"flow-editor-server/internal/authz"
 	"flow-editor-server/internal/config"
@@ -27,11 +25,13 @@ import (
 	zw "github.com/zitadel/zitadel-go/v3/pkg/http/middleware"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
 	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
 	"go.uber.org/fx"
 	ghttp "goa.design/goa/v3/http"
-	"gorm.io/gorm"
 )
 
 func main() {
@@ -50,8 +50,22 @@ func main() {
 			authn.NewZitadelClient,
 			orm.NewGormDB,
 		),
+
+		// trace provider
+		fx.Provide(func(e *otlptrace.Exporter) *trace.TracerProvider {
+			res := resource.NewWithAttributes(
+				semconv.SchemaURL,
+				semconv.ServiceNameKey.String("flow-editor"),
+				semconv.ServiceVersionKey.String("1.0.0"),
+			)
+			tp := trace.NewTracerProvider(trace.WithBatcher(e), trace.WithResource(res))
+			return tp
+		}),
+
+		// http muxer
 		fx.Provide(fx.Annotate(func(
 			routes []goa.HttpRoute,
+			tp *trace.TracerProvider,
 			z *authorization.Authorizer[*oauth.IntrospectionContext],
 			l fx.Lifecycle,
 		) (ghttp.ResolverMuxer, error) {
@@ -72,7 +86,7 @@ func main() {
 						Msg("")
 				}),
 				zw.New(z).RequireAuthorization(),
-				otelhttp.NewMiddleware("flow-editor"),
+				otelhttp.NewMiddleware("flow-editor", otelhttp.WithTracerProvider(tp)),
 			).Then)
 
 			for _, route := range routes {
@@ -87,40 +101,20 @@ func main() {
 			return muxer, nil
 		}, fx.ParamTags(`group:"routes"`))),
 
-		// db migrations
-		fx.Invoke(func(db *gorm.DB, l fx.Lifecycle) {
-			l.Append(fx.Hook{
-				OnStart: func(ctx context.Context) error {
-					return db.AutoMigrate(
-						&flow.Flow{},
-						&account.Account{},
-					)
-				},
-			})
-		}),
-
-		// otel SDK
-		fx.Invoke(func(
-			p propagation.TextMapPropagator,
-			trace *trace.TracerProvider,
-			l fx.Lifecycle,
-		) {
+		// opentelemetry
+		fx.Invoke(func(p propagation.TextMapPropagator, tp *trace.TracerProvider, l fx.Lifecycle) {
 			otel.SetTextMapPropagator(p)
-			otel.SetTracerProvider(trace)
+			otel.SetTracerProvider(tp)
 
 			l.Append(fx.Hook{
 				OnStop: func(ctx context.Context) error {
-					return trace.Shutdown(ctx)
+					return tp.Shutdown(ctx)
 				},
 			})
 		}),
 
 		// http server
-		fx.Invoke(func(
-			mux ghttp.ResolverMuxer,
-			config *config.HttpConfig,
-			l fx.Lifecycle,
-		) {
+		fx.Invoke(func(mux ghttp.ResolverMuxer, config *config.HttpConfig, l fx.Lifecycle) {
 			srv := &http.Server{
 				Addr:    config.Addr,
 				Handler: mux,

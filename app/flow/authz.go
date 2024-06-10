@@ -3,7 +3,9 @@ package flow
 import (
 	"context"
 	"errors"
+	"flow-editor-server/app/account"
 	"flow-editor-server/internal/authz"
+	"strconv"
 
 	"github.com/cerbos/cerbos-sdk-go/cerbos"
 	"github.com/rs/zerolog/log"
@@ -11,21 +13,39 @@ import (
 )
 
 type Authz struct {
-	a  *authz.Authz[*Flow]
 	c  *cerbos.GRPCClient
 	db *gorm.DB
 }
 
 func NewAuthz(c *cerbos.GRPCClient, db *gorm.DB) *Authz {
-	return &Authz{a: authz.NewAuthz[*Flow](c), c: c, db: db}
+	return &Authz{c: c, db: db}
 }
 
-func (a *Authz) CheckPermission(ctx context.Context, obj *Flow, action string) error {
-	return a.a.CheckPermission(ctx, obj, action)
+func (az *Authz) CheckPermission(ctx context.Context, obj *Flow, action string) error {
+	a := account.Context(ctx)
+	ri := strconv.Itoa(int(obj.ID))
+	p := cerbos.NewPrincipal(a.UserID, a.Roles...)
+	r := cerbos.NewResource("flow", ri)
+	r.WithAttr("owner", obj.Owner)
+	ok, err := az.c.IsAllowed(ctx, p, r, action)
+	if err != nil {
+		return err
+	}
+	log.Debug().
+		Str("principal", a.UserID).
+		Str("action", action).
+		Str("obj", ri).
+		Str("kind", "flow").
+		Bool("allowed", ok).
+		Msg("authorization result")
+	if !ok {
+		return authz.NewUnAuthorizedError(errors.New("未授权的操作"))
+	}
+	return nil
 }
 
 func (a *Authz) CheckCreatePermission(ctx context.Context) error {
-	ac := authz.Context(ctx)
+	ac := account.Context(ctx)
 	P := cerbos.NewPrincipal(ac.UserID, ac.Roles...)
 	P.WithAttr("membership", ac.Membership)
 
