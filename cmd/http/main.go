@@ -7,11 +7,8 @@ import (
 	"flow-editor-server/internal/authz"
 	"flow-editor-server/internal/config"
 	"flow-editor-server/internal/goa"
-	"flow-editor-server/internal/instrument"
 	"flow-editor-server/internal/orm"
 	"flow-editor-server/internal/validate"
-	"fmt"
-	"io"
 	"net"
 	"net/http"
 	"os"
@@ -24,15 +21,6 @@ import (
 	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
 	"github.com/zitadel/zitadel-go/v3/pkg/authorization/oauth"
 	zw "github.com/zitadel/zitadel-go/v3/pkg/http/middleware"
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
-	"go.opentelemetry.io/otel/propagation"
-	"go.opentelemetry.io/otel/sdk/resource"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
-	"go.opentelemetry.io/otel/trace"
-	"go.opentelemetry.io/otel/trace/noop"
 	"go.uber.org/fx"
 	ghttp "goa.design/goa/v3/http"
 )
@@ -41,10 +29,6 @@ func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
-
-	if err := os.MkdirAll("logs", 0755); err != nil {
-		log.Fatal().Err(err).Msg("failed to create logs directory")
-	}
 
 	fx.New(
 		validate.Module,
@@ -57,55 +41,16 @@ func main() {
 			orm.NewGormDB,
 		),
 
-		// trace provider
-		fx.Provide(func(config *config.HttpConfig) (trace.TracerProvider, error) {
-			if !config.OtelEnabled {
-				return noop.NewTracerProvider(), nil
-			}
-
-			e, err := otlptracegrpc.New(
-				context.Background(),
-				otlptracegrpc.WithInsecure(),
-				otlptracegrpc.WithEndpoint(config.OtelCollector),
-			)
-			if err != nil {
-				return nil, fmt.Errorf("failed to create tracer exporter: %w", err)
-			}
-			res := resource.NewWithAttributes(
-				semconv.SchemaURL,
-				semconv.ServiceNameKey.String("flow-editor"),
-				semconv.ServiceVersionKey.String("1.0.0"),
-			)
-			tp := sdktrace.NewTracerProvider(sdktrace.WithBatcher(e), sdktrace.WithResource(res))
-			return tp, nil
-		}),
-
 		// http muxer
 		fx.Provide(fx.Annotate(func(
 			routes []goa.HttpRoute,
 			config *config.HttpConfig,
-			tp trace.TracerProvider,
 			z *authorization.Authorizer[*oauth.IntrospectionContext],
 			l fx.Lifecycle,
 		) (ghttp.ResolverMuxer, error) {
-			var output io.WriteCloser
-			output, err := os.OpenFile("logs/access.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-			if err != nil {
-				return nil, fmt.Errorf("failed to open log file: %w", err)
-			}
-			if config.Debug {
-				output = &zerolog.ConsoleWriter{Out: os.Stderr}
-			}
-
 			muxer := ghttp.NewMuxer()
 			muxer.Use(alice.New(
-				otelhttp.NewMiddleware("http.request",
-					otelhttp.WithTracerProvider(tp),
-					otelhttp.WithSpanNameFormatter(func(operation string, r *http.Request) string {
-						return fmt.Sprintf("%s %s", r.Method, r.URL.Path)
-					}),
-				),
-				hlog.NewHandler(log.Output(output).Hook(instrument.NewZerologHook())),
+				hlog.NewHandler(log.Logger),
 				hlog.AccessHandler(func(r *http.Request, status, size int, duration time.Duration) {
 					hlog.FromRequest(r).Info().
 						Ctx(r.Context()).
@@ -122,34 +67,17 @@ func main() {
 			for _, route := range routes {
 				route.MountRoute(muxer)
 			}
-
-			l.Append(fx.Hook{
-				OnStop: func(ctx context.Context) error {
-					return output.Close()
-				},
-			})
 			return muxer, nil
 		}, fx.ParamTags(`group:"routes"`))),
-
-		// opentelemetry
-		fx.Invoke(func(tp trace.TracerProvider, l fx.Lifecycle) {
-			p := propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{})
-			otel.SetTextMapPropagator(p)
-			otel.SetTracerProvider(tp)
-
-			l.Append(fx.Hook{
-				OnStop: func(ctx context.Context) error {
-					st := tp.(*sdktrace.TracerProvider)
-					return st.Shutdown(ctx)
-				},
-			})
-		}),
 
 		// http server
 		fx.Invoke(func(mux ghttp.ResolverMuxer, config *config.HttpConfig, l fx.Lifecycle) {
 			srv := &http.Server{
 				Addr:    config.Addr,
 				Handler: mux,
+			}
+			if config.Debug {
+				zerolog.SetGlobalLevel(zerolog.DebugLevel)
 			}
 			l.Append(fx.Hook{
 				OnStart: func(ctx context.Context) error {
@@ -167,29 +95,6 @@ func main() {
 			})
 		}),
 
-		// app logging
-		// should be invoked after other components
-		// or the diagnose logs will be mixed
-		fx.Invoke(func(config *config.HttpConfig, l fx.Lifecycle) {
-			if config.Debug {
-				zerolog.SetGlobalLevel(zerolog.DebugLevel)
-				return
-			}
-
-			output, err := os.OpenFile("logs/app.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-			l.Append(fx.Hook{
-				OnStart: func(ctx context.Context) error {
-					if err != nil {
-						return fmt.Errorf("failed to open app log file: %w", err)
-					}
-					log.Logger = log.Output(output).Hook(instrument.NewZerologHook())
-					return nil
-				},
-				OnStop: func(ctx context.Context) error {
-					return output.Close()
-				},
-			})
-		}),
 		fx.StartTimeout(30*time.Second),
 	).Run()
 }

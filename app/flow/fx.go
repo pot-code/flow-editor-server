@@ -7,8 +7,6 @@ import (
 	"flow-editor-server/gen/flow"
 	"flow-editor-server/internal/goa"
 
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/fx"
 	"gorm.io/gorm"
 )
@@ -22,7 +20,6 @@ var HttpModule = fx.Module(
 	),
 	fx.Supply(
 		fx.Private,
-		fx.Annotate(otel.Tracer("flow"), fx.As(new(trace.Tracer))),
 		fx.Annotate(new(ConverterImpl), fx.As(new(Converter))),
 	),
 	fx.Invoke(func(db *gorm.DB, l fx.Lifecycle) {
