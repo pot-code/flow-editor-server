@@ -5,22 +5,28 @@ package account
 import (
 	"context"
 	"flow-editor-server/gen/account"
+	"flow-editor-server/gen/http/account/server"
 	"flow-editor-server/internal/goa"
 
 	"go.uber.org/fx"
+	"goa.design/goa/v3/http"
 	"gorm.io/gorm"
 )
 
 var HttpModule = fx.Module(
 	"account",
 	fx.Provide(
-		fx.Annotate(NewRoute, fx.As(new(goa.HttpRoute)), fx.ResultTags(`group:"routes"`)),
 		fx.Annotate(NewService, fx.As(new(account.Service))),
 	),
 	fx.Supply(
 		fx.Private,
 		fx.Annotate(new(ConverterImpl), fx.As(new(Converter))),
 	),
+	fx.Invoke(func(as account.Service, muxer http.ResolverMuxer) {
+		endpoints := account.NewEndpoints(as)
+		srv := server.New(endpoints, muxer, http.RequestDecoder, http.ResponseEncoder, nil, goa.HttpErrorFormatter)
+		server.Mount(muxer, srv)
+	}),
 	fx.Invoke(func(db *gorm.DB, l fx.Lifecycle) {
 		l.Append(fx.Hook{
 			OnStart: func(ctx context.Context) error {

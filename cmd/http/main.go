@@ -6,7 +6,6 @@ import (
 	"flow-editor-server/internal/authn"
 	"flow-editor-server/internal/authz"
 	"flow-editor-server/internal/config"
-	"flow-editor-server/internal/goa"
 	"flow-editor-server/internal/orm"
 	"flow-editor-server/internal/validate"
 	"net"
@@ -31,22 +30,13 @@ func main() {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
 	fx.New(
-		validate.Module,
-		app.Module,
+		validate.Module, app.Module,
 
-		fx.Provide(
-			config.NewHttpConfig,
-			authz.NewCerbosClient,
-			authn.NewZitadelClient,
-			orm.NewGormDB,
-		),
+		fx.Provide(config.NewHttpConfig, authz.NewCerbosClient, authn.NewZitadelClient, orm.NewGormDB),
 
 		// http muxer
-		fx.Provide(fx.Annotate(func(
-			routes []goa.HttpRoute,
-			config *config.HttpConfig,
-			z *authorization.Authorizer[*oauth.IntrospectionContext],
-			l fx.Lifecycle,
+		fx.Provide(fx.Annotate(func(config *config.HttpConfig,
+			z *authorization.Authorizer[*oauth.IntrospectionContext], l fx.Lifecycle,
 		) (ghttp.ResolverMuxer, error) {
 			muxer := ghttp.NewMuxer()
 			muxer.Use(alice.New(
@@ -63,19 +53,12 @@ func main() {
 				}),
 				zw.New(z).RequireAuthorization(),
 			).Then)
-
-			for _, route := range routes {
-				route.MountRoute(muxer)
-			}
 			return muxer, nil
-		}, fx.ParamTags(`group:"routes"`))),
+		})),
 
 		// http server
 		fx.Invoke(func(mux ghttp.ResolverMuxer, config *config.HttpConfig, l fx.Lifecycle) {
-			srv := &http.Server{
-				Addr:    config.Addr,
-				Handler: mux,
-			}
+			srv := &http.Server{Addr: config.Addr, Handler: mux}
 			if config.Debug {
 				zerolog.SetGlobalLevel(zerolog.DebugLevel)
 			}
