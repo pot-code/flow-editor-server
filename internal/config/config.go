@@ -1,7 +1,8 @@
 package config
 
 import (
-	"github.com/rs/zerolog/log"
+	"fmt"
+
 	"github.com/spf13/viper"
 )
 
@@ -13,14 +14,14 @@ type HttpConfig struct {
 	Debug         bool
 }
 
-func NewHttpConfig() *HttpConfig {
+func NewHttpConfig() (*HttpConfig, error) {
 	viper.SetConfigFile(".env")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(".")
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		log.Fatal().Err(err).Msg("failed to read config")
+		return nil, fmt.Errorf("failed to read config: %w", err)
 	}
 
 	return &HttpConfig{
@@ -29,5 +30,5 @@ func NewHttpConfig() *HttpConfig {
 		ZitadelPort:   viper.GetString("ZITADEL_PORT"),
 		CerobsAddr:    viper.GetString("CERBOS_ADDR"),
 		Debug:         viper.GetBool("DEBUG"),
-	}
+	}, nil
 }
