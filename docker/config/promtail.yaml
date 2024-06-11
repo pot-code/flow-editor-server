@@ -6,7 +6,7 @@ positions:
   filename: /var/log/positions.yaml # This location needs to be writeable by Promtail.
 
 clients:
-  - url: http://192.168.31.170:3100/loki/api/v1/push
+  - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:
   - job_name: app

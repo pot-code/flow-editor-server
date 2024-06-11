@@ -24,9 +24,16 @@ var HttpModule = fx.Module(
 	fx.Invoke(func(db *gorm.DB, l fx.Lifecycle) {
 		l.Append(fx.Hook{
 			OnStart: func(ctx context.Context) error {
-				return db.AutoMigrate(
-					&Account{},
-				)
+				if err := db.AutoMigrate(&Account{}); err != nil {
+					return err
+				}
+				if err := db.Where("name=?", "admin").Attrs(&Role{Name: "admin"}).FirstOrCreate(&Role{}).Error; err != nil {
+					return err
+				}
+				if err := db.Where("name=?", "user").Attrs(&Role{Name: "user"}).FirstOrCreate(&Role{}).Error; err != nil {
+					return err
+				}
+				return nil
 			},
 		})
 	}),

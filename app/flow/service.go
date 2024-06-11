@@ -29,7 +29,7 @@ func (s *service) CopyFlow(ctx context.Context, copyId string) (err error) {
 		return err
 	}
 
-	_, span := s.tp.Start(ctx, "flow.CopyFlow")
+	_, span := s.tp.Start(ctx, "CopyFlow")
 	defer span.End()
 
 	return s.db.Model(&Flow{}).Omit("id").Create(&m).Error
@@ -41,7 +41,7 @@ func (s *service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (re
 		return nil, err
 	}
 
-	_, span := s.tp.Start(ctx, "flow.CreateFlow")
+	_, span := s.tp.Start(ctx, "CreateFlow")
 	defer span.End()
 
 	a := account.Context(ctx)
