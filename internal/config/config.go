@@ -12,6 +12,7 @@ type HttpConfig struct {
 	CerobsAddr    string // cerbos address
 	OtelCollector string // otel collector address
 	OtelEnabled   bool
+	Debug         bool
 }
 
 func NewHttpConfig() *HttpConfig {
@@ -31,5 +32,6 @@ func NewHttpConfig() *HttpConfig {
 		CerobsAddr:    viper.GetString("CERBOS_ADDR"),
 		OtelCollector: viper.GetString("OTEL_COLLECTOR"),
 		OtelEnabled:   viper.GetBool("OTEL_ENABLED"),
+		Debug:         viper.GetBool("DEBUG"),
 	}
 }

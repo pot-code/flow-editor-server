@@ -11,6 +11,7 @@ import (
 	"flow-editor-server/internal/orm"
 	"flow-editor-server/internal/validate"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"os"
@@ -38,7 +39,7 @@ import (
 
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
 	if err := os.MkdirAll("logs", 0755); err != nil {
@@ -82,15 +83,21 @@ func main() {
 		// http muxer
 		fx.Provide(fx.Annotate(func(
 			routes []goa.HttpRoute,
+			config *config.HttpConfig,
 			tp trace.TracerProvider,
 			z *authorization.Authorizer[*oauth.IntrospectionContext],
 			l fx.Lifecycle,
 		) (ghttp.ResolverMuxer, error) {
-			muxer := ghttp.NewMuxer()
+			var output io.WriteCloser
 			output, err := os.OpenFile("logs/access.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 			if err != nil {
 				return nil, fmt.Errorf("failed to open log file: %w", err)
 			}
+			if config.Debug {
+				output = &zerolog.ConsoleWriter{Out: os.Stderr}
+			}
+
+			muxer := ghttp.NewMuxer()
 			muxer.Use(alice.New(
 				otelhttp.NewMiddleware("http.request",
 					otelhttp.WithTracerProvider(tp),
@@ -163,7 +170,12 @@ func main() {
 		// app logging
 		// should be invoked after other components
 		// or the diagnose logs will be mixed
-		fx.Invoke(func(l fx.Lifecycle) {
+		fx.Invoke(func(config *config.HttpConfig, l fx.Lifecycle) {
+			if config.Debug {
+				zerolog.SetGlobalLevel(zerolog.DebugLevel)
+				return
+			}
+
 			output, err := os.OpenFile("logs/app.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 			l.Append(fx.Hook{
 				OnStart: func(ctx context.Context) error {
