@@ -35,10 +35,6 @@ tasks:
     cmd: redocly preview-docs ./gen/http/openapi3.yaml -p 3001
     desc: Serve OpenAPI 3.0 documentation
     silent: true
-  seed:
-    cmd: go run ./scripts/seed
-    desc: Seed database
-    silent: true
   docker:
     cmd: docker compose -p flow-editor up -d --remove-orphans
     desc: Run docker compose services
