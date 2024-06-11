@@ -69,7 +69,7 @@ func (g *gormLogger) Trace(ctx context.Context, begin time.Time, fc func() (sql 
 		g.l.Warn().Int64("rows", rows).Dur("cost", elapsed).Str("sql", sql).Msgf("SLOW SQL >= %v", g.slowThreshold)
 	default:
 		sql, rows := fc()
-		g.l.Info().Int64("rows", rows).Dur("cost", elapsed).Str("sql", sql).Send()
+		g.l.Trace().Int64("rows", rows).Dur("cost", elapsed).Str("sql", sql).Send()
 	}
 }
 
