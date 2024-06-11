@@ -25,11 +25,13 @@ import (
 	zw "github.com/zitadel/zitadel-go/v3/pkg/http/middleware"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
-	"go.opentelemetry.io/otel/sdk/trace"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
+	"go.opentelemetry.io/otel/trace"
+	"go.opentelemetry.io/otel/trace/noop"
 	"go.uber.org/fx"
 	ghttp "goa.design/goa/v3/http"
 )
@@ -39,8 +41,11 @@ func main() {
 	log.Logger.Level(zerolog.DebugLevel)
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
+	if err := os.MkdirAll("logs", 0755); err != nil {
+		log.Fatal().Err(err).Msg("failed to create logs directory")
+	}
+
 	fx.New(
-		instrument.Module,
 		validate.Module,
 		app.Module,
 
@@ -52,20 +57,32 @@ func main() {
 		),
 
 		// trace provider
-		fx.Provide(func(e *otlptrace.Exporter) *trace.TracerProvider {
+		fx.Provide(func(config *config.HttpConfig) (trace.TracerProvider, error) {
+			if !config.OtelEnabled {
+				return noop.NewTracerProvider(), nil
+			}
+
+			e, err := otlptracegrpc.New(
+				context.Background(),
+				otlptracegrpc.WithInsecure(),
+				otlptracegrpc.WithEndpoint(config.OtelCollector),
+			)
+			if err != nil {
+				return nil, fmt.Errorf("failed to create tracer exporter: %w", err)
+			}
 			res := resource.NewWithAttributes(
 				semconv.SchemaURL,
 				semconv.ServiceNameKey.String("flow-editor"),
 				semconv.ServiceVersionKey.String("1.0.0"),
 			)
-			tp := trace.NewTracerProvider(trace.WithBatcher(e), trace.WithResource(res))
-			return tp
+			tp := sdktrace.NewTracerProvider(sdktrace.WithBatcher(e), sdktrace.WithResource(res))
+			return tp, nil
 		}),
 
 		// http muxer
 		fx.Provide(fx.Annotate(func(
 			routes []goa.HttpRoute,
-			tp *trace.TracerProvider,
+			tp trace.TracerProvider,
 			z *authorization.Authorizer[*oauth.IntrospectionContext],
 			l fx.Lifecycle,
 		) (ghttp.ResolverMuxer, error) {
@@ -90,7 +107,7 @@ func main() {
 						Int("status", status).
 						Int("size", size).
 						Dur("duration", duration).
-						Msg("")
+						Send()
 				}),
 				zw.New(z).RequireAuthorization(),
 			).Then)
@@ -108,13 +125,15 @@ func main() {
 		}, fx.ParamTags(`group:"routes"`))),
 
 		// opentelemetry
-		fx.Invoke(func(p propagation.TextMapPropagator, tp *trace.TracerProvider, l fx.Lifecycle) {
+		fx.Invoke(func(tp trace.TracerProvider, l fx.Lifecycle) {
+			p := propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{})
 			otel.SetTextMapPropagator(p)
 			otel.SetTracerProvider(tp)
 
 			l.Append(fx.Hook{
 				OnStop: func(ctx context.Context) error {
-					return tp.Shutdown(ctx)
+					st := tp.(*sdktrace.TracerProvider)
+					return st.Shutdown(ctx)
 				},
 			})
 		}),

@@ -11,6 +11,7 @@ type HttpConfig struct {
 	ZitadelPort   string // zitadel port
 	CerobsAddr    string // cerbos address
 	OtelCollector string // otel collector address
+	OtelEnabled   bool
 }
 
 func NewHttpConfig() *HttpConfig {
@@ -29,5 +30,6 @@ func NewHttpConfig() *HttpConfig {
 		ZitadelPort:   viper.GetString("ZITADEL_PORT"),
 		CerobsAddr:    viper.GetString("CERBOS_ADDR"),
 		OtelCollector: viper.GetString("OTEL_COLLECTOR"),
+		OtelEnabled:   viper.GetBool("OTEL_ENABLED"),
 	}
 }
