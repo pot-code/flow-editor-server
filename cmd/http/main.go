@@ -35,9 +35,11 @@ func main() {
 		fx.Provide(config.NewHttpConfig, authz.NewCerbosClient, authn.NewZitadelClient, orm.NewGormDB),
 
 		// http muxer
-		fx.Provide(fx.Annotate(func(config *config.HttpConfig,
-			z *authorization.Authorizer[*oauth.IntrospectionContext], l fx.Lifecycle,
-		) (ghttp.ResolverMuxer, error) {
+		fx.Provide(fx.Annotate(func(
+			config *config.HttpConfig,
+			z *authorization.Authorizer[*oauth.IntrospectionContext],
+			l fx.Lifecycle,
+		) ghttp.ResolverMuxer {
 			muxer := ghttp.NewMuxer()
 			muxer.Use(alice.New(
 				hlog.NewHandler(log.Logger),
@@ -53,7 +55,7 @@ func main() {
 				}),
 				zw.New(z).RequireAuthorization(),
 			).Then)
-			return muxer, nil
+			return muxer
 		})),
 
 		// http server

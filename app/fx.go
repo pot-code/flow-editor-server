@@ -8,6 +8,6 @@ import (
 )
 
 var Module = fx.Module("app",
-	flow.HttpModule,
-	account.HttpModule,
+	flow.Module,
+	account.Module,
 )

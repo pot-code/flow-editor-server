@@ -22,7 +22,7 @@ func NewAuthz(c *cerbos.GRPCClient, db *gorm.DB) *Authz {
 }
 
 func (az *Authz) CheckPermission(ctx context.Context, obj *Flow, action string) error {
-	a := account.Context(ctx)
+	a := account.FromContext(ctx)
 	ri := strconv.Itoa(int(obj.ID))
 	p := cerbos.NewPrincipal(a.UserID, a.Roles...)
 	r := cerbos.NewResource("flow", ri)
@@ -46,7 +46,7 @@ func (az *Authz) CheckPermission(ctx context.Context, obj *Flow, action string) 
 }
 
 func (a *Authz) CheckCreatePermission(ctx context.Context) error {
-	ac := account.Context(ctx)
+	ac := account.FromContext(ctx)
 	P := cerbos.NewPrincipal(ac.UserID, ac.Roles...)
 	P.WithAttr("membership", ac.Membership)
 

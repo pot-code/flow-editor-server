@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var HttpModule = fx.Module(
+var Module = fx.Module(
 	"account",
 	fx.Provide(
 		fx.Annotate(NewService, fx.As(new(account.Service))),

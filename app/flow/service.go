@@ -36,7 +36,7 @@ func (s *service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (re
 		return nil, err
 	}
 
-	a := account.Context(ctx)
+	a := account.FromContext(ctx)
 	m := &Flow{
 		Title: *data.Title,
 		Nodes: data.Nodes,
@@ -63,7 +63,7 @@ func (s *service) DeleteFlow(ctx context.Context, id string) (err error) {
 
 // GetFlow implements flow.Service.
 func (s *service) GetFlow(ctx context.Context, id string) (res *flow.FlowDetailData, err error) {
-	a := account.Context(ctx)
+	a := account.FromContext(ctx)
 	var flow Flow
 	if err := s.db.Where("id = ? AND owner = ?", id, a.UserID).First(&flow).Error; err != nil {
 		return nil, err
@@ -73,7 +73,7 @@ func (s *service) GetFlow(ctx context.Context, id string) (res *flow.FlowDetailD
 
 // GetFlowList implements flow.Service.
 func (s *service) GetFlowList(ctx context.Context) (res []*flow.FlowListItemData, err error) {
-	a := account.Context(ctx)
+	a := account.FromContext(ctx)
 	var flows []*Flow
 	if err := s.db.Find(&flows, "owner = ?", a.UserID).Error; err != nil {
 		return nil, err

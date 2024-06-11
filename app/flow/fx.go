@@ -17,7 +17,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var HttpModule = fx.Module(
+var Module = fx.Module(
 	"flow",
 	fx.Provide(
 		NewAuthz,
@@ -31,7 +31,7 @@ var HttpModule = fx.Module(
 		endpoints := flow.NewEndpoints(s)
 		endpoints.Use(goa.ValidatePayload(v, t))
 		srv := server.New(endpoints, muxer, http.RequestDecoder, http.ResponseEncoder, nil, goa.HttpErrorFormatter)
-		srv.Use(aa.Middleware(as))
+		srv.Use(aa.AccountInfo(as))
 		server.Mount(muxer, srv)
 	}),
 	fx.Invoke(func(db *gorm.DB, l fx.Lifecycle) {
