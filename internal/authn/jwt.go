@@ -10,18 +10,13 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type TokenClaim struct {
-	Sub   string
-	Scope string
-}
-
-func JwtValidation(issuer, keysEndpoint, audience string) func(next http.Handler) http.Handler {
+func JwtValidation(issuer, jwkEndpoint, audience string) func(next http.Handler) http.Handler {
 	client := resty.New()
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			res, err := client.R().Get(keysEndpoint)
+			res, err := client.R().Get(jwkEndpoint)
 			if err != nil {
-				log.Error().Err(err).Str("endpoint", keysEndpoint).Msg("failed to get jwk keys")
+				log.Error().Err(err).Str("endpoint", jwkEndpoint).Msg("failed to get jwk keys")
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
@@ -45,9 +40,11 @@ func JwtValidation(issuer, keysEndpoint, audience string) func(next http.Handler
 	}
 }
 
-type contextKey string
+type contextKey int
 
-var jwtTokenKey contextKey = "jwtToken"
+const (
+	jwtTokenKey contextKey = iota
+)
 
 func withContext(ctx context.Context, t jwt.Token) context.Context {
 	return context.WithValue(ctx, jwtTokenKey, t)
