@@ -15,11 +15,12 @@ type service struct {
 }
 
 // CopyFlow implements flow.Service.
-func (s *service) CopyFlow(ctx context.Context, copyId string) (err error) {
+func (s *service) CopyFlow(ctx context.Context, flowId string) (err error) {
 	var m Flow
-	if err := s.db.First(&m, copyId).Error; err != nil {
+	if err := s.db.First(&m, flowId).Error; err != nil {
 		return err
 	}
+
 	if err := s.az.CheckPermission(ctx, &m, "copy"); err != nil {
 		return err
 	}
