@@ -49,10 +49,7 @@ func main() {
 						Dur("duration", duration).
 						Send()
 				}),
-				authn.JwtValidation(
-					config.OidcProvider,
-					config.OidcJwkProvider,
-					"http://flow-editor-server.com"),
+				authn.JwtValidation(config.OidcProvider, config.OidcJwkProvider, config.OidcApiID),
 			).Then)
 			return muxer
 		})),

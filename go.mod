@@ -14,7 +14,6 @@ require (
 	github.com/lestrrat-go/jwx/v2 v2.0.21
 	github.com/rs/zerolog v1.33.0
 	github.com/spf13/viper v1.18.2
-	github.com/zitadel/zitadel-go/v3 v3.0.0-next.2
 	go.uber.org/fx v1.22.0
 	goa.design/goa/v3 v3.16.2
 	gorm.io/driver/sqlite v1.5.5
@@ -65,6 +64,7 @@ require (
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/sergi/go-diff v1.3.1 // indirect
+	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.6.0 // indirect
