@@ -17,9 +17,6 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/hlog"
 	"github.com/rs/zerolog/log"
-	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
-	"github.com/zitadel/zitadel-go/v3/pkg/authorization/oauth"
-	zw "github.com/zitadel/zitadel-go/v3/pkg/http/middleware"
 	"go.uber.org/fx"
 	ghttp "goa.design/goa/v3/http"
 )
@@ -32,12 +29,11 @@ func main() {
 	fx.New(
 		validate.Module, app.Module,
 
-		fx.Provide(config.NewHttpConfig, authz.NewCerbosClient, authn.NewZitadelClient, orm.NewGormDB),
+		fx.Provide(config.NewHttpConfig, authz.NewCerbosClient, orm.NewGormDB),
 
 		// http muxer
 		fx.Provide(fx.Annotate(func(
 			config *config.HttpConfig,
-			z *authorization.Authorizer[*oauth.IntrospectionContext],
 			l fx.Lifecycle,
 		) ghttp.ResolverMuxer {
 			muxer := ghttp.NewMuxer()
@@ -53,7 +49,10 @@ func main() {
 						Dur("duration", duration).
 						Send()
 				}),
-				zw.New(z).RequireAuthorization(),
+				authn.JwtValidation(
+					config.OidcProvider,
+					config.OidcJwkProvider,
+					"http://flow-editor-server.com"),
 			).Then)
 			return muxer
 		})),

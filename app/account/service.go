@@ -6,8 +6,8 @@ import (
 	"context"
 	"errors"
 	"flow-editor-server/gen/account"
+	"flow-editor-server/internal/authn"
 
-	"github.com/zitadel/zitadel-go/v3/pkg/authorization"
 	"gorm.io/gorm"
 )
 
@@ -18,10 +18,10 @@ type service struct {
 
 // GetAccount implements account.Service.
 func (s *service) GetAccount(ctx context.Context) (*account.AccountInfo, error) {
-	auth := authorization.Context[authorization.Ctx](ctx)
+	token := authn.FromContext(ctx)
 
 	var a Account
-	err := s.db.Preload("Roles").First(&a, &Account{UserID: auth.UserID()}).Error
+	err := s.db.Preload("Roles").First(&a, &Account{UserID: token.Subject()}).Error
 	if err == nil {
 		return s.c.AccountToAccountInfo(a), nil
 	}
@@ -32,7 +32,7 @@ func (s *service) GetAccount(ctx context.Context) (*account.AccountInfo, error) 
 }
 
 func (s *service) createAccount(ctx context.Context) (*account.AccountInfo, error) {
-	auth := authorization.Context[authorization.Ctx](ctx)
+	token := authn.FromContext(ctx)
 
 	var role Role
 	if err := s.db.Where("name = ?", "user").First(&role).Error; err != nil {
@@ -40,7 +40,7 @@ func (s *service) createAccount(ctx context.Context) (*account.AccountInfo, erro
 	}
 
 	var a Account
-	a.UserID = auth.UserID()
+	a.UserID = token.Subject()
 	a.Membership = MembershipTypeFree
 	a.Activated = true
 	if err := s.db.Create(&a).Error; err != nil {
