@@ -22,7 +22,7 @@ func AccountInfo(s account.Service) func(next http.Handler) http.Handler {
 				w.Write(b)
 				return
 			}
-			next.ServeHTTP(w, r.WithContext(withContext(r.Context(), a)))
+			next.ServeHTTP(w, r.WithContext(injectAccount(r.Context(), a)))
 		})
 	}
 }
@@ -31,10 +31,10 @@ type accountKeyType string
 
 const accountKey accountKeyType = "account"
 
-func withContext(ctx context.Context, a *account.AccountInfo) context.Context {
+func injectAccount(ctx context.Context, a *account.AccountInfo) context.Context {
 	return context.WithValue(ctx, accountKey, a)
 }
 
-func FromContext(ctx context.Context) *account.AccountInfo {
+func AccountFromContext(ctx context.Context) *account.AccountInfo {
 	return ctx.Value(accountKey).(*account.AccountInfo)
 }

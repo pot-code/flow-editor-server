@@ -65,7 +65,7 @@ func JwtValidation(issuer, jwkEndpoint, audience string) func(next http.Handler)
 				return
 			}
 
-			next.ServeHTTP(w, r.WithContext(withContext(r.Context(), t)))
+			next.ServeHTTP(w, r.WithContext(injectToken(r.Context(), t)))
 		})
 	}
 }
@@ -76,10 +76,10 @@ const (
 	jwtTokenKey contextKey = iota
 )
 
-func withContext(ctx context.Context, t jwt.Token) context.Context {
+func injectToken(ctx context.Context, t jwt.Token) context.Context {
 	return context.WithValue(ctx, jwtTokenKey, t)
 }
 
-func FromContext(ctx context.Context) jwt.Token {
+func TokenFromContext(ctx context.Context) jwt.Token {
 	return ctx.Value(jwtTokenKey).(jwt.Token)
 }

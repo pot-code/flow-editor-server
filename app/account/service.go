@@ -18,7 +18,7 @@ type service struct {
 
 // GetAccount implements account.Service.
 func (s *service) GetAccount(ctx context.Context) (*account.AccountInfo, error) {
-	token := authn.FromContext(ctx)
+	token := authn.TokenFromContext(ctx)
 
 	var a Account
 	err := s.db.Preload("Roles").First(&a, &Account{UserID: token.Subject()}).Error
@@ -32,7 +32,7 @@ func (s *service) GetAccount(ctx context.Context) (*account.AccountInfo, error) 
 }
 
 func (s *service) createAccount(ctx context.Context) (*account.AccountInfo, error) {
-	token := authn.FromContext(ctx)
+	token := authn.TokenFromContext(ctx)
 
 	var role Role
 	if err := s.db.Where("name = ?", "user").First(&role).Error; err != nil {
