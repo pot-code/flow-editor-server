@@ -40,7 +40,7 @@ func main() {
 			muxer.Use(alice.New(
 				hlog.NewHandler(log.Logger),
 				hlog.AccessHandler(func(r *http.Request, status, size int, duration time.Duration) {
-					hlog.FromRequest(r).Info().
+					hlog.FromRequest(r).Debug().
 						Ctx(r.Context()).
 						Str("method", r.Method).
 						Str("path", r.URL.Path).
@@ -49,7 +49,7 @@ func main() {
 						Dur("duration", duration).
 						Send()
 				}),
-				authn.JwtValidation(config.OidcProvider, config.OidcJwkProvider, config.OidcApiID),
+				authn.JwtValidation(config.OidcJwkProvider, config.OidcProvider, config.OidcApiID),
 			).Then)
 			return muxer
 		})),

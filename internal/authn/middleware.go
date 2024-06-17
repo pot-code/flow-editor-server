@@ -2,6 +2,7 @@ package authn
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"sync"
 
@@ -11,51 +12,56 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type keySetCache interface {
-	GetKeySet() jwk.Set
-	SetKeySet(set jwk.Set)
+type keySetProvider struct {
+	keySet   jwk.Set
+	mu       sync.Mutex
+	endpoint string
+	rc       *resty.Client
 }
 
-type defaultKeySetCache struct {
-	keySet jwk.Set
-	mu     sync.RWMutex
+func newKeySetProvider(endpoint string) *keySetProvider {
+	return &keySetProvider{
+		endpoint: endpoint,
+		rc:       resty.New(),
+	}
 }
 
-func (c *defaultKeySetCache) GetKeySet() jwk.Set {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-	return c.keySet
-}
+func (c *keySetProvider) getKeySet() (jwk.Set, error) {
+	set := c.keySet
+	if set != nil {
+		return set, nil
+	}
 
-func (c *defaultKeySetCache) SetKeySet(set jwk.Set) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
+
+	if c.keySet != nil {
+		return c.keySet, nil
+	}
+
+	log.Debug().Msgf("request jwk keys from %s", c.endpoint)
+	res, err := c.rc.R().Get(c.endpoint)
+	if err != nil {
+		return nil, fmt.Errorf("failed to request endpoint %s: %w", c.endpoint, err)
+	}
+
+	set, err = jwk.Parse(res.Body())
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse jwk keys: %w", err)
+	}
 	c.keySet = set
+	return set, nil
 }
 
-var _ keySetCache = (*defaultKeySetCache)(nil)
-
-func JwtValidation(issuer, jwkEndpoint, audience string) func(next http.Handler) http.Handler {
-	client := resty.New()
-	cache := new(defaultKeySetCache)
+func JwtValidation(jwkSource, issuer, audience string) func(next http.Handler) http.Handler {
+	kp := newKeySetProvider(jwkSource)
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			set := cache.GetKeySet()
-			if set == nil {
-				res, err := client.R().Get(jwkEndpoint)
-				if err != nil {
-					log.Error().Err(err).Str("endpoint", jwkEndpoint).Msg("failed to get jwk keys")
-					w.WriteHeader(http.StatusInternalServerError)
-					return
-				}
-
-				set, err = jwk.Parse(res.Body())
-				if err != nil {
-					log.Error().Err(err).Msg("failed to parse jwk keys")
-					w.WriteHeader(http.StatusInternalServerError)
-					return
-				}
-				cache.SetKeySet(set)
+			set, err := kp.getKeySet()
+			if err != nil {
+				log.Error().Err(err).Msg("failed to get jwk keys")
+				w.WriteHeader(http.StatusInternalServerError)
+				return
 			}
 
 			t, err := jwt.ParseRequest(r, jwt.WithKeySet(set), jwt.WithIssuer(issuer), jwt.WithAudience(audience))
