@@ -36,9 +36,9 @@ func NewClient(getFlowList, getFlow, createFlow, updateFlow, deleteFlow, copyFlo
 }
 
 // GetFlowList calls the "getFlowList" endpoint of the "flow" service.
-func (c *Client) GetFlowList(ctx context.Context) (res []*FlowListItemData, err error) {
+func (c *Client) GetFlowList(ctx context.Context, p *QueryFlowListParams) (res []*FlowListItemData, err error) {
 	var ires any
-	ires, err = c.GetFlowListEndpoint(ctx, nil)
+	ires, err = c.GetFlowListEndpoint(ctx, p)
 	if err != nil {
 		return
 	}

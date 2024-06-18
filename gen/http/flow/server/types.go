@@ -141,6 +141,15 @@ func NewUpdateFlowResponseBody(res *flow.FlowDetailData) *UpdateFlowResponseBody
 	return body
 }
 
+// NewGetFlowListQueryFlowListParams builds a flow service getFlowList endpoint
+// payload.
+func NewGetFlowListQueryFlowListParams(name *string) *flow.QueryFlowListParams {
+	v := &flow.QueryFlowListParams{}
+	v.Name = name
+
+	return v
+}
+
 // NewCreateFlowData builds a flow service createFlow endpoint payload.
 func NewCreateFlowData(body *CreateFlowRequestBody) *flow.CreateFlowData {
 	v := &flow.CreateFlowData{

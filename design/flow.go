@@ -37,15 +37,22 @@ var UpdateFlowData = Type("UpdateFlowData", func() {
 	Attribute("edges", String, "flow 边")
 })
 
+var QueryFlowListParams = Type("QueryFlowListParams", func() {
+	Attribute("name", String, "流程名")
+})
+
 var _ = Service("flow", func() {
 	Description("Flow 服务")
 	HTTP(func() {
 		Path("/flow")
 	})
+
 	Method("getFlowList", func() {
 		Description("列出当前用户拥有的 flow")
+		Payload(QueryFlowListParams)
 		HTTP(func() {
 			GET("/")
+			Param("name")
 		})
 		Result(ArrayOf(FlowListItemData))
 	})

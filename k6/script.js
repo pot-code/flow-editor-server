@@ -1,11 +1,10 @@
-import { check } from 'k6';
 import http from 'k6/http';
 
 http.setResponseCallback(http.expectedStatuses(401));
 
 export const options = {
   // A number specifying the number of VUs to run concurrently.
-  vus: 100,
+  vus: 50,
   // A string specifying the total duration of the test run.
   duration: '10s',
 };

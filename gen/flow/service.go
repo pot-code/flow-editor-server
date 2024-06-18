@@ -14,7 +14,7 @@ import (
 // Flow 服务
 type Service interface {
 	// 列出当前用户拥有的 flow
-	GetFlowList(context.Context) (res []*FlowListItemData, err error)
+	GetFlowList(context.Context, *QueryFlowListParams) (res []*FlowListItemData, err error)
 	// 根据 flow id 获取 flow 详情
 	GetFlow(context.Context, string) (res *FlowDetailData, err error)
 	// 创建 flow
@@ -74,6 +74,13 @@ type FlowListItemData struct {
 	Title string
 	// flow 创建时间
 	CreatedAt string
+}
+
+// QueryFlowListParams is the payload type of the flow service getFlowList
+// method.
+type QueryFlowListParams struct {
+	// 流程名
+	Name *string
 }
 
 type UpdateFlowData struct {

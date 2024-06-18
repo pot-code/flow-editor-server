@@ -4,6 +4,7 @@ import (
 	"context"
 	"flow-editor-server/app/account"
 	"flow-editor-server/gen/flow"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -73,10 +74,15 @@ func (s *service) GetFlow(ctx context.Context, id string) (res *flow.FlowDetailD
 }
 
 // GetFlowList implements flow.Service.
-func (s *service) GetFlowList(ctx context.Context) (res []*flow.FlowListItemData, err error) {
+func (s *service) GetFlowList(ctx context.Context, payload *flow.QueryFlowListParams) (res []*flow.FlowListItemData, err error) {
 	a := account.AccountFromContext(ctx)
+	c := s.db.Where("owner = ?", a.UserID)
+	if payload.Name != nil && *payload.Name != "" {
+		c = c.Where("title LIKE ?", fmt.Sprintf("%%%s%%", *payload.Name))
+	}
+
 	var flows []*Flow
-	if err := s.db.Find(&flows, "owner = ?", a.UserID).Error; err != nil {
+	if err := c.Find(&flows).Error; err != nil {
 		return nil, err
 	}
 	return s.c.FlowSliceToFlowList(flows), nil

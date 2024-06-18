@@ -49,7 +49,8 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 // "getFlowList" of service "flow".
 func NewGetFlowListEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req any) (any, error) {
-		return s.GetFlowList(ctx)
+		p := req.(*QueryFlowListParams)
+		return s.GetFlowList(ctx, p)
 	}
 }
 

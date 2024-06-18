@@ -30,6 +30,23 @@ func EncodeGetFlowListResponse(encoder func(context.Context, http.ResponseWriter
 	}
 }
 
+// DecodeGetFlowListRequest returns a decoder for requests sent to the flow
+// getFlowList endpoint.
+func DecodeGetFlowListRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (any, error) {
+	return func(r *http.Request) (any, error) {
+		var (
+			name *string
+		)
+		nameRaw := r.URL.Query().Get("name")
+		if nameRaw != "" {
+			name = &nameRaw
+		}
+		payload := NewGetFlowListQueryFlowListParams(name)
+
+		return payload, nil
+	}
+}
+
 // EncodeGetFlowResponse returns an encoder for responses returned by the flow
 // getFlow endpoint.
 func EncodeGetFlowResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, any) error {

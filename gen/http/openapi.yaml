@@ -38,6 +38,12 @@ paths:
             summary: getFlowList flow
             description: 列出当前用户拥有的 flow
             operationId: flow#getFlowList
+            parameters:
+                - name: name
+                  in: query
+                  description: 流程名
+                  required: false
+                  type: string
             responses:
                 "200":
                     description: OK response.

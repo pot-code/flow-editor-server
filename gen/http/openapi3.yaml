@@ -21,13 +21,13 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/AccountInfo'
                             example:
-                                activated: true
-                                membership: 4248600860158212725
+                                activated: false
+                                membership: 2015585179657686444
                                 roles:
-                                    - Est iste sapiente sint veritatis sunt et.
+                                    - Sint veritatis sunt et.
                                     - Consequatur et reiciendis vitae quidem.
                                     - Earum sed similique delectus autem.
-                                user_id: Consequatur pariatur architecto possimus rerum eaque ea.
+                                user_id: Est quasi.
     /flow:
         get:
             tags:
@@ -35,6 +35,16 @@ paths:
             summary: getFlowList flow
             description: 列出当前用户拥有的 flow
             operationId: flow#getFlowList
+            parameters:
+                - name: name
+                  in: query
+                  description: 流程名
+                  allowEmptyValue: true
+                  schema:
+                    type: string
+                    description: 流程名
+                    example: Voluptas qui assumenda quibusdam architecto.
+                  example: Est assumenda iusto itaque omnis.
             responses:
                 "200":
                     description: OK response.
@@ -45,25 +55,22 @@ paths:
                                 items:
                                     $ref: '#/components/schemas/FlowListItemData'
                                 example:
-                                    - created_at: Expedita ut omnis quam.
-                                      id: 5491639435536833503
-                                      title: Reprehenderit placeat.
-                                    - created_at: Expedita ut omnis quam.
-                                      id: 5491639435536833503
-                                      title: Reprehenderit placeat.
-                                    - created_at: Expedita ut omnis quam.
-                                      id: 5491639435536833503
-                                      title: Reprehenderit placeat.
+                                    - created_at: Veniam omnis repellendus.
+                                      id: 5056989246729605965
+                                      title: Omnis quam.
+                                    - created_at: Veniam omnis repellendus.
+                                      id: 5056989246729605965
+                                      title: Omnis quam.
+                                    - created_at: Veniam omnis repellendus.
+                                      id: 5056989246729605965
+                                      title: Omnis quam.
                             example:
-                                - created_at: Expedita ut omnis quam.
-                                  id: 5491639435536833503
-                                  title: Reprehenderit placeat.
-                                - created_at: Expedita ut omnis quam.
-                                  id: 5491639435536833503
-                                  title: Reprehenderit placeat.
-                                - created_at: Expedita ut omnis quam.
-                                  id: 5491639435536833503
-                                  title: Reprehenderit placeat.
+                                - created_at: Veniam omnis repellendus.
+                                  id: 5056989246729605965
+                                  title: Omnis quam.
+                                - created_at: Veniam omnis repellendus.
+                                  id: 5056989246729605965
+                                  title: Omnis quam.
         post:
             tags:
                 - flow
@@ -108,8 +115,8 @@ paths:
                   schema:
                     type: string
                     description: 要删除的 flow id
-                    example: Nihil vel reprehenderit laudantium totam.
-                  example: Et consequuntur vel.
+                    example: Optio voluptatem doloribus.
+                  example: Animi est in impedit esse libero autem.
             responses:
                 "204":
                     description: No Content response.
@@ -127,8 +134,8 @@ paths:
                   schema:
                     type: string
                     description: 要获取的 flow id
-                    example: Qui assumenda quibusdam architecto.
-                  example: Est assumenda iusto itaque omnis.
+                    example: Dolorem ut magnam consequatur doloribus aut.
+                  example: Doloremque fugit occaecati dolores suscipit.
             responses:
                 "200":
                     description: OK response.
@@ -139,9 +146,9 @@ paths:
                             example:
                                 created_at: Illum et consequatur quis voluptatum assumenda.
                                 edges: Qui eum asperiores reiciendis corporis aliquam sunt.
-                                id: 5894164223073658948
-                                nodes: Ipsa quo quasi.
-                                title: Ipsum est ab est illo sequi molestias.
+                                id: 2934916343484779139
+                                nodes: Sequi molestias qui ipsa quo quasi.
+                                title: Ab est.
         put:
             tags:
                 - flow
@@ -156,8 +163,8 @@ paths:
                   schema:
                     type: string
                     description: 要更新的 flow id
-                    example: Expedita dolorem ut magnam consequatur doloribus.
-                  example: Et doloremque fugit occaecati dolores suscipit perferendis.
+                    example: Est nihil vel reprehenderit laudantium.
+                  example: Eveniet et consequuntur vel.
             requestBody:
                 required: true
                 content:
@@ -196,8 +203,8 @@ paths:
                   schema:
                     type: string
                     description: 要复制的 flow id
-                    example: Optio voluptatem doloribus.
-                  example: Animi est in impedit esse libero autem.
+                    example: Qui quia eos et.
+                  example: Magni aut laboriosam.
             responses:
                 "201":
                     description: Created response.

@@ -1,3 +1,5 @@
+//go:build !goverter
+
 package app
 
 import (

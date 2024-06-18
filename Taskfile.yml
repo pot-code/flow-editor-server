@@ -32,7 +32,7 @@ tasks:
     sources:
       - "design/**.go"
   swagger:
-    cmd: redocly preview-docs ./gen/http/openapi3.yaml -p 3001
+    cmd: redocly preview-docs ./gen/http/openapi3.yaml -p 8082
     desc: Serve OpenAPI 3.0 documentation
     silent: true
   docker:
