@@ -106,6 +106,10 @@ func DecodeCreateFlowRequest(mux goahttp.Muxer, decoder func(*http.Request) goah
 			}
 			return nil, goa.DecodePayloadError(err.Error())
 		}
+		err = ValidateCreateFlowRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
 		payload := NewCreateFlowData(&body)
 
 		return payload, nil

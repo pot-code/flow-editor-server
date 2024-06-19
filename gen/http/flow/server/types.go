@@ -9,6 +9,8 @@ package server
 
 import (
 	flow "flow-editor-server/gen/flow"
+
+	goa "goa.design/goa/v3/pkg"
 )
 
 // CreateFlowRequestBody is the type of the "flow" service "createFlow"
@@ -16,10 +18,8 @@ import (
 type CreateFlowRequestBody struct {
 	// flow 标题
 	Title *string `json:"title" validate:"required,min=1,max=32"`
-	// flow 节点
-	Nodes *string `form:"nodes,omitempty" json:"nodes,omitempty" xml:"nodes,omitempty"`
-	// flow 边
-	Edges *string `form:"edges,omitempty" json:"edges,omitempty" xml:"edges,omitempty"`
+	// flow 数据
+	Data *string `form:"data,omitempty" json:"data,omitempty" xml:"data,omitempty"`
 }
 
 // UpdateFlowRequestBody is the type of the "flow" service "updateFlow"
@@ -27,10 +27,8 @@ type CreateFlowRequestBody struct {
 type UpdateFlowRequestBody struct {
 	// flow 标题
 	Title *string `json:"title" validate:"required,min=1,max=32"`
-	// flow 节点
-	Nodes *string `form:"nodes,omitempty" json:"nodes,omitempty" xml:"nodes,omitempty"`
-	// flow 边
-	Edges *string `form:"edges,omitempty" json:"edges,omitempty" xml:"edges,omitempty"`
+	// flow 数据
+	Data *string `form:"data,omitempty" json:"data,omitempty" xml:"data,omitempty"`
 }
 
 // GetFlowListResponseBody is the type of the "flow" service "getFlowList"
@@ -44,10 +42,8 @@ type GetFlowResponseBody struct {
 	ID int `form:"id" json:"id" xml:"id"`
 	// flow 标题
 	Title string `form:"title" json:"title" xml:"title"`
-	// flow 节点
-	Nodes *string `form:"nodes,omitempty" json:"nodes,omitempty" xml:"nodes,omitempty"`
-	// flow 边
-	Edges *string `form:"edges,omitempty" json:"edges,omitempty" xml:"edges,omitempty"`
+	// flow 数据
+	Data *string `form:"data,omitempty" json:"data,omitempty" xml:"data,omitempty"`
 	// flow 创建时间
 	CreatedAt string `form:"created_at" json:"created_at" xml:"created_at"`
 }
@@ -59,10 +55,8 @@ type CreateFlowResponseBody struct {
 	ID int `form:"id" json:"id" xml:"id"`
 	// flow 标题
 	Title string `form:"title" json:"title" xml:"title"`
-	// flow 节点
-	Nodes *string `form:"nodes,omitempty" json:"nodes,omitempty" xml:"nodes,omitempty"`
-	// flow 边
-	Edges *string `form:"edges,omitempty" json:"edges,omitempty" xml:"edges,omitempty"`
+	// flow 数据
+	Data *string `form:"data,omitempty" json:"data,omitempty" xml:"data,omitempty"`
 	// flow 创建时间
 	CreatedAt string `form:"created_at" json:"created_at" xml:"created_at"`
 }
@@ -74,10 +68,8 @@ type UpdateFlowResponseBody struct {
 	ID int `form:"id" json:"id" xml:"id"`
 	// flow 标题
 	Title string `form:"title" json:"title" xml:"title"`
-	// flow 节点
-	Nodes *string `form:"nodes,omitempty" json:"nodes,omitempty" xml:"nodes,omitempty"`
-	// flow 边
-	Edges *string `form:"edges,omitempty" json:"edges,omitempty" xml:"edges,omitempty"`
+	// flow 数据
+	Data *string `form:"data,omitempty" json:"data,omitempty" xml:"data,omitempty"`
 	// flow 创建时间
 	CreatedAt string `form:"created_at" json:"created_at" xml:"created_at"`
 }
@@ -108,8 +100,7 @@ func NewGetFlowResponseBody(res *flow.FlowDetailData) *GetFlowResponseBody {
 	body := &GetFlowResponseBody{
 		ID:        res.ID,
 		Title:     res.Title,
-		Nodes:     res.Nodes,
-		Edges:     res.Edges,
+		Data:      res.Data,
 		CreatedAt: res.CreatedAt,
 	}
 	return body
@@ -121,8 +112,7 @@ func NewCreateFlowResponseBody(res *flow.FlowDetailData) *CreateFlowResponseBody
 	body := &CreateFlowResponseBody{
 		ID:        res.ID,
 		Title:     res.Title,
-		Nodes:     res.Nodes,
-		Edges:     res.Edges,
+		Data:      res.Data,
 		CreatedAt: res.CreatedAt,
 	}
 	return body
@@ -134,8 +124,7 @@ func NewUpdateFlowResponseBody(res *flow.FlowDetailData) *UpdateFlowResponseBody
 	body := &UpdateFlowResponseBody{
 		ID:        res.ID,
 		Title:     res.Title,
-		Nodes:     res.Nodes,
-		Edges:     res.Edges,
+		Data:      res.Data,
 		CreatedAt: res.CreatedAt,
 	}
 	return body
@@ -153,9 +142,8 @@ func NewGetFlowListQueryFlowListParams(name *string) *flow.QueryFlowListParams {
 // NewCreateFlowData builds a flow service createFlow endpoint payload.
 func NewCreateFlowData(body *CreateFlowRequestBody) *flow.CreateFlowData {
 	v := &flow.CreateFlowData{
-		Title: body.Title,
-		Nodes: body.Nodes,
-		Edges: body.Edges,
+		Title: *body.Title,
+		Data:  body.Data,
 	}
 
 	return v
@@ -165,8 +153,7 @@ func NewCreateFlowData(body *CreateFlowRequestBody) *flow.CreateFlowData {
 func NewUpdateFlowPayload(body *UpdateFlowRequestBody, id string) *flow.UpdateFlowPayload {
 	v := &flow.UpdateFlowData{
 		Title: body.Title,
-		Nodes: body.Nodes,
-		Edges: body.Edges,
+		Data:  body.Data,
 	}
 	res := &flow.UpdateFlowPayload{
 		Data: v,
@@ -174,4 +161,13 @@ func NewUpdateFlowPayload(body *UpdateFlowRequestBody, id string) *flow.UpdateFl
 	res.ID = &id
 
 	return res
+}
+
+// ValidateCreateFlowRequestBody runs the validations defined on
+// CreateFlowRequestBody
+func ValidateCreateFlowRequestBody(body *CreateFlowRequestBody) (err error) {
+	if body.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
+	}
+	return
 }

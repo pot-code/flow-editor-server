@@ -40,9 +40,8 @@ func (s *service) CreateFlow(ctx context.Context, data *flow.CreateFlowData) (re
 
 	a := account.AccountFromContext(ctx)
 	m := &Flow{
-		Title: *data.Title,
-		Nodes: data.Nodes,
-		Edges: data.Edges,
+		Title: data.Title,
+		Data:  data.Data,
 		Owner: a.UserID,
 	}
 	if err := s.db.Create(m).Error; err != nil {
@@ -99,15 +98,9 @@ func (s *service) UpdateFlow(ctx context.Context, payload *flow.UpdateFlowPayloa
 	if err := s.az.CheckPermission(ctx, &model, "update"); err != nil {
 		return nil, err
 	}
-	if data.Edges != nil {
-		model.Edges = data.Edges
-	}
-	if data.Nodes != nil {
-		model.Nodes = data.Nodes
-	}
-	if data.Title != nil {
-		model.Title = *data.Title
-	}
+
+	model.Data = data.Data
+	model.Title = *data.Title
 	if err := s.db.Save(&model).Error; err != nil {
 		return nil, err
 	}

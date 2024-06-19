@@ -7,7 +7,6 @@ import (
 type Flow struct {
 	gorm.Model
 	Title string
-	Nodes *string `gorm:"default:null"`
-	Edges *string `gorm:"default:null"`
+	Data  *string `gorm:"default:null"`
 	Owner string
 }

@@ -13,8 +13,7 @@ var FlowListItemData = Type("FlowListItemData", func() {
 var FlowDetailData = Type("FlowDetailData", func() {
 	Attribute("id", Int, "flow id")
 	Attribute("title", String, "flow 标题")
-	Attribute("nodes", String, "flow 节点")
-	Attribute("edges", String, "flow 边")
+	Attribute("data", String, "flow 数据")
 	Attribute("created_at", String, "flow 创建时间")
 	Required("id", "title", "created_at")
 })
@@ -24,8 +23,8 @@ var CreateFlowData = Type("CreateFlowData", func() {
 		Meta("struct:tag:json", "title")
 		Meta("struct:tag:validate", "required,min=1,max=32")
 	})
-	Attribute("nodes", String, "flow 节点")
-	Attribute("edges", String, "flow 边")
+	Attribute("data", String, "flow 数据")
+	Required("title")
 })
 
 var UpdateFlowData = Type("UpdateFlowData", func() {
@@ -33,8 +32,7 @@ var UpdateFlowData = Type("UpdateFlowData", func() {
 		Meta("struct:tag:json", "title")
 		Meta("struct:tag:validate", "required,min=1,max=32")
 	})
-	Attribute("nodes", String, "flow 节点")
-	Attribute("edges", String, "flow 边")
+	Attribute("data", String, "flow 数据")
 })
 
 var QueryFlowListParams = Type("QueryFlowListParams", func() {
