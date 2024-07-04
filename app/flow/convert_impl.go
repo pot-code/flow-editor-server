@@ -23,12 +23,10 @@ func (c *ConverterImpl) FlowToFlowDetail(source *Flow) *flow.FlowDetailData {
 		var flowFlowDetailData flow.FlowDetailData
 		flowFlowDetailData.ID = UintToInt((*source).Model.ID)
 		flowFlowDetailData.Title = (*source).Title
-		var pString *string
 		if (*source).Data != nil {
 			xstring := *(*source).Data
-			pString = &xstring
+			flowFlowDetailData.Data = &xstring
 		}
-		flowFlowDetailData.Data = pString
 		flowFlowDetailData.CreatedAt = TimeToString((*source).Model.CreatedAt)
 		pFlowFlowDetailData = &flowFlowDetailData
 	}

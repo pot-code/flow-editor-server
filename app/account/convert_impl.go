@@ -12,13 +12,11 @@ func (c *ConverterImpl) AccountToAccountInfo(source Account) *account.AccountInf
 	accountAccountInfo.UserID = source.UserID
 	accountAccountInfo.Activated = source.Activated
 	accountAccountInfo.Membership = int(source.Membership)
-	var stringList []string
 	if source.Roles != nil {
-		stringList = make([]string, len(source.Roles))
+		accountAccountInfo.Roles = make([]string, len(source.Roles))
 		for i := 0; i < len(source.Roles); i++ {
-			stringList[i] = RoleToString(source.Roles[i])
+			accountAccountInfo.Roles[i] = RoleToString(source.Roles[i])
 		}
 	}
-	accountAccountInfo.Roles = stringList
 	return &accountAccountInfo
 }
